@@ -1,0 +1,29 @@
+@keyframes card-shine {
+  0%,
+  65% {
+    transform: translateX(-150%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(350%) rotate(25deg);
+  }
+}
+@keyframes spark-drift {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-7px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
