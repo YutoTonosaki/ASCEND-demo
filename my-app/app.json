@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "ASCEND",
+    "slug": "ascend",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "ascend",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0c0f13"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
