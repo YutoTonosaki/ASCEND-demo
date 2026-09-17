@@ -651,7 +651,9 @@ Season Result
 
 Card cosmetics/appearance where appropriate
 
-Future Player progression must not modify old Season Cards.
+Club identity snapshot and represented Club tenures (see section 39).
+
+Future Player progression or transfers must not modify old Season Cards.
 
 ---
 
@@ -708,3 +710,149 @@ Comeback cooldown
 Skill thresholds
 
 Avoid magic numbers distributed across UI code.
+
+---
+
+# 39. Club Career Model (Phase 4 contracts)
+
+Keep Club Career separate from physical Player ratings. The Phase 1 TypeScript
+contracts are in `my-app/src/types/club.ts`; fixtures and the replaceable Club
+catalog live in `src/data/club-career.ts` and `src/config/clubs.ts` within that app.
+No Club calculation, Club persistence, or transfer state machine is added.
+The Phase 2A storage adapter persists training plans only.
+
+| Concept | Data / invariant |
+| --- | --- |
+| Club identity | Stable id, name, shortName, league, country, original vector crest, primaryColor, secondaryColor |
+| Club expectations | Reputation, recommendedOVR, preferredArchetypes, preferredAttributes, description |
+| Player Club career | currentClubId, clubJoinedAt, previousClubs, careerTransfers, clubReputation, role, transferOffers |
+| Club tenure | Unique tenure id, copied Club identity, joinedAt, leftAt; returning creates a new tenure |
+| Transfer offer | Offering Club snapshot, proposed role, state, window kind, offer date, optional expiry |
+| Accepted transfer | Offer id, from/to Club identity snapshots, decision and effective dates |
+| Season Club snapshot | Season id, copied Club at Season end, represented Club tenures |
+
+Catalog Club reputation describes an organization's standing. The Player's
+`clubReputation` describes their relationship/standing at the current Club; its
+scale is TBD and it can be unset. Neither value is a physical rating. The mock
+uses an unset Player standing and role, rather than pretending to calculate them.
+
+Dates use ISO calendar dates; display them without time-zone month shifts.
+Historical records must store identity copies, including crest geometry/colors,
+not only IDs resolved against the mutable live catalog. TypeScript readonly
+contracts express intent; future persistence must copy/validate data and enforce
+immutability. Current data remains in memory only.
+
+# 40. Club Reputation and Interest
+
+Draft Club reputation levels (centralized labels, balancing TBD):
+
+1. Development / starting Clubs
+2. Growing competitive Clubs
+3. Established Clubs
+4. High-level Clubs
+5. Elite Clubs
+
+All six league environments can contain different reputation levels. There is
+no rule such as OVR 60 = Germany or OVR 70 = England. `recommendedOVR` is a soft
+expectation, not an absolute lock. Tokyo Zenith's illustrative 45/reputation 1
+is catalog sample data, not an implemented offer threshold.
+
+Future interest takes OVR as its primary signal and may additionally consume
+STR, PWR, END, CORE, ATH, Body Ratings, Archetype, Form, weekly consistency,
+Season performance, Match results, PR progression, Club reputation, current Club,
+and career history. A strength/power-focused Club may value a different profile
+from one emphasizing endurance/athleticism/Form. No scoring weights, probabilities,
+thresholds, role requirements, or automatic scouting are implemented yet.
+
+Phase 3 produces performance evidence; Phase 4 consumes it through pure game
+modules. UI renders results and invokes future explicit decisions, never computes
+interest or changes ratings. Offer frequency, recommended OVR ranges, Club
+preferences, interest thresholds/calculations, window rules, and role requirements
+must live in centralized future configuration; unspecified values remain TBD.
+
+# 41. Offers, Windows, and Voluntary Decisions
+
+Interest states: LOCKED, SCOUTING, MONITORING, INTERESTED, OFFER_RECEIVED.
+Offer states: OFFER_RECEIVED, ACCEPTED, REJECTED, EXPIRED. These are conceptual
+contracts, not an active state machine or guaranteed linear sequence.
+
+Future decisions are ACCEPT, REJECT, or STAY. Only explicit acceptance can create
+an effective transfer. Rising OVR, expiring/declining an offer, or choosing to stay
+never changes Club automatically. Staying must remain possible indefinitely;
+missing an offer cannot block future physical growth. Rejected/expired offers
+and completed tenures remain part of history under future retention rules.
+
+One calendar month remains one Season. Season-end windows are the main cadence;
+a window-kind field also permits SPECIAL_MID_SEASON later without requiring it
+in the first implementation. Offer issuance, expiry, effective dates, and window
+processing are deferred. Proposed roles are PROSPECT, ROTATION, STARTER,
+KEY_PLAYER, CLUB_ICON; no role progression or bonuses are implemented.
+
+At Season completion, snapshot ratings and Club identity before applying any
+next-Season transfer. For future mid-season transfers, retain represented tenures
+as well as the Club at Season end; finalize presentation policy in Phase 4.
+Never relabel older Season Cards with the Player's new Club or delete old history.
+
+# 42. Club Safety and Presentation Rules
+
+Joining any Club, changing role, or gaining reputation never directly increases
+Athletic Ratings, Body Ratings, or OVR. Cosmetics remain ability-neutral. Future
+interest incentives must use sustainable performance evidence and existing Form
+caps/recovery principles, not reward unlimited additional volume. Clubs are not
+pay-to-win or a substitute for real physical improvement.
+
+Transfer events rank above ordinary notifications but below major Season Victory
+and major Card Evolution presentations. This task adds no event animations.
+No real football assets, live Club database, backend, authentication, or cloud
+infrastructure are required. Club/transfer simulations belong only in Phase 4.
+
+
+# 43. Phase 2A Training Data Foundation
+
+Types live in `my-app/src/types/training.ts`; standard definitions and draft
+exercise difficulty metadata live in `src/data/exercises.ts`. Shared options,
+defaults, Recent limits, and input bounds are in `src/config/training.ts`.
+
+- Exercise: stable ID, name, primary/secondary BodyArea arrays, category,
+  equipment array, tracking type, difficulty, progression family, and isCustom.
+- Categories describe training, independently of Athletic Ratings.
+- Standard difficulty values are draft game metadata, not scientific measurements.
+  They are not used for scoring in Phase 2A. Progression family is a future grouping
+  key, not an implemented Skill Tree.
+- CustomExercise is a distinct union member: isCustom=true, difficulty=null,
+  progressionFamily=null. Future Performance Engine policy for custom movements
+  remains unresolved; never infer a rating multiplier from user input.
+- WorkoutPlan has a stable ID, name, created/updated timestamps, and ordered
+  WorkoutExercise entries. Each entry has its own ID, exercise reference, rest
+  target, and ordered SetTarget values with stable set IDs.
+- SetTarget is discriminated by reps, weight_reps, or time. Weight is kilograms;
+  durations are seconds. This model contains no actual-performance fields.
+
+`src/training/plans.ts` supplies pure plan creation, ordering, and deep duplication.
+The future AI Coach should return an editable WorkoutPlan after consulting
+training context, not write UI-specific state. Phase 2B must snapshot the plan and
+exercise metadata into separate session evidence before recording actual sets.
+Subsequent plan edits/deletions must never rewrite completed session history.
+Phase 3 consumes that evidence, not planned targets, for PRs and progression.
+
+## Local repository
+
+UI → TrainingProvider → TrainingRepository → StorageAdapter → AsyncStorage.
+The only new runtime dependency is Expo-compatible AsyncStorage. The version-1
+training document is stored under `ascend.training.v1`; it contains custom
+exercises, six unique Recent IDs, and saved plans. Standard definitions remain
+bundled data. No Player or Club fixtures are written to this document.
+
+Validate unknown JSON, IDs/references, enum values, finite numeric bounds, and
+matching target types before loading or committing. Writes are serialized and
+state is published only after persistence succeeds. Referenced custom exercises
+cannot be deleted or change tracking type; rename/metadata edits remain valid.
+Missing storage means an empty library of user data. Invalid or unsupported data
+blocks writes rather than silently discarding it. Explicit reset first copies the
+original raw document to a timestamped local backup key. There is no automatic
+migration, cloud recovery, encryption, or backup export UI in this phase.
+
+Input bounds limit malformed plans (30 exercises, 20 sets per exercise, names
+80 characters). Defaults and bounds are editing constraints, not training advice,
+performance scores, or growth formulas. Actual timers, sessions/history, scoring,
+PRs, recovery, Form, Skill Tree, and rating changes remain deferred.

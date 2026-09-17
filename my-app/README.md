@@ -1,4 +1,4 @@
-# ASCEND — native Phase 1
+# ASCEND — native Phase 2A
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -25,6 +25,7 @@ inside the app. Expo Go must support SDK 57.
 ```sh
 npm run typecheck
 npm run lint
+npm test
 npm run export
 ```
 
@@ -33,6 +34,7 @@ create a signed native binary or substitute for testing on a physical device.
 
 See [Phase 1 verification](docs/PHASE1_VERIFICATION.md) for completed checks and
 the remaining physical-device acceptance check.
+The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_VERIFICATION.md).
 
 ## Structure
 
@@ -44,19 +46,63 @@ the remaining physical-device acceptance check.
 - `src/config/`: visual palettes and shared theme; no balancing formulas.
 - `src/animations/`: native-driver effects, reduced-motion/background handling.
 - `src/game/`: reserved for future pure game modules.
-- `src/storage/`: interface only; nothing is saved in Phase 1.
+- `src/storage/`: adapter, AsyncStorage implementation, versioned training repository.
+- `src/types/training.ts`: exercises, discriminated per-set targets, saved plans.
+- `src/data/exercises.ts`: 42 standard exercises and draft difficulty metadata.
+- `src/training/`: plan helpers, runtime validation, training state provider.
+- `src/components/training/`: picker, custom editor, builder, saved-plan workspace.
+- `tests/`: dependency-free Node tests using the existing TypeScript compiler.
 
 ## Prototype behavior
 
 - All five bottom tabs navigate; the Home CTA opens Train.
 - Player previews four finishes and three effect intensities.
 - Career previews four rival colors. Previews never alter ratings or save items.
-- Train, progression entry points, Career collections, and Shop are labeled
-  placeholders for their respective roadmap phases.
+- AI Coach, actual Workout History, progression, Career collections, and Shop
+  remain unavailable. Custom Workout, Saved Workouts, and My Exercises now work.
 - The default card is high Bronze; the default rival is Blue. No OVR thresholds
   are assigned. All displayed progress, records, and balances are mock data.
 - Animations use React Native Animated, stop off-screen/in the background, and
   respect the device's reduced-motion preference.
 
-Only Phase 1 is implemented. Workouts, progression, timers, persistence,
-backend services, matches, seasons, rewards, and purchases are deferred.
+Phase 2A adds workout planning and local storage. Active sessions, timers, actual
+history, AI generation, progression, backend services, matches, seasons, rewards,
+and purchases remain deferred.
+
+## Training flow
+
+TRAIN → Create Workout → Add Exercise → search/filter/select → configure targets
+→ Save Workout. Expand an exercise's details to change individual sets, rest,
+order, or remove it. Saved Workouts supports viewing, editing, duplication, and
+confirmed deletion. My Exercises supports custom exercise management. Selecting
+an exercise adds it to the six-item persisted Recent list.
+
+Storage uses Expo-compatible AsyncStorage behind `StorageAdapter<string>` and a
+serialized repository. Targets (kg/reps/seconds), custom exercises, Recent IDs,
+and saved plans use a validated version-1 document. No actual session performance
+or Player/Club state is persisted. Corrupt or newer schemas are preserved; the
+recovery screen supports retry and confirmed reset with a local raw backup.
+Referenced custom exercises cannot be deleted or change tracking type. Difficulty
+is always null for user-created movements.
+
+Draft edits survive tab switches but not app termination/reload. The Back control
+confirms discarding changed workouts. Start Workout remains Coming Soon.
+
+See [Phase 2A verification](docs/PHASE2A_VERIFICATION.md) for completed checks and
+physical-device follow-up.
+
+## Club identity foundation
+
+Tokyo Zenith is the current fictional Japanese Club. The catalog and six league
+environments are centralized in `src/config/clubs.ts`; the mock current tenure
+is in `src/data/club-career.ts`. `src/types/club.ts` defines future Club career,
+offer, role, tenure, transfer, and immutable Season Club snapshot contracts.
+The small crest is original SVG geometry. Player Card Club props are optional
+and accept either a current Club or historical identity data.
+
+Home and Player show secondary Club identity. Career adds Current Club, expandable
+Club details, and a locked Transfer Center. Club selection, scouting, offers,
+transfers, reputation/role calculations, and persistence are Phase 4 work.
+
+See [Club foundation verification](docs/CLUB_FOUNDATION_VERIFICATION.md) for
+checks performed, mock assumptions, and remaining device verification.

@@ -3,6 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~57.0.22",
     "expo-constants": "~57.0.18",
     "expo-linear-gradient": "~57.0.2",
@@ -32,7 +33,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "export": "expo export --platform all"
+    "export": "expo export --platform all",
+    "test": "node --require ./tests/register.cjs --test tests/*.test.cjs"
   },
   "private": true
 }

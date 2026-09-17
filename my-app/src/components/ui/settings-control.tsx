@@ -11,9 +11,18 @@ export function SettingsControl() {
         accessibilityRole="button"
         accessibilityLabel="Settings"
         onPress={() => setOpen(true)}
-        style={({ pressed }) => [styles.control, pressed && { opacity: 0.65 }]}
+        style={({ pressed }) => [
+          styles.control,
+          (pressed || open) && styles.active,
+        ]}
       >
-        <Icon name="settings" size={20} />
+        {({ pressed }) => (
+          <Icon
+            name="settings"
+            size={20}
+            color={pressed || open ? colors.bronze : colors.muted}
+          />
+        )}
       </Pressable>
       <Modal
         visible={open}
@@ -36,7 +45,10 @@ export function SettingsControl() {
                 accessibilityRole="button"
                 accessibilityLabel="Close settings"
                 onPress={() => setOpen(false)}
-                style={styles.control}
+                style={({ pressed }) => [
+                  styles.control,
+                  pressed && styles.active,
+                ]}
               >
                 <Icon name="close" />
               </Pressable>
@@ -63,6 +75,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.surface,
   },
+  active: { borderColor: colors.bronze, backgroundColor: "#302820" },
   overlay: {
     flex: 1,
     backgroundColor: "#000a",

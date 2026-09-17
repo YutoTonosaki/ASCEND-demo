@@ -16,6 +16,7 @@ The experience combines:
 - Skill Trees;
 - weekly Rival competition;
 - monthly Seasons;
+- Club career, optional transfers, and permanent Club history;
 - collectible Player Cards;
 - cosmetic customization.
 
@@ -66,7 +67,8 @@ Basic information:
 - Height
 - Weight
 
-The user then performs an Initial Combine.
+The user then performs an Initial Combine. After provisional ratings, the future
+Phase 4 onboarding lets them freely choose a first Japanese Club (see section 48).
 
 ---
 
@@ -153,6 +155,7 @@ Display:
 - ATH
 - Archetype/Title
 - optional Badge
+- secondary Club crest/name and league or country identity
 
 The Card evolves as OVR increases.
 
@@ -165,6 +168,11 @@ BRONZE
 → ASCEND
 
 Exact OVR boundaries remain configurable and may be balanced later.
+
+The current tier is earned through ability, not selected like a cosmetic. PLAYER
+shows current Bronze / OVR 58 / next Silver separately from its appearance preview.
+The four finish and three intensity controls only preview the card; they do not
+change or persist the Player's earned tier. No tier calculations are active.
 
 ---
 
@@ -329,7 +337,39 @@ Quick 15
 
 Home Full Body
 
-Custom workouts use the same performance/progression system as AI workouts.
+Custom workouts use the same future performance/progression system as AI workouts.
+
+### Phase 2A: planning before recording
+
+TRAIN now offers Custom Workout and Saved Workouts. The Exercise Picker lists
+RECENT, MY EXERCISES, and ALL EXERCISES with name search and optional body-part,
+equipment, and tracking filters. Recent keeps six unique selections. A missing
+movement can be created once and immediately selected.
+
+The standard library contains 42 home/gym movements. Users can create/edit/delete
+custom exercises using name, primary/secondary body areas, equipment, tracking
+type, and category. Difficulty is never user-entered; custom difficulty is null.
+An exercise used in saved workouts cannot be deleted or have its tracking type
+changed until those references are removed. Metadata/name edits remain possible.
+
+A Saved Workout is an editable plan with ordered exercises, individually editable
+set targets, and rest duration per exercise (default 90 seconds). Targets support
+reps, weight in kilograms + reps, or duration in seconds. All-set controls speed up
+common changes; expandable details allow individual targets, rest, and ordering.
+Users can view, edit, duplicate, and confirm deletion of plans. Duplicates receive
+independent plan/entry/set IDs. No estimated duration is shown without a reliable
+basis. Start Workout is unavailable until active sessions are implemented.
+
+Planning targets are never actual performance: a 12/12/12 target can later coexist
+with a 14/12/10 session result. Saving a plan does not complete a workout, change
+Form or ratings, or award rewards. AI Coach and actual Workout History remain
+unavailable. A future AI Coach will produce this same editable plan shape.
+
+Custom exercises, Recent selections, and saved plans persist on the device.
+Corrupt/incompatible storage remains unchanged with retry or explicit backed-up
+reset; storage failures show a retryable error. Unsaved workout changes remain
+while switching tabs, but are not persisted across app reloads. Back asks before
+discarding a changed workout. No cloud sync is added.
 
 ---
 
@@ -610,7 +650,8 @@ Comeback rewards should have a cooldown to prevent deliberate exploitation.
 
 V1 uses one Rival at a time.
 
-No league or multiplayer is required.
+No standings-based competition league or multiplayer is required. Club league
+environments (section 48) provide career identity rather than a league simulation.
 
 The Rival is represented by a simple digital human-shaped opponent.
 
@@ -826,7 +867,8 @@ CORE 64
 
 ATH 60
 
-This card never changes afterward.
+The card includes a copied Club identity for that Season. Transfers or Club catalog
+changes never relabel historical cards. This card never changes afterward.
 
 Every month creates another historical version of the Player.
 
@@ -989,7 +1031,7 @@ HOME should emphasize what matters today.
 Display:
 
 - current OVR;
-- Player Card summary;
+- Player Card summary with subtle current Club identity;
 - Weekly Target;
 - FORM;
 - next Match;
@@ -1036,6 +1078,12 @@ ARCHETYPE
 CAREER contains:
 
 CURRENT SEASON
+
+CURRENT CLUB
+
+CLUB DETAILS
+
+TRANSFER CENTER
 
 RIVAL
 
@@ -1101,7 +1149,103 @@ TRAIN
 → PREPARE FOR RIVAL
 → MATCH
 → SEASON
+→ CLUB INTEREST / OFFERS
+→ TRANSFER OR STAY
 → CAREER HISTORY
 → REPEAT
 
 Do not prioritize feature quantity over usability.
+
+---
+
+# 48. Club Career & Transfers
+
+Club Career gives physical improvement a narrative destination: real training
+→ performance → Player/OVR growth → weekly Match → Season progress → Club
+reputation and interest → transfer offers → career decision → new Club or stay
+→ continued growth. It complements the existing Rival, monthly Season, Skill,
+and career-album loops. It is not a league simulation or multiplayer system.
+
+## Starting a career
+
+The eventual onboarding sequence is Player setup → height/weight → Initial
+Combine → provisional ratings and OVR → freely choose a first Japanese Club →
+career begins. The Combine and ratings belong to Phase 3; Club selection is
+integrated in Phase 4. No Club-selection onboarding is built in Phase 1.
+
+## Original Clubs and league environments
+
+Six initial environments are Japan, England, Spain, Germany, Italy, and France.
+These express a football-inspired career fantasy, not licensed leagues. Clubs,
+crests, colors, and presentation are ASCEND-original fictional content: no
+real league logos, Club crests, kits, EA Sports FC assets, or proprietary UI.
+Clubs are centralized replaceable data, not hardcoded into screens.
+
+A Club has its own identity, reputation, approximate OVR expectations, preferred
+attributes/archetypes, and description. Reputation can vary widely within one
+country. Countries are not an ordered progression ladder. Recommended OVR is an
+approximate expectation, not a mandatory threshold or an automatic offer.
+
+## Opportunities and choice
+
+OVR is the primary future interest signal. Athletic and Body Ratings, Archetype,
+Form, weekly consistency, Season performance, Match results, PR progression,
+Club reputation, current Club, and history may also influence opportunities.
+Different training styles can attract different Clubs; no formulas are finalized.
+
+Every offer is optional. The Player can **Accept Offer**, **Reject Offer**, or
+**Stay at Current Club**. Never transfer automatically when OVR rises. Remaining
+at Tokyo Zenith at OVR 85 for 12 Seasons is as valid as transferring abroad.
+Loyalty and movement are different career stories, not success versus failure.
+Missing an opportunity must not permanently harm physical progression.
+
+Club roles may be Prospect, Rotation, Starter, Key Player, or Club Icon.
+These communicate career status and provide no physical rating bonuses.
+
+## Transfer Center (Phase 4)
+
+Transfer Center lives inside CAREER, never a sixth primary tab. It will show
+current Club, Club status/role, interested Clubs, and offers. Each Club entry can
+show country, recommended OVR, reputation, proposed role, and interest/offer state.
+Conceptual states are Locked, Scouting, Monitoring, Interested, Offer Received,
+Accepted, Rejected, and Expired. Locked/not interested is not a hard OVR gate.
+
+A calendar-month Season ending is the main opportunity for a transfer window.
+The architecture also permits special mid-season offers later; their frequency,
+expiry, and eligibility remain TBD. A future Season recap can present OVR growth,
+Match record, Form, Club status, and then interested Clubs.
+
+Offer presentation progresses from a Club-interest message to a meaningful
+transfer-offer event with View Offer and the three voluntary decisions. Its
+visual emphasis is above routine notifications and below major Season Victory
+or Card Evolution events. No transfer animations are built now.
+
+## Permanent Club history
+
+Keep current Club and joining date, previous Club tenures, accepted transfers,
+Player standing with the Club, and offer history. Changing Clubs must never erase
+old tenures or historical Season Cards. A return to a prior Club is a new tenure.
+Season Cards retain a copied Club identity for that Season, even after a transfer
+or a later catalog/crest change. This makes the career album permanent.
+
+## Compact Phase 1 presentation
+
+Use Tokyo Zenith (Japan, joined Sep 2026) as the sole current mock Club.
+A small original geometric crest and Club label sit inside the Home summary and
+Player Card. OVR, Player name, Archetype, ratings, and training action keep priority.
+
+CAREER retains Write Your Story, Current Chapter, Season, record, Rival, and next
+Match; add a compact Current Club row with name, country, and joining month.
+Your Legacy contains Club (mock details), Transfer Center (locked/Coming Soon),
+Season History, Trophy Room, and Past Player Cards (unavailable). Do not restore
+oversized utility cards or add another Home dashboard card.
+
+## Non-negotiable boundaries
+
+Clubs provide identity, narrative opportunities, and status, never STR, PWR, END,
+CORE, ATH, Body Rating, OVR, or paid ability boosts. Real demonstrated training
+remains the source of ability. Club reputation and roles are separate from it.
+Interest incentives must respect recovery, sustainable progression, and weekly
+consistency; they must not encourage excessive training. Cosmetic rules are
+unchanged. Phase 1 supplies types/configuration/mock visuals only; dynamic Club
+Career belongs to Phase 4. Phase 2 remains the workout system.

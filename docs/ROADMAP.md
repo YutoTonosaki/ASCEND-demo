@@ -194,6 +194,18 @@ Past Cards
 
 ---
 
+## Club identity architecture (Phase 1 only)
+
+- One centralized fictional Japanese Club: Tokyo Zenith.
+- Original geometric crest and subtle Home Club identity.
+- Optional Club identity props on the full Player Card.
+- Compact Career Current Club preview, mock Club details, and locked Transfer Center.
+- Typed Club, career tenure, offer, role, and immutable Season Club snapshot contracts.
+- No onboarding, calculations, offers, history writes, transfers, or persistence.
+
+Preserve the refined compact Home/Recovery/Shop/legacy layouts, Player Card,
+Rival, typography, and five-tab navigation. Club lives inside CAREER.
+
 ## Shop Page
 
 Prototype:
@@ -268,53 +280,44 @@ Do not begin Phase 2.
 
 Make ASCEND usable during real workouts.
 
-## Build
+Workout functionality remains the priority. Do not add Club selection, scouting,
+interest, transfer logic, or transfer persistence to Phase 2.
 
-Exercise Library
+## Phase 2A — Exercise & Workout Planning Foundation
 
-AI Coach initial rule-based generator
+Implemented scope:
 
-Custom Workout
+- Centralized 42-exercise standard library with stable IDs and configurable metadata.
+- Custom exercises (My Exercises): create, edit, delete with reference protection.
+- Search, body/equipment/tracking filters, and six persisted Recent selections.
+- Workout builder: names, exercise ordering, sets, per-set reps/weight/time targets,
+  and rest-duration configuration.
+- Saved workouts: view, edit, deep duplicate, confirmed deletion.
+- Versioned local persistence, validation, failure handling, and recovery backup.
+- Clear earned-tier versus appearance-preview semantics on PLAYER.
 
-Saved Workouts
+Acceptance: create/edit custom exercises and saved workouts; targets and recent
+selections survive restart/refresh; referenced exercises cannot become dangling;
+all three tracking types work; lint, TypeScript, tests, and production export pass.
+Physical iPhone/Android keyboard and touch testing remains a manual check.
 
-Workout History
+No actual performance, session completion, timers, history, rating calculations,
+AI generation, or Club simulation is included. Stop after Phase 2A.
 
-Workout Session
+## Phase 2B — Active Workouts & Actual Performance (deferred)
 
-Reps input
+- Start a session from a copied editable WorkoutPlan.
+- Complete sets while retaining both planned targets and actual performance.
+- Reps/weight/time entry, workout timer, automatic rest countdown, skip rest.
+- Add sets/exercises, skip exercises, and end a session.
+- Sounds/haptics and useful workout completion presentation.
+- Local actual-performance history, separate from editable Saved Workouts.
+- Initial rule-based AI Coach: environment/equipment/time/energy/focus inputs
+  produce the same editable plan structure; no external AI API.
 
-Weight input
-
-Time input
-
-Workout Timer
-
-Automatic Rest Timer
-
-Skip Rest
-
-Sounds
-
-Haptic feedback
-
-Workout completion
-
-Local persistence
-
-## Device Experience
-
-Test during actual workout-style interaction.
-
-Large buttons.
-
-Minimal typing.
-
-Screen remains understandable during timers.
-
-## Acceptance
-
-User can complete and save a full workout on their phone.
+Acceptance: complete and save an actual workout on a phone; later edits to a
+saved plan or exercise cannot rewrite the recorded session's evidence.
+Test the full flow during actual workout-style interaction with minimal typing.
 
 ---
 
@@ -323,6 +326,9 @@ User can complete and save a full workout on their phone.
 ## Goal
 
 Connect real-world performance to Player growth.
+
+Produce the performance evidence that the future Phase 4 Club system consumes.
+Do not implement Club interest or transfers here.
 
 ## Build
 
@@ -374,7 +380,7 @@ Repeated unchanged easy workouts cannot farm unlimited OVR.
 
 ## Goal
 
-Create weekly and monthly game competition.
+Create weekly and monthly game competition and optional Club career opportunities.
 
 ## Build
 
@@ -408,11 +414,28 @@ Career History
 
 Trophy Room
 
+## Club Career & Transfer implementation
+
+- Fictional Club catalog and the six league environments.
+- First Japanese Club selection after setup/Combine/provisional ratings.
+- Club reputation and separate Player standing at their Club.
+- Permanent Club tenures and transfer history.
+- Transfer Center inside CAREER; no sixth tab.
+- Interest using OVR plus profile, consistency, Match/Season, and PR evidence.
+- Offers and explicit Accept / Reject / Stay decisions; never automatic transfers.
+- Season-end transfer windows, with extensibility for special mid-season offers.
+- Club roles and centralized configurable requirements; no physical bonuses.
+- Season/Club integration and immutable Club identity on permanent Season Cards.
+- Meaningful offer presentation below major Season Victory/Card Evolution events.
+
 ## Acceptance
 
 The user can complete a full Season.
 
-Historical cards remain unchanged.
+Historical cards and Club identity remain unchanged after transfers or catalog edits.
+Club changes preserve previous tenures. Staying indefinitely is supported.
+Offers cannot grant ratings or encourage unsafe training. All career balancing
+values are centralized; recommended OVR is never a hard country/league ladder.
 
 ---
 

@@ -1,3 +1,4 @@
+import { currentClub } from "@/data/club-career";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
@@ -9,7 +10,7 @@ import {
 } from "@/components/ui/primitives";
 import { PlayerCard } from "@/components/player/player-card";
 import { player } from "@/data/mock";
-import { cardTiers, ratingLabels } from "@/config/visuals";
+import { cardTiers, nextTierLabel, ratingLabels } from "@/config/visuals";
 import { colors } from "@/config/theme";
 import type { CardTier, CardIntensity, AthleticRating } from "@/types/domain";
 export default function PlayerScreen() {
@@ -17,8 +18,31 @@ export default function PlayerScreen() {
   const [intensity, setIntensity] = useState<CardIntensity>(player.intensity);
   return (
     <Screen kicker="PLAYER / YOUR IDENTITY" title="BUILT, NOT GIVEN">
-      <PlayerCard player={player} tier={tier} intensity={intensity} />
-      <Panel title="CARD FINISH">
+      <Panel
+        title={`CURRENT TIER · ${cardTiers[player.tier].label.toUpperCase()}`}
+        kicker={`OVR ${player.ovr}`}
+        style={{ padding: 12, gap: 8 }}
+      >
+        <Text style={s.muted}>
+          NEXT EVOLUTION · {nextTierLabel[player.tier]}
+        </Text>
+      </Panel>
+      {(tier !== player.tier || intensity !== player.intensity) && (
+        <Text style={s.eyebrow}>
+          APPEARANCE PREVIEW · CURRENT TIER UNCHANGED
+        </Text>
+      )}
+      <PlayerCard
+        club={currentClub}
+        player={player}
+        tier={tier}
+        intensity={intensity}
+      />
+      <Panel title="CARD FINISH PREVIEW">
+        <Text style={s.fine}>
+          Explore appearances. Preview choices do not change your earned tier or
+          save to your Player.
+        </Text>
         <View style={s.choices}>
           {(Object.keys(cardTiers) as CardTier[]).map((key) => (
             <Choice

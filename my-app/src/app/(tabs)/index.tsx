@@ -1,3 +1,4 @@
+import { currentClub } from "@/data/club-career";
 import { Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Screen, Panel, Button, s } from "@/components/ui/primitives";
@@ -12,7 +13,7 @@ export default function Home() {
       kicker={`THE FACILITY / SEASON ${season.number}`}
       title="YOUR NEXT LEVEL"
     >
-      <PlayerSummary player={player} form={weekly.form} />
+      <PlayerSummary club={currentClub} player={player} form={weekly.form} />
       <Panel>
         <View style={s.sectionHeading}>
           <Text style={s.sectionTitle}>WEEKLY TARGET</Text>

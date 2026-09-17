@@ -4,19 +4,23 @@ import { router } from "expo-router";
 import type { Player } from "@/types/domain";
 import { cardTiers } from "@/config/visuals";
 import { colors } from "@/config/theme";
-import { Emblem, Icon } from "@/components/ui/icon";
+import { ClubIdentity } from "@/components/club/club-identity";
+import type { ClubIdentity as ClubIdentityData } from "@/types/club";
+import { Icon } from "@/components/ui/icon";
 export function PlayerSummary({
   player,
+  club,
   form,
 }: {
   player: Player;
+  club?: ClubIdentityData;
   form: string;
 }) {
   const palette = cardTiers[player.tier];
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${player.name}, OVR ${player.ovr}, form ${form}. Open Player`}
+      accessibilityLabel={`${player.name}, OVR ${player.ovr}, form ${form}${club ? `, ${club.name}` : ""}. Open Player`}
       onPress={() => router.push("/player")}
       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
     >
@@ -35,9 +39,9 @@ export function PlayerSummary({
         <View style={styles.identity}>
           <Text style={styles.name}>{player.name}</Text>
           <Text style={styles.archetype}>{player.archetype}</Text>
+          {club && <ClubIdentity club={club} compact />}
           <Text style={styles.form}>● FORM {form}</Text>
         </View>
-        <Emblem size={36} color={palette.accent} />
         <Icon name="arrow" size={16} color={palette.accent} />
       </LinearGradient>
     </Pressable>

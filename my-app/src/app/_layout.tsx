@@ -2,6 +2,7 @@ import { DarkTheme, ThemeProvider, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "@/config/theme";
+import { TrainingProvider } from "@/training/provider";
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
@@ -18,10 +19,12 @@ export default function RootLayout() {
           },
         }}
       >
-        <StatusBar style="light" />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <TrainingProvider>
+          <StatusBar style="light" />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </TrainingProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

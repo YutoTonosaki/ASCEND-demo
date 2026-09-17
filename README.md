@@ -13,7 +13,19 @@ REAL TRAINING
 → PLAYER DEVELOPMENT
 → WEEKLY RIVAL MATCH
 → MONTHLY SEASON
-→ CAREER HISTORY
+→ CLUB CAREER / REPUTATION & INTEREST
+→ TRANSFER OFFERS
+→ CHOOSE A NEW CLUB OR STAY
+→ PERMANENT CAREER HISTORY
+
+Train in real life → improve your Player → compete against Rivals → build your
+Club career → receive opportunities → create a permanent career history.
+
+Club Career uses original fictional Clubs across Japan, England, Spain, Germany,
+Italy, and France. Careers eventually start with a freely chosen Japanese Club.
+Transfers are always optional; staying is equally valid. Club reputation and roles
+never grant physical rating bonuses. Phase 1 shows mock Club identity only; the
+dynamic Club and Transfer system belongs to Phase 4, after workouts and progression.
 
 ASCEND is currently designed primarily as a personal single-user application.
 
@@ -235,7 +247,7 @@ When implementing a phase:
 7. verify TypeScript;
 8. report changes;
 9. stop before the next phase.
-## Current Phase 1 application
+## Current application — Phase 2A
 
 The native Expo application is in [`my-app`](./my-app/README.md). Run it on your
 phone from this repository root:
@@ -249,3 +261,18 @@ npx expo start --go --lan
 Scan the QR code with a compatible Expo Go app on the same Wi-Fi network.
 The root Next.js files are the earlier web prototype; they are not the mobile
 application. Use the commands in `my-app/README.md` for current development.
+
+
+### Training foundation
+
+Phase 2A adds a 42-exercise library, custom exercises, recent selections, an
+editable workout builder, and saved workouts in the existing native app.
+Targets support repetitions, kilograms + repetitions, and seconds, with separate
+per-set targets and configurable rest. These are plans, not recorded performance.
+
+Training data is stored locally through an AsyncStorage repository with schema
+validation and serialized writes. No account, backend, or API is required.
+Player/Career values remain illustrative. Active sessions, timers, and actual
+workout history are Phase 2B; physical progression remains Phase 3.
+
+See [`my-app/README.md`](./my-app/README.md) for architecture and verification.

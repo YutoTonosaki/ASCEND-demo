@@ -27,6 +27,8 @@ export function Screen({
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={s.safe}>
       <ScrollView
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
         contentContainerStyle={s.scroll}
         showsVerticalScrollIndicator={false}
       >

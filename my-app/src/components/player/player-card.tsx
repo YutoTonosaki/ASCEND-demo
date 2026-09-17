@@ -3,13 +3,17 @@ import { LinearGradient } from "expo-linear-gradient";
 import { cardTiers } from "@/config/visuals";
 import { useCardMotion } from "@/animations/use-card-motion";
 import type { CardIntensity, CardTier, Player } from "@/types/domain";
+import { ClubIdentity } from "@/components/club/club-identity";
+import type { ClubIdentity as ClubIdentityData } from "@/types/club";
 import { Emblem } from "@/components/ui/icon";
 export function PlayerCard({
   player,
+  club,
   tier = player.tier,
   intensity = player.intensity,
 }: {
   player: Player;
+  club?: ClubIdentityData;
   tier?: CardTier;
   intensity?: CardIntensity;
 }) {
@@ -106,6 +110,11 @@ export function PlayerCard({
           {player.archetype}
         </Text>
         <Text style={c.name}>{player.name}</Text>
+        {club && (
+          <View style={{ marginTop: 6 }}>
+            <ClubIdentity club={club} />
+          </View>
+        )}
         <View style={c.ratings}>
           {Object.entries(player.ratings).map(([key, value]) => (
             <View key={key} style={c.stat}>
