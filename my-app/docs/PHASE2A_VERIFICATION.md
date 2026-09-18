@@ -48,8 +48,10 @@ Commands run from `my-app`:
 - `npm test`: 9 passed; library coverage, tracking models, reference protection,
   custom difficulty, deep duplication, per-set targets/order, invalid schemas,
   persistence round-trip, concurrent/failed writes, and backup/reset failures.
-- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 2 --output-dir /tmp/ascend-phase2a-export`:
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-phase2a-export`:
   iOS and Android Hermes bundles plus 12 static web routes exported successfully.
+  One intermediate export hit a disk-space error; removing this task's temporary
+  npm cache freed space and the subsequent export succeeded.
 - `git diff --check`: passed.
 
 Production web export tested with headless Chromium, fresh isolated browser data:
@@ -71,6 +73,22 @@ Production web export tested with headless Chromium, fresh isolated browser data
 - Simulated 59px top / 34px bottom safe-area values keep the header, bottom tabs,
   and full-screen picker clear. This is a browser-provider simulation, not an
   iPhone device test. Escape dismisses picker and confirmation dialogs.
+
+### Re-running the input regression
+
+The final exported build passed `tests/browser-input.cjs`: decimal input with +/-
+controls and its persisted values matched after reload; replacing the set count
+preserved the existing individual targets at 320px, with no console/page errors.
+
+`tests/browser-input.cjs` checks decimal input with +/- controls, clearing/replacing
+set count without losing per-set targets, all three tracking types, and reload.
+It uses Playwright as a separate QA tool, not an application dependency. Serve the
+export at `ASCEND_QA_URL` (default `http://127.0.0.1:8096`) and run with the external
+Playwright installation on Node's module path, for example:
+
+```sh
+NODE_PATH=/tmp/ascend-qa/node_modules PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-qa/browsers node tests/browser-input.cjs
+```
 
 ## Physical-device follow-up
 

@@ -120,6 +120,11 @@ export function Counter({
         placeholderTextColor={colors.muted}
         onChangeText={(text) => {
           const normalized = text.replace(",", ".");
+          // Clearing a field while replacing its value must not truncate planned sets.
+          if (!normalized.trim()) {
+            setEditing("");
+            return;
+          }
           const n = Number(normalized);
           if (!Number.isFinite(n)) {
             setEditing(null);
