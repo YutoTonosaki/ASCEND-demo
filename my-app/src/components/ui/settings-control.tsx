@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaModal } from "./safe-area-modal";
 import { colors } from "@/config/theme";
 import { Icon } from "./icon";
 export function SettingsControl() {
@@ -24,7 +25,7 @@ export function SettingsControl() {
           />
         )}
       </Pressable>
-      <Modal
+      <SafeAreaModal
         visible={open}
         transparent
         animationType="none"
@@ -60,7 +61,7 @@ export function SettingsControl() {
             </View>
           </View>
         </SafeAreaView>
-      </Modal>
+      </SafeAreaModal>
     </>
   );
 }

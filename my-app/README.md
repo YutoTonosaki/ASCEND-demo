@@ -106,3 +106,17 @@ transfers, reputation/role calculations, and persistence are Phase 4 work.
 
 See [Club foundation verification](docs/CLUB_FOUNDATION_VERIFICATION.md) for
 checks performed, mock assumptions, and remaining device verification.
+
+## Expo Go tools button and overlay safe areas
+
+The blue circular gear in Expo Go is its own **Tools button**, not ASCEND's
+Settings control. Shake the iPhone to open Expo Go's developer menu and turn
+**Tools button** off. This keeps the developer menu available and does not affect
+ASCEND's dark header Settings button. See the [Expo explanation](https://docs.expo.dev/tutorial/create-your-first-app/#edit-the-index-screen).
+There is no duplicate floating Settings component in the application source.
+
+All app modals use `SafeAreaModal`, which mounts a `SafeAreaProvider` inside each
+native modal surface. This prevents the modal from relying on a navigation
+screen's possibly zero insets. On web the provider reads CSS safe-area environment
+values; `src/app/+html.tsx` enables `viewport-fit=cover`. No model-specific padding
+is used. Exercise Name remains the first field of the existing custom editor.

@@ -1,6 +1,5 @@
 import { useState, type PropsWithChildren } from "react";
 import {
-  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -9,6 +8,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaModal } from "@/components/ui/safe-area-modal";
 import { colors } from "@/config/theme";
 import { s } from "@/components/ui/primitives";
 export function Action({
@@ -159,7 +159,7 @@ export function Sheet({
   children,
 }: PropsWithChildren<{ title: string; onClose: () => void }>) {
   return (
-    <Modal
+    <SafeAreaModal
       visible
       animationType="none"
       onRequestClose={onClose}
@@ -184,7 +184,7 @@ export function Sheet({
           </View>
         </View>
       </SafeAreaView>
-    </Modal>
+    </SafeAreaModal>
   );
 }
 export function Confirm({
@@ -199,7 +199,7 @@ export function Confirm({
   onConfirm: () => void;
 }) {
   return (
-    <Modal visible transparent animationType="none" onRequestClose={onCancel}>
+    <SafeAreaModal visible transparent animationType="none" onRequestClose={onCancel}>
       <SafeAreaView
         style={{
           flex: 1,
@@ -225,7 +225,7 @@ export function Confirm({
           <Action label="CANCEL" onPress={onCancel} />
         </View>
       </SafeAreaView>
-    </Modal>
+    </SafeAreaModal>
   );
 }
 export function ErrorText({ message }: { message: string | null }) {
