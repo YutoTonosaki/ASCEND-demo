@@ -5,6 +5,8 @@ import type {
   WorkoutPlan,
 } from "../types/training";
 import { isTrainingData } from "../training/validation";
+import { normalizeTrainingData } from "./training-schema";
+import { copyExercise, copyWorkoutPlan, copyTrainingData, newId } from "../training/plans";
 import { trainingConfig } from "../config/training";
 export const TRAINING_KEY = "ascend.training.v1";
 export const emptyTrainingData = (): TrainingData => ({
@@ -80,7 +82,7 @@ export function applyCommand(
       next = {
         ...data,
         workouts: [
-          command.workout,
+          { ...command.workout, createdAt: data.workouts.find(workout => workout.id === command.workout.id)?.createdAt ?? command.workout.createdAt },
           ...data.workouts.filter((x) => x.id !== command.workout.id),
         ],
       };
@@ -103,42 +105,61 @@ export class TrainingRepository {
   private data: TrainingData | null = null;
   private queue: Promise<unknown> = Promise.resolve();
   constructor(private adapter: StorageAdapter<string>) {}
-  async load(): Promise<TrainingData> {
-    const raw = await this.adapter.read(TRAINING_KEY);
-    if (raw === null) return (this.data = emptyTrainingData());
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      throw new Error(
-        "Saved training data could not be read. Your data has been kept unchanged.",
-      );
-    }
-    if (!isTrainingData(parsed))
-      throw new Error(
-        "Saved training data is incompatible or damaged. Your data has been kept unchanged.",
-      );
-    return (this.data = parsed);
-  }
-  commit(command: TrainingCommand): Promise<TrainingData> {
-    const operation = this.queue.then(async () => {
-      if (!this.data)
-        throw new Error("Training data has not loaded. Please retry.");
-      const next = applyCommand(this.data, command);
-      await this.adapter.write(TRAINING_KEY, JSON.stringify(next));
-      this.data = next;
-      return next;
-    });
+  private enqueue<T>(work: () => Promise<T>): Promise<T> {
+    const operation = this.queue.then(work);
     this.queue = operation.catch(() => undefined);
     return operation;
   }
-  async reset(): Promise<TrainingData> {
-    await this.queue;
-    const raw = await this.adapter.read(TRAINING_KEY);
-    if (raw !== null)
-      await this.adapter.write(`${TRAINING_KEY}.backup.${Date.now()}`, raw);
-    const next = emptyTrainingData();
-    await this.adapter.write(TRAINING_KEY, JSON.stringify(next));
-    return (this.data = next);
+  private backup(raw: string): Promise<void> {
+    return this.adapter.write(`${TRAINING_KEY}.backup.${Date.now()}.${newId()}`, raw);
+  }
+  load(): Promise<TrainingData> {
+    return this.enqueue(async () => {
+      // A failed reload must not permit subsequent writes from a stale memory copy.
+      this.data = null;
+      const raw = await this.adapter.read(TRAINING_KEY);
+      if (raw === null) {
+        this.data = emptyTrainingData();
+        return copyTrainingData(this.data);
+      }
+      let parsed: unknown;
+      try { parsed = JSON.parse(raw); } catch {
+        throw new Error("Saved training data could not be read. Your data has been kept unchanged.");
+      }
+      const next = normalizeTrainingData(parsed);
+      if (!next) throw new Error("Saved training data is incompatible or damaged. Your data has been kept unchanged.");
+      if (JSON.stringify(next) !== JSON.stringify(parsed)) {
+        // Back up first; a failed backup/write leaves the original untouched and retryable.
+        await this.backup(raw);
+        await this.adapter.write(TRAINING_KEY, JSON.stringify(next));
+      }
+      this.data = next;
+      return copyTrainingData(next);
+    });
+  }
+  commit(command: TrainingCommand): Promise<TrainingData> {
+    // Capture at submission, before queued writes await storage or caller edits.
+    const submitted: TrainingCommand = command.type === "saveWorkout"
+      ? { ...command, workout: copyWorkoutPlan(command.workout) }
+      : command.type === "saveExercise"
+        ? { ...command, exercise: copyExercise(command.exercise) }
+        : { ...command };
+    return this.enqueue(async () => {
+      if (!this.data) throw new Error("Training data has not loaded. Please retry.");
+      const next = applyCommand(this.data, submitted);
+      await this.adapter.write(TRAINING_KEY, JSON.stringify(next));
+      this.data = next;
+      return copyTrainingData(next);
+    });
+  }
+  reset(): Promise<TrainingData> {
+    return this.enqueue(async () => {
+      const raw = await this.adapter.read(TRAINING_KEY);
+      if (raw !== null) await this.backup(raw);
+      const next = emptyTrainingData();
+      await this.adapter.write(TRAINING_KEY, JSON.stringify(next));
+      this.data = next;
+      return copyTrainingData(next);
+    });
   }
 }

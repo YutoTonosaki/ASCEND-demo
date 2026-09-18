@@ -18,7 +18,7 @@ const object = (v: unknown): v is Record<string, unknown> =>
 const text = (v: unknown): v is string =>
   typeof v === "string" && v.trim().length > 0 && v.length <= c.maxNameLength;
 const id = (v: unknown): v is string =>
-  typeof v === "string" && v.length > 0 && v.length <= 150;
+  typeof v === "string" && v.trim().length > 0 && v === v.trim() && v.length <= 150;
 const number = (
   v: unknown,
   min: number,
@@ -41,15 +41,15 @@ function list(v: unknown, options: readonly string[], min = 0): v is string[] {
 function unique(items: { id: string }[]) {
   return new Set(items.map((x) => x.id)).size === items.length;
 }
-export function isCustomExercise(v: unknown): v is CustomExercise {
+export function isExercise(v: unknown): v is Exercise {
   return (
     object(v) &&
     id(v.id) &&
-    v.id.startsWith("custom-") &&
     text(v.name) &&
-    v.isCustom === true &&
-    v.difficulty === null &&
-    v.progressionFamily === null &&
+    (v.isCustom === true
+      ? v.id.startsWith("custom-") && v.difficulty === null && v.progressionFamily === null
+      : v.isCustom === false && number(v.difficulty, Number.MIN_VALUE, Number.MAX_VALUE, false) &&
+        (v.progressionFamily === null || text(v.progressionFamily))) &&
     list(v.primaryBodyParts, bodyParts, 1) &&
     list(v.secondaryBodyParts, bodyParts) &&
     !v.secondaryBodyParts.some((x) =>
@@ -61,6 +61,9 @@ export function isCustomExercise(v: unknown): v is CustomExercise {
     typeof v.trackingType === "string" &&
     Object.hasOwn(trackingLabels, v.trackingType)
   );
+}
+export function isCustomExercise(v: unknown): v is CustomExercise {
+  return isExercise(v) && v.isCustom;
 }
 function isTarget(v: unknown, exercise: Exercise): v is SetTarget {
   if (!object(v) || !id(v.id) || v.type !== exercise.trackingType) return false;

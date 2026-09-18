@@ -15,6 +15,7 @@ export const bodyParts: BodyArea[] = [
 export const equipmentOptions: Equipment[] = [
   "Bodyweight",
   "Pull-up Bar",
+  "Low Bar",
   "Dumbbell",
   "Barbell",
   "Bench",

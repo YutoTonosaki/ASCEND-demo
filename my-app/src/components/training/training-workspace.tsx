@@ -12,7 +12,7 @@ import { Action, Confirm, ErrorText, Sheet, t } from "./controls";
 import { ExerciseEditor } from "./exercise-editor";
 import { WorkoutBuilder } from "./workout-builder";
 import { useTraining } from "@/training/provider";
-import { duplicateWorkout, newWorkout, targetLabel } from "@/training/plans";
+import { copyWorkoutPlan, duplicateWorkout, newWorkout, targetLabel } from "@/training/plans";
 import type { CustomExercise, WorkoutPlan } from "@/types/training";
 import { trackingLabels } from "@/config/training";
 type Page = "home" | "saved" | "builder" | "detail" | "exercises";
@@ -221,7 +221,7 @@ export function TrainingWorkspace() {
               <Button
                 label="EDIT WORKOUT"
                 onPress={() => {
-                  setPlan(JSON.parse(JSON.stringify(selected)) as WorkoutPlan);
+                  setPlan(copyWorkoutPlan(selected));
                   setDirty(false);
                   navigate("builder");
                 }}

@@ -2,6 +2,7 @@ import type { BodyArea } from "./domain";
 export type Equipment =
   | "Bodyweight"
   | "Pull-up Bar"
+  | "Low Bar"
   | "Dumbbell"
   | "Barbell"
   | "Bench"
@@ -22,6 +23,7 @@ interface ExerciseMetadata {
   trackingType: TrackingType;
   progressionFamily: string | null;
 }
+/** One shared model; only origin and difficulty policy are discriminated. */
 export type Exercise = ExerciseMetadata &
   (
     | { isCustom: false; difficulty: number }
@@ -38,11 +40,13 @@ export interface WorkoutExercise {
   id: string;
   exerciseId: string;
   restSeconds: number;
+  /** Array position is set order; IDs survive edits and reordering. */
   sets: SetTarget[];
 }
 export interface WorkoutPlan {
   id: string;
   name: string;
+  /** Array position is exercise order; no redundant order field to drift. */
   exercises: WorkoutExercise[];
   createdAt: string;
   updatedAt: string;
