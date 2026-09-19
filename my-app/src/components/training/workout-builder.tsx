@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { Button, Panel, Placeholder, s } from "@/components/ui/primitives";
+import { Button, Panel, s } from "@/components/ui/primitives";
 import { Action, Counter, ErrorText, Field, t } from "./controls";
 import { ExercisePicker } from "./exercise-picker";
 import { trainingConfig as c } from "@/config/training";
@@ -216,11 +216,7 @@ export function WorkoutBuilder({
       ) : (
         <Button label="SAVE WORKOUT" onPress={() => void save()} />
       )}
-      <Placeholder
-        title="START WORKOUT"
-        description="Live workout sessions are coming soon."
-        icon="train"
-      />
+      <Text style={s.fine}>Save your workout to start training.</Text>
       {picker && (
         <ExercisePicker
           onClose={() => setPicker(false)}

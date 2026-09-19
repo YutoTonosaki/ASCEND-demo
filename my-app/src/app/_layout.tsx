@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "@/config/theme";
 import { TrainingProvider } from "@/training/provider";
+import { SessionProvider } from "@/sessions/provider";
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
@@ -20,10 +21,12 @@ export default function RootLayout() {
         }}
       >
         <TrainingProvider>
-          <StatusBar style="light" />
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-          </Stack>
+          <SessionProvider>
+            <StatusBar style="light" />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+            </Stack>
+          </SessionProvider>
         </TrainingProvider>
       </ThemeProvider>
     </SafeAreaProvider>

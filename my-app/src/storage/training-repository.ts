@@ -6,7 +6,12 @@ import type {
 } from "../types/training";
 import { isTrainingData } from "../training/validation";
 import { normalizeTrainingData } from "./training-schema";
-import { copyExercise, copyWorkoutPlan, copyTrainingData, newId } from "../training/plans";
+import {
+  copyExercise,
+  copyWorkoutPlan,
+  copyTrainingData,
+  newId,
+} from "../training/plans";
 import { trainingConfig } from "../config/training";
 export const TRAINING_KEY = "ascend.training.v1";
 export const emptyTrainingData = (): TrainingData => ({
@@ -82,7 +87,12 @@ export function applyCommand(
       next = {
         ...data,
         workouts: [
-          { ...command.workout, createdAt: data.workouts.find(workout => workout.id === command.workout.id)?.createdAt ?? command.workout.createdAt },
+          {
+            ...command.workout,
+            createdAt:
+              data.workouts.find((workout) => workout.id === command.workout.id)
+                ?.createdAt ?? command.workout.createdAt,
+          },
           ...data.workouts.filter((x) => x.id !== command.workout.id),
         ],
       };
@@ -111,7 +121,10 @@ export class TrainingRepository {
     return operation;
   }
   private backup(raw: string): Promise<void> {
-    return this.adapter.write(`${TRAINING_KEY}.backup.${Date.now()}.${newId()}`, raw);
+    return this.adapter.write(
+      `${TRAINING_KEY}.backup.${Date.now()}.${newId()}`,
+      raw,
+    );
   }
   load(): Promise<TrainingData> {
     return this.enqueue(async () => {
@@ -123,11 +136,18 @@ export class TrainingRepository {
         return copyTrainingData(this.data);
       }
       let parsed: unknown;
-      try { parsed = JSON.parse(raw); } catch {
-        throw new Error("Saved training data could not be read. Your data has been kept unchanged.");
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        throw new Error(
+          "Saved training data could not be read. Your data has been kept unchanged.",
+        );
       }
       const next = normalizeTrainingData(parsed);
-      if (!next) throw new Error("Saved training data is incompatible or damaged. Your data has been kept unchanged.");
+      if (!next)
+        throw new Error(
+          "Saved training data is incompatible or damaged. Your data has been kept unchanged.",
+        );
       if (JSON.stringify(next) !== JSON.stringify(parsed)) {
         // Back up first; a failed backup/write leaves the original untouched and retryable.
         await this.backup(raw);
@@ -139,13 +159,15 @@ export class TrainingRepository {
   }
   commit(command: TrainingCommand): Promise<TrainingData> {
     // Capture at submission, before queued writes await storage or caller edits.
-    const submitted: TrainingCommand = command.type === "saveWorkout"
-      ? { ...command, workout: copyWorkoutPlan(command.workout) }
-      : command.type === "saveExercise"
-        ? { ...command, exercise: copyExercise(command.exercise) }
-        : { ...command };
+    const submitted: TrainingCommand =
+      command.type === "saveWorkout"
+        ? { ...command, workout: copyWorkoutPlan(command.workout) }
+        : command.type === "saveExercise"
+          ? { ...command, exercise: copyExercise(command.exercise) }
+          : { ...command };
     return this.enqueue(async () => {
-      if (!this.data) throw new Error("Training data has not loaded. Please retry.");
+      if (!this.data)
+        throw new Error("Training data has not loaded. Please retry.");
       const next = applyCommand(this.data, submitted);
       await this.adapter.write(TRAINING_KEY, JSON.stringify(next));
       this.data = next;

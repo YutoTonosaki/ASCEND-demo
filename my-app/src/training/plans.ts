@@ -46,17 +46,29 @@ export function newWorkout(): WorkoutPlan {
 }
 /** Detached editing/snapshot copy; preserves all identity and target values. */
 export function copyWorkoutPlan(plan: WorkoutPlan): WorkoutPlan {
-  return { ...plan, exercises: plan.exercises.map(entry => ({
-    ...entry, sets: entry.sets.map(set => ({ ...set })),
-  })) };
+  return {
+    ...plan,
+    exercises: plan.exercises.map((entry) => ({
+      ...entry,
+      sets: entry.sets.map((set) => ({ ...set })),
+    })),
+  };
 }
 export function copyExercise<T extends Exercise>(exercise: T): T {
-  return { ...exercise, primaryBodyParts: [...exercise.primaryBodyParts],
-    secondaryBodyParts: [...exercise.secondaryBodyParts], equipment: [...exercise.equipment] };
+  return {
+    ...exercise,
+    primaryBodyParts: [...exercise.primaryBodyParts],
+    secondaryBodyParts: [...exercise.secondaryBodyParts],
+    equipment: [...exercise.equipment],
+  };
 }
 export function copyTrainingData(data: TrainingData): TrainingData {
-  return { ...data, customExercises: data.customExercises.map(copyExercise),
-    recentExerciseIds: [...data.recentExerciseIds], workouts: data.workouts.map(copyWorkoutPlan) };
+  return {
+    ...data,
+    customExercises: data.customExercises.map(copyExercise),
+    recentExerciseIds: [...data.recentExerciseIds],
+    workouts: data.workouts.map(copyWorkoutPlan),
+  };
 }
 export function duplicateWorkout(plan: WorkoutPlan): WorkoutPlan {
   return {
@@ -83,7 +95,14 @@ export function moveEntry(
 ): WorkoutExercise[] {
   const next = [...entries];
   const to = index + offset;
-  if (Number.isInteger(index) && Number.isInteger(offset) && index >= 0 && index < next.length && to >= 0 && to < next.length)
+  if (
+    Number.isInteger(index) &&
+    Number.isInteger(offset) &&
+    index >= 0 &&
+    index < next.length &&
+    to >= 0 &&
+    to < next.length
+  )
     [next[index], next[to]] = [next[to], next[index]];
   return next;
 }

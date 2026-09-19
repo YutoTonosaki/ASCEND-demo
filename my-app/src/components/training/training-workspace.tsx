@@ -1,21 +1,30 @@
 import { useEffect, useState } from "react";
 import { BackHandler, Text, View } from "react-native";
 import { useIsFocused } from "expo-router";
-import {
-  Button,
-  Panel,
-  Placeholder,
-  Screen,
-  s,
-} from "@/components/ui/primitives";
+import { Button, Panel, Screen, s } from "@/components/ui/primitives";
 import { Action, Confirm, ErrorText, Sheet, t } from "./controls";
 import { ExerciseEditor } from "./exercise-editor";
 import { WorkoutBuilder } from "./workout-builder";
 import { useTraining } from "@/training/provider";
-import { copyWorkoutPlan, duplicateWorkout, newWorkout, targetLabel } from "@/training/plans";
+import {
+  copyWorkoutPlan,
+  duplicateWorkout,
+  newWorkout,
+  targetLabel,
+} from "@/training/plans";
 import type { CustomExercise, WorkoutPlan } from "@/types/training";
 import { trackingLabels } from "@/config/training";
-type Page = "home" | "saved" | "builder" | "detail" | "exercises";
+import { useSessions } from "@/sessions/provider";
+import { LiveWorkout, SessionSummary } from "./live-workout";
+type Page =
+  | "home"
+  | "saved"
+  | "builder"
+  | "detail"
+  | "exercises"
+  | "live"
+  | "history"
+  | "summary";
 export function TrainingWorkspace() {
   const {
     data,
@@ -25,6 +34,8 @@ export function TrainingWorkspace() {
     reset,
     commit,
   } = useTraining();
+  const sessions = useSessions();
+  const [summaryId, setSummaryId] = useState<string | null>(null);
   const [page, setPage] = useState<Page>("home");
   const [plan, setPlan] = useState<WorkoutPlan>(() => newWorkout());
   const [dirty, setDirty] = useState(false);
@@ -87,20 +98,27 @@ export function TrainingWorkspace() {
     navigate("builder");
   }
   const selected = data?.workouts.find((w) => w.id === plan.id) ?? plan;
+  const historical = sessions.data?.completed.find((x) => x.id === summaryId);
   return (
     <Screen
       key={page}
       kicker="TRAIN / FIND YOUR FOCUS"
       title={
-        page === "home"
-          ? "PUT IN THE WORK"
-          : page === "builder"
-            ? "CUSTOM WORKOUT"
-            : page === "saved"
-              ? "SAVED WORKOUTS"
-              : page === "exercises"
-                ? "MY EXERCISES"
-                : "YOUR WORKOUT"
+        page === "live"
+          ? "LIVE WORKOUT"
+          : page === "history"
+            ? "WORKOUT HISTORY"
+            : page === "summary"
+              ? "WORKOUT COMPLETE"
+              : page === "home"
+                ? "PUT IN THE WORK"
+                : page === "builder"
+                  ? "CUSTOM WORKOUT"
+                  : page === "saved"
+                    ? "SAVED WORKOUTS"
+                    : page === "exercises"
+                      ? "MY EXERCISES"
+                      : "YOUR WORKOUT"
       }
     >
       {page !== "home" && <Action label="BACK" onPress={back} />}
@@ -109,6 +127,74 @@ export function TrainingWorkspace() {
         <Text accessibilityLiveRegion="polite" style={s.muted}>
           {notice}
         </Text>
+      )}
+      {!sessions.data && (
+        <Panel title={sessions.error ? "WORKOUT SESSIONS" : "LOADING SESSIONS"}>
+          <ErrorText message={sessions.error} />
+          {sessions.error && (
+            <>
+              <Action
+                label="RETRY SESSIONS"
+                onPress={() => void sessions.retry()}
+              />
+              <Action
+                label="RESET SESSION DATA"
+                onPress={() =>
+                  setConfirmation({
+                    title: "RESET SESSION DATA?",
+                    message:
+                      "Clear active and completed sessions only. A raw backup will be kept on this device first. Saved workouts and exercises are unchanged.",
+                    action: () => void sessions.reset(),
+                  })
+                }
+              />
+            </>
+          )}
+        </Panel>
+      )}
+      {page === "live" && sessions.data?.active && (
+        <LiveWorkout
+          session={sessions.data.active}
+          onComplete={(id) => {
+            setSummaryId(id);
+            navigate("summary");
+          }}
+        />
+      )}
+      {page === "summary" && historical && (
+        <SessionSummary
+          session={historical}
+          onFinish={() => navigate("home")}
+        />
+      )}
+      {page === "history" && sessions.data && (
+        <>
+          {sessions.data.completed.length === 0 && (
+            <Text style={s.muted}>
+              Your completed workouts will appear here.
+            </Text>
+          )}
+          {sessions.data.completed.map((session) => (
+            <Panel
+              key={session.id}
+              title={session.name}
+              kicker={new Date(session.completedAt!).toLocaleDateString()}
+            >
+              <Text style={s.muted}>
+                {session.exercises.length} exercises ·{" "}
+                {session.exercises.reduce((n, e) => n + e.sets.length, 0)} sets
+                · Completed
+              </Text>
+              <Action
+                label={`VIEW SESSION · ${session.name}`}
+                onPress={() => {
+                  setSummaryId(session.id);
+                  navigate("summary");
+                }}
+              />
+            </Panel>
+          ))}
+        </>
       )}
       {!data ? (
         <Panel title={loadError ? "TRAINING DATA" : "LOADING"}>
@@ -134,6 +220,17 @@ export function TrainingWorkspace() {
         <>
           {page === "home" && (
             <>
+              {sessions.data?.active && (
+                <Panel
+                  title={sessions.data.active.name}
+                  kicker="WORKOUT IN PROGRESS"
+                >
+                  <Button
+                    label="RESUME WORKOUT"
+                    onPress={() => navigate("live")}
+                  />
+                </Panel>
+              )}
               <Text style={s.muted}>Choose your way to train.</Text>
               <Panel title="AI COACH">
                 <Text style={s.muted}>A plan that grows with you.</Text>
@@ -152,7 +249,11 @@ export function TrainingWorkspace() {
                   label={`MY EXERCISES · ${data.customExercises.length}`}
                   onPress={() => navigate("exercises")}
                 />
-                <Placeholder title="WORKOUT HISTORY" icon="train" />
+                <Action
+                  label="WORKOUT HISTORY"
+                  disabled={!sessions.data}
+                  onPress={() => navigate("history")}
+                />
               </Panel>
             </>
           )}
@@ -257,10 +358,22 @@ export function TrainingWorkspace() {
                   }
                 />
               </View>
-              <Placeholder
-                title="START WORKOUT"
-                description="Live workout sessions are coming soon."
-                icon="train"
+              <Action
+                label={
+                  sessions.data?.active ? "RESUME WORKOUT" : "START WORKOUT"
+                }
+                disabled={busy || !sessions.data}
+                onPress={() =>
+                  void perform(async () => {
+                    if (!sessions.data?.active)
+                      await sessions.commit({
+                        type: "start",
+                        plan: selected,
+                        library,
+                      });
+                    navigate("live");
+                  })
+                }
               />
             </>
           )}

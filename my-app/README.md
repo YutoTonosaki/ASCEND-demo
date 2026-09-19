@@ -1,4 +1,4 @@
-# ASCEND — native Phase 2A
+# ASCEND — native Phase 2B
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -58,16 +58,17 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
 - All five bottom tabs navigate; the Home CTA opens Train.
 - Player previews four finishes and three effect intensities.
 - Career previews four rival colors. Previews never alter ratings or save items.
-- AI Coach, actual Workout History, progression, Career collections, and Shop
-  remain unavailable. Custom Workout, Saved Workouts, and My Exercises now work.
+- AI Coach, progression, Career collections, and Shop
+  remain unavailable. Custom Workout, Saved Workouts, My Exercises, Live Workout,
+  and factual Workout History work.
 - The default card is high Bronze; the default rival is Blue. No OVR thresholds
   are assigned. All displayed progress, records, and balances are mock data.
 - Animations use React Native Animated, stop off-screen/in the background, and
   respect the device's reduced-motion preference.
 
-Phase 2A adds workout planning and local storage. Active sessions, timers, actual
-history, AI generation, progression, backend services, matches, seasons, rewards,
-and purchases remain deferred.
+Phase 2A adds workout planning; Phase 2B adds execution, rest countdowns, resume,
+and actual history. AI generation, progression, backend services, matches, seasons,
+rewards, and purchases remain deferred.
 
 ## Training flow
 
@@ -79,14 +80,14 @@ an exercise adds it to the six-item persisted Recent list.
 
 Storage uses Expo-compatible AsyncStorage behind `StorageAdapter<string>` and a
 serialized repository. Targets (kg/reps/seconds), custom exercises, Recent IDs,
-and saved plans use a validated version-1 document. No actual session performance
-or Player/Club state is persisted. Corrupt or newer schemas are preserved; the
+and saved plans use `ascend.training.v1`. Actual sessions use the independent
+`ascend.sessions.v1` document (version 1). No Player/Club state is persisted. Corrupt or newer schemas are preserved; the
 recovery screen supports retry and confirmed reset with a local raw backup.
 Referenced custom exercises cannot be deleted or change tracking type. Difficulty
 is always null for user-created movements.
 
 Draft edits survive tab switches but not app termination/reload. The Back control
-confirms discarding changed workouts. Start Workout remains Coming Soon.
+confirms discarding changed workouts. Save a plan, then START WORKOUT from its detail.
 
 See [Phase 2A verification](docs/PHASE2A_VERIFICATION.md) for completed checks and
 physical-device follow-up.
@@ -120,3 +121,34 @@ native modal surface. This prevents the modal from relying on a navigation
 screen's possibly zero insets. On web the provider reads CSS safe-area environment
 values; `src/app/+html.tsx` enables `viewport-fit=cover`. No model-specific padding
 is used. Exercise Name remains the first field of the existing custom editor.
+
+
+## Phase 2A.5 data audit
+
+The existing exercise/plan shapes, version-1 key, and UI are retained. Equipment
+adds Low Bar for Inverted Row; Dead Hang and Jumping Jack use multiple primary body
+areas. Repository inputs and outputs are detached; edits preserve creation time
+and ID. Load/reset/commit share a queue. `src/storage/training-schema.ts` safely
+normalizes absent optional custom metadata and derived Recent entries, backing up
+raw data before rewriting. Unknown versions or incomplete targets are never guessed.
+Tests cover validation boundaries, CRUD/reload, isolation, and recovery failures.
+
+See [audit verification](docs/PHASE2A_5_AUDIT.md) for the foundation checkpoint.
+
+## Live workouts
+
+`src/types/session.ts`, `src/sessions/`, and `src/storage/session-repository.ts`
+separate execution evidence from plans. Start copies targets and full exercise
+metadata; only COMPLETE SET confirms actual reps, kg + reps, or seconds. Explicit
+zero is a recorded result; prefilled inputs remain unconfirmed.
+
+Rest uses a persisted deadline, with automatic expiry and SKIP REST. One active
+session can resume from TRAIN after reload or tab navigation. Only confirmed inputs
+are persisted. Final confirmation atomically moves the session into history; FINISH
+is navigation only. History renders copied metadata without consulting the catalog.
+Duration includes rest and time away. Time-based sets use manual actual seconds
+entry; an exercise stopwatch, sounds/haptics, and AI Coach await later scope.
+
+Malformed session storage has its own retry and confirmed backed-up reset, leaving
+plans untouched. No session editing/deletion, analytics, progression or rewards are
+implemented. See [Phase 2B verification](docs/PHASE2B_VERIFICATION.md).
