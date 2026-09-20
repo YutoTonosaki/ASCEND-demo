@@ -89,6 +89,16 @@ export function CoachWorkspace({
       setBusy(false);
     }
   }
+  function customizeToday() {
+    setPreferences(
+      preferences ??
+        profilePreferences(
+          coach.data?.profile ?? defaultProfile(new Date().toISOString()),
+        ),
+    );
+    setCustomizing(true);
+    setRecommendation(null);
+  }
   const unknownLoads =
     recommendation?.status === "ready"
       ? recommendation.exercises.filter((entry) =>
@@ -135,7 +145,7 @@ export function CoachWorkspace({
           <Action label="TRY WITH DEFAULTS" onPress={generate} />
           <Action label="SKIP FOR NOW" onPress={onManual} />
         </Panel>
-      ) : (
+      ) : recommendation?.status !== "ready" ? (
         <>
           <Panel title="TODAY'S TRAINING">
             <Text style={s.muted}>
@@ -146,27 +156,14 @@ export function CoachWorkspace({
               disabled={busy}
               onPress={generate}
             />
-            <Action
-              label="CUSTOMIZE TODAY"
-              onPress={() => {
-                setPreferences(
-                  preferences ??
-                    profilePreferences(
-                      coach.data?.profile ??
-                        defaultProfile(new Date().toISOString()),
-                    ),
-                );
-                setCustomizing(true);
-                setRecommendation(null);
-              }}
-            />
+            <Action label="CUSTOMIZE TODAY" onPress={customizeToday} />
             <Action
               label="EDIT TRAINING PROFILE"
               onPress={() => setEditing(true)}
             />
           </Panel>
         </>
-      )}
+      ) : null}
       {customizing && preferences && (
         <Panel title="JUST FOR TODAY">
           <Text style={s.fine}>
@@ -231,8 +228,10 @@ export function CoachWorkspace({
         <>
           <Panel title="REVIEW YOUR WORKOUT">
             <Text style={s.muted}>
-              {recommendation.exercises.length} exercises · approximately{" "}
-              {Math.ceil(recommendation.estimatedSeconds / 60)} min
+              {recommendation.exercises.length}{" "}
+              {recommendation.exercises.length === 1 ? "exercise" : "exercises"}{" "}
+              · approximately {Math.ceil(recommendation.estimatedSeconds / 60)}{" "}
+              min
             </Text>
             {recommendation.explanations.map((explanation) => (
               <Text key={explanation} style={s.fine}>
@@ -330,6 +329,11 @@ export function CoachWorkspace({
             label="CUSTOMIZE WORKOUT"
             disabled={busy || needsLoad || !training.data}
             onPress={() => void accept(true)}
+          />
+          <Action label="CUSTOMIZE TODAY" onPress={customizeToday} />
+          <Action
+            label="EDIT TRAINING PROFILE"
+            onPress={() => setEditing(true)}
           />
           <Text style={s.fine}>
             You can change the focus or equipment to get a different proposal.

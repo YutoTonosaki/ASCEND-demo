@@ -565,3 +565,30 @@ test("failed profile save/reload cannot publish or overwrite stale state; queue 
   await reset;
   assert.ok((await after).profile);
 });
+
+test('stale/future/active sessions cannot masquerade as recent completed performance', () => {
+  const old = history('push-up', [{ type: 'reps', reps: 90 }], '2020-01-01T00:00:00.000Z');
+  const future = history('push-up', [{ type: 'reps', reps: 90 }], '2030-01-01T00:00:00.000Z');
+  const plan = { ...newWorkout(), name: 'Not completed', exercises: [newEntry(byId('push-up'))] };
+  const active = startSession(plan, standardExercises, now);
+  for (const session of [old, future, active]) {
+    const result = ready(profile(), [byId('push-up')], [session]);
+    assert.equal(result.exercises[0].evidence, 'initial');
+    assert.equal(result.exercises[0].targets[0].reps, 6);
+  }
+});
+
+test('proposal output and accepted plans never share mutable catalog/profile targets', () => {
+  const p = profile();
+  const library = standardExercises.map(copyExercise);
+  const before = structuredClone(library);
+  const result = ready(p, library);
+  result.exercises[0].exercise.equipment.push('Other');
+  assert.deepEqual(library, before);
+  assert.deepEqual(p, profile());
+  const clean = ready(p, library);
+  const plan = recommendationToPlan(clean, library);
+  plan.exercises[0].sets[0].reps = 99;
+  assert.equal(clean.exercises[0].targets[0].reps, 6);
+  assert.deepEqual(library, before);
+});

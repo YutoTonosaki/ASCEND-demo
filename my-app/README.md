@@ -1,4 +1,4 @@
-# ASCEND — native Phase 2B
+# ASCEND — native Phase 2C
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -58,9 +58,9 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
 - All five bottom tabs navigate; the Home CTA opens Train.
 - Player previews four finishes and three effect intensities.
 - Career previews four rival colors. Previews never alter ratings or save items.
-- AI Coach, progression, Career collections, and Shop
+- Progression, Career collections, and Shop
   remain unavailable. Custom Workout, Saved Workouts, My Exercises, Live Workout,
-  and factual Workout History work.
+  factual Workout History, and rule-based AI Coach work.
 - The default card is high Bronze; the default rival is Blue. No OVR thresholds
   are assigned. Player/Career progress, records, and balances remain illustrative; workout
   history contains actual confirmed sessions.
@@ -68,7 +68,8 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
   respect the device's reduced-motion preference.
 
 Phase 2A adds workout planning; Phase 2B adds execution, rest countdowns, resume,
-and actual history. AI generation, progression, backend services, matches, seasons,
+and actual history. Phase 2C adds rule-based recommendations. External AI services,
+progression, backend services, matches, seasons,
 rewards, and purchases remain deferred.
 
 ## Training flow
@@ -153,3 +154,25 @@ entry; an exercise stopwatch, sounds/haptics, and AI Coach await later scope.
 Malformed session storage has its own retry and confirmed backed-up reset, leaving
 plans untouched. No session editing/deletion, analytics, progression or rewards are
 implemented. See [Phase 2B verification](docs/PHASE2B_VERIFICATION.md).
+
+
+## AI Coach foundation
+
+TRAIN → AI Coach → optional three-step profile → Generate → Review → Save or
+Customize in the existing builder → START WORKOUT. Setup can be skipped; manual
+workouts remain available. Settings → Training profile revisits the same form.
+Body measurements and baselines are optional and do not change ratings/history.
+
+`src/types/coach.ts`, `src/coach/`, `src/config/coach.ts` and
+`src/components/coach/` separate deterministic proposals, configuration and UI.
+`src/storage/coach-repository.ts` stores a validated version-1 profile under
+`ascend.coach.v1`, independent of training/session storage. Queued operations,
+detached copies and explicit backed-up recovery preserve existing guarantees.
+
+Automatic proposals consider confirmed recent training. Customize Today overrides
+focus, location, equipment, minutes and exercise count for one proposal. All required
+equipment must be selected; location never implies ownership. Custom movements need
+explicit familiar-movement opt-in. Unknown external loads must be entered and
+confirmed before conversion/save. No automatic overload or physiological recovery
+model. See [Phase 2C verification](docs/PHASE2C_VERIFICATION.md) for exact rules,
+limitations and test results. No Phase 3 progression has been started.
