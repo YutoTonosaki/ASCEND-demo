@@ -101,4 +101,30 @@ only and never rewrite saved plans or completed snapshots.
 
 ## Verification
 
-Final results are recorded after verification completes.
+- `npm test`: **53 passed, 0 failed** (30 existing + 23 Coach tests). Covers
+  profile CRUD/reload/copy boundaries, optional inputs, validation, all-equipment
+  constraints, directed focus, deterministic proposals, recent/session/baseline
+  evidence, all three targets, unknown/zero loads, zero performance, time/count
+  limits, immutable inputs, future/stale/active-session exclusion, plan conversion,
+  normal Live Workout execution and isolated recovery/write failures.
+- `npm run typecheck`: passed.
+- `npm run lint`: passed, no warnings.
+- Expo production export passed for iOS, Android and Web, with **13 static routes**:
+  `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-coach-final-export`.
+- `tests/browser-coach.cjs`: passed on the final production export at **320px**.
+  Setup/skip, invalid/optional measurements, baseline confirmation/skip, Settings
+  profile edit and reload, automatic and directed/history proposals, impossible
+  constraints, required load confirmation, Builder editing/save, normal session
+  completion, profile/history separation and backed-up profile reset verified.
+- Existing `tests/browser-input.cjs`, `browser-audit.cjs`, `browser-sessions.cjs`
+  and `browser-overlays.cjs`: **all passed** against the Phase 2C production build.
+  Existing planner inputs, CRUD/reference protections, execution/rest/resume/history,
+  storage isolation and simulated modal safe areas remain working.
+- No browser console/page errors or horizontal overflow in these flows. The final
+  compact review and load-confirmation screens were visually checked at 320px.
+- Browser tests use the existing isolated Playwright installation via `NODE_PATH`
+  and `PLAYWRIGHT_BROWSERS_PATH`, with `ASCEND_QA_URL` pointing to the served export.
+  No testing dependency was added to the app.
+- Physical iPhone/Android testing is **not claimed**; actual keyboard/touch behavior
+  remains a manual phone check. Simulated insets are not physical-device verification.
+- `git diff --check`: passed.
