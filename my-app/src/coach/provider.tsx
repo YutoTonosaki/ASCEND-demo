@@ -6,25 +6,20 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import {
-  SessionRepository,
-  type SessionCommand,
-} from "../storage/session-repository";
+import { CoachRepository } from "../storage/coach-repository";
 import { localStorageAdapter } from "../storage/local";
-import type { SessionData } from "../types/session";
-interface SessionContextValue {
-  data: SessionData | null;
+import type { CoachData, TrainingProfile } from "../types/coach";
+interface Value {
+  data: CoachData | null;
   error: string | null;
   retry: () => Promise<void>;
   reset: () => Promise<void>;
-  commit: (command: SessionCommand) => Promise<SessionData>;
+  save: (profile: TrainingProfile) => Promise<void>;
 }
-const Context = createContext<SessionContextValue | null>(null);
-export function SessionProvider({ children }: PropsWithChildren) {
-  const [repository] = useState(
-    () => new SessionRepository(localStorageAdapter),
-  );
-  const [data, setData] = useState<SessionData | null>(null);
+const Context = createContext<Value | null>(null);
+export function CoachProvider({ children }: PropsWithChildren) {
+  const [repository] = useState(() => new CoachRepository(localStorageAdapter));
+  const [data, setData] = useState<CoachData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const retry = useCallback(async () => {
     setData(null);
@@ -35,7 +30,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       setError(
         e instanceof Error
           ? e.message
-          : "Unable to load sessions. Please retry.",
+          : "Unable to load your training profile.",
       );
     }
   }, [repository]);
@@ -51,39 +46,35 @@ export function SessionProvider({ children }: PropsWithChildren) {
           setError(
             e instanceof Error
               ? e.message
-              : "Unable to load sessions. Please retry.",
+              : "Unable to load your training profile.",
           );
       });
     return () => {
       mounted = false;
     };
   }, [repository]);
-  const commit = useCallback(
-    async (command: SessionCommand) => {
-      const next = await repository.commit(command);
-      setData(next);
-      return next;
-    },
-    [repository],
-  );
+  async function save(profile: TrainingProfile) {
+    setData(await repository.save(profile));
+    setError(null);
+  }
   async function reset() {
     try {
       setData(await repository.reset());
       setError(null);
     } catch {
       setError(
-        "Could not back up and reset sessions. Existing data has been kept.",
+        "Could not back up and reset the profile. Your data has been kept.",
       );
     }
   }
   return (
-    <Context.Provider value={{ data, error, retry, reset, commit }}>
+    <Context.Provider value={{ data, error, retry, reset, save }}>
       {children}
     </Context.Provider>
   );
 }
-export function useSessions() {
+export function useCoach() {
   const value = useContext(Context);
-  if (!value) throw new Error("SessionProvider is required");
+  if (!value) throw new Error("CoachProvider is required");
   return value;
 }

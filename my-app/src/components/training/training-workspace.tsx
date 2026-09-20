@@ -16,6 +16,7 @@ import type { CustomExercise, WorkoutPlan } from "@/types/training";
 import { trackingLabels } from "@/config/training";
 import { useSessions } from "@/sessions/provider";
 import { LiveWorkout, SessionSummary } from "./live-workout";
+import { CoachWorkspace } from "@/components/coach/coach-workspace";
 type Page =
   | "home"
   | "saved"
@@ -24,7 +25,8 @@ type Page =
   | "exercises"
   | "live"
   | "history"
-  | "summary";
+  | "summary"
+  | "coach";
 export function TrainingWorkspace() {
   const {
     data,
@@ -104,21 +106,23 @@ export function TrainingWorkspace() {
       key={page}
       kicker="TRAIN / FIND YOUR FOCUS"
       title={
-        page === "live"
-          ? "LIVE WORKOUT"
-          : page === "history"
-            ? "WORKOUT HISTORY"
-            : page === "summary"
-              ? "WORKOUT COMPLETE"
-              : page === "home"
-                ? "PUT IN THE WORK"
-                : page === "builder"
-                  ? "CUSTOM WORKOUT"
-                  : page === "saved"
-                    ? "SAVED WORKOUTS"
-                    : page === "exercises"
-                      ? "MY EXERCISES"
-                      : "YOUR WORKOUT"
+        page === "coach"
+          ? "AI COACH"
+          : page === "live"
+            ? "LIVE WORKOUT"
+            : page === "history"
+              ? "WORKOUT HISTORY"
+              : page === "summary"
+                ? "WORKOUT COMPLETE"
+                : page === "home"
+                  ? "PUT IN THE WORK"
+                  : page === "builder"
+                    ? "CUSTOM WORKOUT"
+                    : page === "saved"
+                      ? "SAVED WORKOUTS"
+                      : page === "exercises"
+                        ? "MY EXERCISES"
+                        : "YOUR WORKOUT"
       }
     >
       {page !== "home" && <Action label="BACK" onPress={back} />}
@@ -196,6 +200,14 @@ export function TrainingWorkspace() {
           ))}
         </>
       )}
+      {page === "home" && !data && sessions.data && (
+        <Panel title="YOUR SESSIONS">
+          {sessions.data.active && (
+            <Button label="RESUME WORKOUT" onPress={() => navigate("live")} />
+          )}
+          <Action label="WORKOUT HISTORY" onPress={() => navigate("history")} />
+        </Panel>
+      )}
       {!data ? (
         <Panel title={loadError ? "TRAINING DATA" : "LOADING"}>
           <ErrorText message={loadError} />
@@ -233,8 +245,13 @@ export function TrainingWorkspace() {
               )}
               <Text style={s.muted}>Choose your way to train.</Text>
               <Panel title="AI COACH">
-                <Text style={s.muted}>A plan that grows with you.</Text>
-                <Text style={s.tiny}>COMING SOON</Text>
+                <Text style={s.muted}>
+                  A short workout from your preferences and training.
+                </Text>
+                <Action
+                  label="OPEN AI COACH"
+                  onPress={() => navigate("coach")}
+                />
               </Panel>
               <Panel title="CUSTOM WORKOUT">
                 <Text style={s.muted}>Your session. Your approach.</Text>
@@ -256,6 +273,21 @@ export function TrainingWorkspace() {
                 />
               </Panel>
             </>
+          )}
+          {page === "coach" && (
+            <CoachWorkspace
+              onManual={create}
+              onDraft={(draft) => {
+                setPlan(draft);
+                setDirty(true);
+                navigate("builder");
+              }}
+              onSaved={(saved) => {
+                setPlan(saved);
+                setDirty(false);
+                navigate("detail");
+              }}
+            />
           )}
           {page === "saved" && (
             <>

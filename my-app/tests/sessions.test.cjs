@@ -378,29 +378,50 @@ test("corrupt/unknown sessions preserve original and templates; reset backs up, 
   }
 });
 
-test('session queue preserves load/reset/commit order and failed reload prevents stale writes', async () => {
+test("session queue preserves load/reset/commit order and failed reload prevents stale writes", async () => {
   const adapter = memory();
   const repo = new SessionRepository(adapter, () => at(0));
   const loading = repo.load();
-  const starting = repo.commit({ type: 'start', plan: plan(), library: standardExercises });
+  const starting = repo.commit({
+    type: "start",
+    plan: plan(),
+    library: standardExercises,
+  });
   await loading;
   await starting;
   const resetting = repo.reset();
-  const restarting = repo.commit({ type: 'start', plan: plan(), library: standardExercises });
+  const restarting = repo.commit({
+    type: "start",
+    plan: plan(),
+    library: standardExercises,
+  });
   await resetting;
   const state = await restarting;
   assert.ok(state.active);
-  adapter.values.set(SESSION_KEY, 'damaged');
+  adapter.values.set(SESSION_KEY, "damaged");
   await assert.rejects(repo.load());
-  await assert.rejects(repo.commit({ type: 'confirm', sessionId: state.active.id, setId: position(state.active).set.id, actual: { type: 'reps', reps: 1 } }));
-  assert.equal(adapter.values.get(SESSION_KEY), 'damaged');
+  await assert.rejects(
+    repo.commit({
+      type: "confirm",
+      sessionId: state.active.id,
+      setId: position(state.active).set.id,
+      actual: { type: "reps", reps: 1 },
+    }),
+  );
+  assert.equal(adapter.values.get(SESSION_KEY), "damaged");
 });
 
-test('start rejects missing catalog metadata and invalid targets before creating evidence', () => {
+test("start rejects missing catalog metadata and invalid targets before creating evidence", () => {
   const source = plan();
   assert.throws(() => startSession(source, [], at(0)));
   source.exercises[0].sets[0].reps = 0;
   assert.throws(() => startSession(source, standardExercises, at(0)));
   source.exercises[0].sets[0].reps = 12;
-  assert.throws(() => startSession(source, standardExercises.map(e => ({...e, equipment: []})), at(0)));
+  assert.throws(() =>
+    startSession(
+      source,
+      standardExercises.map((e) => ({ ...e, equipment: [] })),
+      at(0),
+    ),
+  );
 });

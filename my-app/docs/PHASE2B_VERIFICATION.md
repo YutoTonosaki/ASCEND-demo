@@ -69,4 +69,33 @@ persists across tab navigation. Existing modal providers and viewport insets rem
 
 ## Verification
 
-Results are recorded after the final checks below complete.
+- `npm test`: 30 passed, 0 failed (17 existing + 13 session/domain/repository tests).
+  Covers all requested identity/copy, three-mode/zero, unconfirmed prefill,
+  single-confirmation, rest/expiry/skip, final-once, timestamps/reload,
+  template/catalog isolation, malformed storage and write/backup failure scenarios.
+- `npm run typecheck`: passed.
+- `npm run lint`: passed, no warnings.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-session-final-export`:
+  passed; iOS and Android Hermes bundles and 12 static web routes generated.
+- Existing `tests/browser-input.cjs`: passed at 320px, including direct set-count
+  replacement, decimal weight controls, per-set targets and reload.
+- Existing `tests/browser-audit.cjs`: passed custom/plan CRUD, reload, duplicate
+  independence, stable identity and referenced-custom protections.
+- Existing `tests/browser-overlays.cjs`: passed all tabs, header Settings,
+  modal-only simulated top/bottom insets, input/close placement and dismissal.
+- `tests/browser-sessions.cjs`: mixed three-mode flow, zero, skip/expired rest,
+  tab/reload resume, unconfirmed edits, double tap, completion/history and source
+  edit/delete/rename isolation passed at 320px on the final production export.
+  Template corruption still permits resume/history; session corruption disables
+  start, allows independent template use, and explicitly resets only sessions
+  after a verified raw backup. These recovery assertions passed.
+- No horizontal overflow or browser console/page errors in the verified flows.
+  Live Workout, weighted inputs, rest and completion screenshots visually inspected
+  at 320px.
+- Browser tooling is the existing isolated Playwright installation, not an app
+  dependency. Run scripts with `NODE_PATH=/tmp/ascend-qa/node_modules`,
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-qa/browsers`, and `ASCEND_QA_URL` pointing
+  at a locally served production export.
+- `git diff --check`: passed.
+- Physical iPhone/Android testing is not claimed. Keyboard/device behavior still
+  warrants a manual phone check; simulated safe areas are not device verification.

@@ -68,30 +68,33 @@ export function LiveWorkout({
         setBusy(false);
       });
   }, [now, deadline, focused, commit, session.id, error]);
-  const onConfirm = useCallback(async (actual: ActualResult) => {
-    if (lock.current || !current || Date.now() < nextTapAt.current) return;
-    nextTapAt.current = Date.now() + 600;
-    lock.current = true;
-    setBusy(true);
-    setError(null);
-    try {
-      const next = await commit({
-        type: "confirm",
-        sessionId: session.id,
-        setId: current.set.id,
-        actual,
-      });
-      if (next.completed.some((x) => x.id === session.id))
-        onComplete(session.id);
-    } catch (e) {
-      setError(
-        e instanceof Error ? e.message : "Could not save. Please retry.",
-      );
-    } finally {
-      lock.current = false;
-      setBusy(false);
-    }
-  }, [current, commit, session.id, onComplete]);
+  const onConfirm = useCallback(
+    async (actual: ActualResult) => {
+      if (lock.current || !current || Date.now() < nextTapAt.current) return;
+      nextTapAt.current = Date.now() + 600;
+      lock.current = true;
+      setBusy(true);
+      setError(null);
+      try {
+        const next = await commit({
+          type: "confirm",
+          sessionId: session.id,
+          setId: current.set.id,
+          actual,
+        });
+        if (next.completed.some((x) => x.id === session.id))
+          onComplete(session.id);
+      } catch (e) {
+        setError(
+          e instanceof Error ? e.message : "Could not save. Please retry.",
+        );
+      } finally {
+        lock.current = false;
+        setBusy(false);
+      }
+    },
+    [current, commit, session.id, onComplete],
+  );
   async function skipRest() {
     if (lock.current || !deadline) return;
     lock.current = true;

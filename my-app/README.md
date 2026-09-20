@@ -62,7 +62,8 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
   remain unavailable. Custom Workout, Saved Workouts, My Exercises, Live Workout,
   and factual Workout History work.
 - The default card is high Bronze; the default rival is Blue. No OVR thresholds
-  are assigned. All displayed progress, records, and balances are mock data.
+  are assigned. Player/Career progress, records, and balances remain illustrative; workout
+  history contains actual confirmed sessions.
 - Animations use React Native Animated, stop off-screen/in the background, and
   respect the device's reduced-motion preference.
 

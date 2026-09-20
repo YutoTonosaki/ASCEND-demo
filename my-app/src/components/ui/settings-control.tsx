@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -55,10 +56,18 @@ export function SettingsControl() {
               </Pressable>
             </View>
             <Text style={styles.copy}>Make ASCEND your own.</Text>
-            <View style={styles.row}>
-              <Text style={styles.label}>App preferences</Text>
-              <Text style={styles.soon}>COMING SOON</Text>
-            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Training profile"
+              style={styles.row}
+              onPress={() => {
+                setOpen(false);
+                router.push("/training-profile");
+              }}
+            >
+              <Text style={styles.label}>Training profile</Text>
+              <Text style={styles.soon}>EDIT</Text>
+            </Pressable>
           </View>
         </SafeAreaView>
       </SafeAreaModal>
