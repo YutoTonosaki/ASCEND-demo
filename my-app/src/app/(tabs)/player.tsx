@@ -9,6 +9,7 @@ import {
   s,
 } from "@/components/ui/primitives";
 import { PlayerCard } from "@/components/player/player-card";
+import { PersonalRecordsSection } from "@/components/player/personal-records";
 import { player } from "@/data/mock";
 import { cardTiers, nextTierLabel, ratingLabels } from "@/config/visuals";
 import { colors } from "@/config/theme";
@@ -65,6 +66,7 @@ export default function PlayerScreen() {
           ))}
         </View>
       </Panel>
+      <PersonalRecordsSection />
       <Panel title="ATHLETIC RATINGS" kicker="OUT OF 99">
         {Object.entries(player.ratings).map(([key, value]) => (
           <Rating
@@ -81,7 +83,6 @@ export default function PlayerScreen() {
         ))}
       </Panel>
       <Panel title="PLAYER DEVELOPMENT" kicker="COMING SOON">
-        <Placeholder title="PERSONAL RECORDS" icon="career" />
         <Placeholder title="SKILL TREE" icon="grid" />
         <Placeholder
           title="ARCHETYPE"
