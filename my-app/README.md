@@ -1,4 +1,4 @@
-# ASCEND — native Phase 2C
+# ASCEND — native Phase 3A
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -62,7 +62,7 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
   remain unavailable. Custom Workout, Saved Workouts, My Exercises, Live Workout,
   factual Workout History, and rule-based AI Coach work.
 - The default card is high Bronze; the default rival is Blue. No OVR thresholds
-  are assigned. Player/Career progress, records, and balances remain illustrative; workout
+  are assigned. Player/Career progress and balances remain illustrative; Personal Records and workout
   history contains actual confirmed sessions.
 - Animations use React Native Animated, stop off-screen/in the background, and
   respect the device's reduced-motion preference.
@@ -175,4 +175,19 @@ equipment must be selected; location never implies ownership. Custom movements n
 explicit familiar-movement opt-in. Unknown external loads must be entered and
 confirmed before conversion/save. No automatic overload or physiological recovery
 model. See [Phase 2C verification](docs/PHASE2C_VERIFICATION.md) for exact rules,
-limitations and test results. No Phase 3 progression has been started.
+limitations and test results. Phase 3A adds PR evidence only; player growth remains deferred.
+
+
+## Personal Records
+
+PLAYER shows actual exercise records after Card Finish Preview. Reps and seconds
+are single-set maxima. Weighted exercises show maximum kg, best reps at that load,
+and an expandable list of best reps at every recorded weight. Loading, empty and
+retryable storage-error states never substitute mock data or optional baselines.
+
+`src/records/domain.ts` contains pure calculation/comparison functions;
+`src/types/records.ts` defines the results; `src/components/player/personal-records.tsx`
+reads the existing SessionProvider. PRs recompute when its authoritative data changes.
+No persistence key, schema, dependency, Coach rule or session write path changes.
+See [Phase 3A verification](docs/PHASE3A_VERIFICATION.md) and Game System section 46
+for eligibility, ordering, zero handling, compatibility and the future growth API.

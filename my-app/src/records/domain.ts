@@ -104,7 +104,7 @@ export function derivePersonalRecords(
   );
   evidence.sort(
     (a, b) =>
-      order(a.source.confirmedAt, b.source.confirmedAt) ||
+      Date.parse(a.source.confirmedAt) - Date.parse(b.source.confirmedAt) ||
       order(a.source.sessionId, b.source.sessionId) ||
       a.entryIndex - b.entryIndex ||
       a.setIndex - b.setIndex ||
