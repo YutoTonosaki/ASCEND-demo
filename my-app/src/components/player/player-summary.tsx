@@ -12,7 +12,7 @@ export function PlayerSummary({
   club,
   form,
 }: {
-  player: Player;
+  player: Pick<Player, "name" | "ovr" | "archetype" | "tier">;
   club?: ClubIdentityData;
   form: string;
 }) {

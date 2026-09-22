@@ -10,114 +10,114 @@ import {
 } from "@/components/ui/primitives";
 import { PlayerCard } from "@/components/player/player-card";
 import { PersonalRecordsSection } from "@/components/player/personal-records";
-import { player } from "@/data/mock";
-import { cardTiers, nextTierLabel, ratingLabels } from "@/config/visuals";
+import { GrowthStatus } from "@/components/player/growth-status";
+import { cardTiers } from "@/config/visuals";
+import { bodyParts } from "@/config/training";
 import { colors } from "@/config/theme";
-import type { CardTier, CardIntensity, AthleticRating } from "@/types/domain";
+import { useGrowth } from "@/growth/provider";
+import { displayRating, overall } from "@/growth/domain";
+import type { CardTier, CardIntensity } from "@/types/domain";
 export default function PlayerScreen() {
-  const [tier, setTier] = useState<CardTier>(player.tier);
-  const [intensity, setIntensity] = useState<CardIntensity>(player.intensity);
+  const [tier, setTier] = useState<CardTier>("bronze"),
+    [intensity, setIntensity] = useState<CardIntensity>("high");
+  const { data } = useGrowth();
+  const player = data?.player;
   return (
     <Screen kicker="PLAYER / YOUR IDENTITY" title="BUILT, NOT GIVEN">
-      <Panel
-        title={`CURRENT TIER · ${cardTiers[player.tier].label.toUpperCase()}`}
-        kicker={`OVR ${player.ovr}`}
-        style={{ padding: 12, gap: 8 }}
-      >
-        <Text style={s.muted}>
-          NEXT EVOLUTION · {nextTierLabel[player.tier]}
-        </Text>
-      </Panel>
-      {(tier !== player.tier || intensity !== player.intensity) && (
-        <Text style={s.eyebrow}>
-          APPEARANCE PREVIEW · CURRENT TIER UNCHANGED
-        </Text>
-      )}
-      <PlayerCard
-        club={currentClub}
-        player={player}
-        tier={tier}
-        intensity={intensity}
-      />
-      <Panel title="CARD FINISH PREVIEW">
-        <Text style={s.fine}>
-          Explore appearances. Preview choices do not change your earned tier or
-          save to your Player.
-        </Text>
-        <View style={s.choices}>
-          {(Object.keys(cardTiers) as CardTier[]).map((key) => (
-            <Choice
-              key={key}
-              label={key === "elite" ? "Purple" : cardTiers[key].label}
-              selected={tier === key}
-              onPress={() => setTier(key)}
-            />
-          ))}
-        </View>
-        <Text style={s.eyebrow}>EFFECT INTENSITY</Text>
-        <View style={s.choices}>
-          {(["low", "mid", "high"] as const).map((key) => (
-            <Choice
-              key={key}
-              label={key.toUpperCase()}
-              selected={intensity === key}
-              onPress={() => setIntensity(key)}
-            />
-          ))}
-        </View>
-      </Panel>
-      <PersonalRecordsSection />
-      <Panel title="ATHLETIC RATINGS" kicker="OUT OF 99">
-        {Object.entries(player.ratings).map(([key, value]) => (
-          <Rating
-            key={key}
-            label={key}
-            description={ratingLabels[key as AthleticRating]}
-            value={value}
+      <GrowthStatus />
+      {player && (
+        <>
+          <PlayerCard
+            club={currentClub}
+            player={{
+              name: "PLAYER",
+              ovr: overall(player.ratings),
+              bodyRatings: player.ratings,
+              archetype: "TRAINING PROFILE",
+              tier,
+              intensity,
+            }}
           />
-        ))}
-      </Panel>
-      <Panel title="BODY RATINGS" kicker="OUT OF 99">
-        {Object.entries(player.bodyRatings).map(([key, value]) => (
-          <Rating key={key} label={key} value={value} />
-        ))}
-      </Panel>
+          <Panel title="CARD FINISH PREVIEW">
+            <Text style={s.fine}>
+              Explore appearances. Preview choices do not change your ratings or
+              save to your Player.
+            </Text>
+            <View style={s.choices}>
+              {(Object.keys(cardTiers) as CardTier[]).map((key) => (
+                <Choice
+                  key={key}
+                  label={key === "elite" ? "Purple" : cardTiers[key].label}
+                  selected={tier === key}
+                  onPress={() => setTier(key)}
+                />
+              ))}
+            </View>
+            <Text style={s.eyebrow}>EFFECT INTENSITY</Text>
+            <View style={s.choices}>
+              {(["low", "mid", "high"] as const).map((key) => (
+                <Choice
+                  key={key}
+                  label={key.toUpperCase()}
+                  selected={intensity === key}
+                  onPress={() => setIntensity(key)}
+                />
+              ))}
+            </View>
+          </Panel>
+        </>
+      )}
+      <PersonalRecordsSection />
+      {player && (
+        <Panel title="BODY RATINGS" kicker="OUT OF 99">
+          {bodyParts.map((area) => (
+            <View
+              key={area}
+              testID={`rating-${area}`}
+              accessible
+              accessibilityLabel={`${area}: ${displayRating(player.ratings[area])} out of 99, ${player.status[area]}`}
+              style={r.rating}
+            >
+              <View style={r.labels}>
+                <View style={s.flex}>
+                  <Text style={r.label}>{area}</Text>
+                  <Text style={s.fine}>
+                    {player.status[area] === "assessed"
+                      ? "ASSESSED"
+                      : "PROVISIONAL"}
+                  </Text>
+                </View>
+                <Text style={r.value}>
+                  {displayRating(player.ratings[area])}
+                </Text>
+              </View>
+              <View style={r.track}>
+                <View
+                  style={[
+                    r.fill,
+                    { width: `${(player.ratings[area] / 99) * 100}%` },
+                  ]}
+                />
+              </View>
+            </View>
+          ))}
+          <Text style={s.fine}>
+            Direct assessments: Push-up → Chest; Pull-up → Back; Overhead Press
+            (5+ reps) → Shoulders; Diamond Push-up → Arms; Plank → Core;
+            Bodyweight Squat → Legs. Other movements can improve assessed areas
+            but cannot establish an initial rating.
+          </Text>
+          <Text style={s.fine}>
+            A first assessment replaces the provisional estimate and may move it
+            up or down. It is not a growth reward.
+          </Text>
+        </Panel>
+      )}
       <Panel title="PLAYER DEVELOPMENT" kicker="COMING SOON">
         <Placeholder title="SKILL TREE" icon="grid" />
-        <Placeholder
-          title="ARCHETYPE"
-          description={player.archetype}
-          icon="player"
-        />
+        <Placeholder title="ARCHETYPE" icon="player" />
       </Panel>
     </Screen>
-  );
-}
-function Rating({
-  label,
-  description,
-  value,
-}: {
-  label: string;
-  description?: string;
-  value: number;
-}) {
-  return (
-    <View
-      accessible
-      accessibilityLabel={`${label}${description ? `, ${description}` : ""}: ${value} out of 99`}
-      style={r.rating}
-    >
-      <View style={r.labels}>
-        <View style={s.flex}>
-          <Text style={r.label}>{label}</Text>
-        </View>
-        <Text style={r.value}>{value}</Text>
-      </View>
-      <View style={r.track}>
-        <View style={[r.fill, { width: `${(value / 99) * 100}%` }]} />
-      </View>
-    </View>
   );
 }
 const r = StyleSheet.create({

@@ -1,3 +1,4 @@
+import { displayRating } from "@/growth/domain";
 import { Animated, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { cardTiers } from "@/config/visuals";
@@ -12,7 +13,7 @@ export function PlayerCard({
   tier = player.tier,
   intensity = player.intensity,
 }: {
-  player: Player;
+  player: Omit<Player, "ratings">;
   club?: ClubIdentityData;
   tier?: CardTier;
   intensity?: CardIntensity;
@@ -116,10 +117,21 @@ export function PlayerCard({
           </View>
         )}
         <View style={c.ratings}>
-          {Object.entries(player.ratings).map(([key, value]) => (
+          {Object.entries(player.bodyRatings).map(([key, value]) => (
             <View key={key} style={c.stat}>
-              <Text style={c.value}>{value}</Text>
-              <Text style={[c.label, { color: palette.accent }]}>{key}</Text>
+              <Text style={c.value}>{displayRating(value)}</Text>
+              <Text style={[c.label, { color: palette.accent }]}>
+                {
+                  {
+                    Chest: "CHST",
+                    Back: "BACK",
+                    Shoulders: "SHLD",
+                    Arms: "ARMS",
+                    Core: "CORE",
+                    Legs: "LEGS",
+                  }[key]
+                }
+              </Text>
             </View>
           ))}
         </View>
@@ -192,7 +204,7 @@ const c = StyleSheet.create({
   ratings: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 8,
+    gap: 4,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#ffffff28",
@@ -201,7 +213,7 @@ const c = StyleSheet.create({
   },
   stat: { gap: 5, flex: 1 },
   value: { fontSize: 24, fontWeight: "700", color: "#fff2e7" },
-  label: { fontSize: 10, letterSpacing: 0.5 },
+  label: { fontSize: 9, letterSpacing: 0.5 },
   bottom: {
     flexDirection: "row",
     justifyContent: "space-between",

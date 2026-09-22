@@ -1,19 +1,41 @@
+import { useGrowth } from "@/growth/provider";
+import { overall } from "@/growth/domain";
 import { currentClub } from "@/data/club-career";
 import { Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Screen, Panel, Button, s } from "@/components/ui/primitives";
 import { PlayerSummary } from "@/components/player/player-summary";
 import { RivalPanel } from "@/components/rival/rival-panel";
-import { player, weekly, recovery, season } from "@/data/mock";
+import { weekly, recovery, season } from "@/data/mock";
 import { colors } from "@/config/theme";
 export default function Home() {
+  const { data } = useGrowth();
+  const player = data?.player;
   return (
     <Screen
       home
       kicker={`THE FACILITY / SEASON ${season.number}`}
       title="YOUR NEXT LEVEL"
     >
-      <PlayerSummary club={currentClub} player={player} form={weekly.form} />
+      {player ? (
+        <PlayerSummary
+          club={currentClub}
+          player={{
+            name: "PLAYER",
+            ovr: overall(player.ratings),
+            archetype: "TRAINING PROFILE",
+            tier: "bronze",
+          }}
+          form={weekly.form}
+        />
+      ) : (
+        <Panel>
+          <Text style={s.muted}>
+            Your player rating starts with your training evidence.
+          </Text>
+          <Button label="OPEN PLAYER" onPress={() => router.push("/player")} />
+        </Panel>
+      )}
       <Panel>
         <View style={s.sectionHeading}>
           <Text style={s.sectionTitle}>WEEKLY TARGET</Text>

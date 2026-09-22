@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "@/config/theme";
 import { TrainingProvider } from "@/training/provider";
 import { SessionProvider } from "@/sessions/provider";
+import { GrowthProvider } from "@/growth/provider";
 import { CoachProvider } from "@/coach/provider";
 export default function RootLayout() {
   return (
@@ -24,10 +25,12 @@ export default function RootLayout() {
         <TrainingProvider>
           <SessionProvider>
             <CoachProvider>
-              <StatusBar style="light" />
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-              </Stack>
+              <GrowthProvider>
+                <StatusBar style="light" />
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" />
+                </Stack>
+              </GrowthProvider>
             </CoachProvider>
           </SessionProvider>
         </TrainingProvider>
