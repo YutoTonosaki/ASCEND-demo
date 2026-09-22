@@ -239,6 +239,36 @@ export function reconcilePlayer(
   const player: GrowthPlayer = JSON.parse(JSON.stringify(input));
   const processed = new Set(player.processedSetIds);
   const sessions = allSessions(data);
+  const confirmed = sessions.flatMap((session) =>
+    session.exercises.flatMap((entry) =>
+      entry.sets.flatMap((set) =>
+        set.result
+          ? [
+              {
+                id: setIdentity(session.id, set.id),
+                at: set.result.confirmedAt,
+              },
+            ]
+          : [],
+      ),
+    ),
+  );
+  const through = confirmed.reduce(
+    (latest, set) =>
+      processed.has(set.id) ? Math.max(latest, Date.parse(set.at)) : latest,
+    Date.parse(player.initializedAt),
+  );
+  if (
+    confirmed.some(
+      (set) =>
+        !processed.has(set.id) &&
+        Date.parse(set.at) > Date.parse(player.initializedAt) &&
+        Date.parse(set.at) < through,
+    )
+  )
+    throw new Error(
+      "New workout evidence predates already processed results. Ratings are preserved; check the workout dates before retrying.",
+    );
   const comparisons = derivePersonalRecords(sessions).comparisons;
   // Interleave completion bonuses with sets to make catch-up and live processing agree.
   const timeline = [
@@ -247,9 +277,11 @@ export function reconcilePlayer(
       sessionId: comparison.source.sessionId,
       comparison,
     })),
-    ...data.completed
-      .filter((s) => !player.finalizedSessionIds.includes(s.id))
-      .map((s) => ({ at: s.completedAt, sessionId: s.id, comparison: null })),
+    ...data.completed.flatMap((s) =>
+      s.status === "completed" && !player.finalizedSessionIds.includes(s.id)
+        ? [{ at: s.completedAt, sessionId: s.id, comparison: null }]
+        : [],
+    ),
   ];
   timeline.sort(
     (a, b) =>

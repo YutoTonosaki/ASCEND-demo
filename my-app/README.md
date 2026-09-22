@@ -1,4 +1,4 @@
-# ASCEND — native Phase 3A
+# ASCEND — native Phase 3B
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -58,11 +58,11 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
 - All five bottom tabs navigate; the Home CTA opens Train.
 - Player previews four finishes and three effect intensities.
 - Career previews four rival colors. Previews never alter ratings or save items.
-- Progression, Career collections, and Shop
+- Career collections and Shop
   remain unavailable. Custom Workout, Saved Workouts, My Exercises, Live Workout,
   factual Workout History, and rule-based AI Coach work.
 - The default card is high Bronze; the default rival is Blue. No OVR thresholds
-  are assigned. Player/Career progress and balances remain illustrative; Personal Records and workout
+  are assigned. Career progress and balances remain illustrative; Player ratings, Personal Records and workout
   history contains actual confirmed sessions.
 - Animations use React Native Animated, stop off-screen/in the background, and
   respect the device's reduced-motion preference.
@@ -175,7 +175,7 @@ equipment must be selected; location never implies ownership. Custom movements n
 explicit familiar-movement opt-in. Unknown external loads must be entered and
 confirmed before conversion/save. No automatic overload or physiological recovery
 model. See [Phase 2C verification](docs/PHASE2C_VERIFICATION.md) for exact rules,
-limitations and test results. Phase 3A adds PR evidence only; player growth remains deferred.
+limitations and test results. Phase 3A adds PR evidence; Phase 3B adds bounded player growth.
 
 
 ## Personal Records
@@ -191,3 +191,23 @@ reads the existing SessionProvider. PRs recompute when its authoritative data ch
 No persistence key, schema, dependency, Coach rule or session write path changes.
 See [Phase 3A verification](docs/PHASE3A_VERIFICATION.md) and Game System section 46
 for eligibility, ordering, zero handling, compatibility and the future growth API.
+
+
+## Player growth and OVR
+
+PLAYER → INITIALIZE PLAYER uses the existing optional Training Profile Baselines,
+then persists six fractional body ratings, provisional/assessed status and a growth
+ledger under `ascend.player.v1`. Existing history informs PR comparisons but earns
+no retroactive growth. Later profile edits do not rewrite initialization evidence.
+
+`src/config/growth.ts` centralizes version-1 game curves and caps. `src/growth/`
+contains pure assessment/growth, validation and provider logic; it consumes the
+existing PR comparison API. `src/storage/player-repository.ts` serializes detached
+read/init/reconcile operations. OVR is the floored mean of six fractional body
+ratings, never independent persisted state. HOME and PLAYER share those ratings.
+No fictional athletic values are shown in the player card. Card finishes remain
+visual previews; tier progression is not implemented.
+
+See Game System section 47 for exact formulas and
+[Phase 3B verification](docs/PHASE3B_VERIFICATION.md) for automated checks, persistence
+failure behavior, limitations and physical iPhone test steps. Phase 3C is deferred.

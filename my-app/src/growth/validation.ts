@@ -3,7 +3,13 @@ import { growthConfig as c } from "../config/growth";
 import { defaultProfile, isProfile } from "../coach/profile";
 import { isActual } from "../sessions/domain";
 import { copyExercise } from "../training/plans";
-import { initializePlayer, setIdentity, validDate } from "./domain";
+import {
+  assessmentValue,
+  initializePlayer,
+  setIdentity,
+  validDate,
+} from "./domain";
+import { standardExercises } from "../data/exercises";
 import type { PlayerData } from "../types/growth";
 const record = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === "object" && !Array.isArray(v);
@@ -130,6 +136,26 @@ export function isPlayerData(value: unknown): value is PlayerData {
       } else if (event.metric !== null || event.changes.length === 0)
         return false;
     }
+    if (
+      event.kind === "growth" &&
+      record(event.actual) &&
+      record(event.metric)
+    ) {
+      const actual = event.actual,
+        metric = event.metric;
+      if (
+        metric.metric === "seconds"
+          ? actual.type !== "time" || metric.value !== actual.seconds
+          : metric.metric === "weightKg"
+            ? actual.type !== "weight_reps" || metric.value !== actual.weightKg
+            : metric.metric === "repsAtWeight"
+              ? actual.type !== "weight_reps" ||
+                metric.weightKg !== actual.weightKg ||
+                metric.value !== actual.reps
+              : actual.type !== "reps" || metric.value !== actual.reps
+      )
+        return false;
+    }
     let total = 0;
     const areas = new Set<string>();
     for (const change of event.changes) {
@@ -146,10 +172,17 @@ export function isPlayerData(value: unknown): value is PlayerData {
       areas.add(area);
       if (replay[area] !== change.before) return false;
       if (event.kind === "assessment") {
+        const exercise = standardExercises.find(
+          (e) => e.id === event.exerciseId,
+        );
         if (
           status[area] !== "provisional" ||
           change.after < 40 ||
-          change.after > 60
+          change.after > 60 ||
+          !exercise ||
+          !exercise.primaryBodyParts.includes(area) ||
+          !isActual(event.actual, exercise.trackingType) ||
+          assessmentValue(exercise, event.actual) !== change.after
         )
           return false;
         status[area] = "assessed";

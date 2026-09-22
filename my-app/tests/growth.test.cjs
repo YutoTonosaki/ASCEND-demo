@@ -45,7 +45,7 @@ function profile(ids = ["push-up", "squat", "plank"]) {
   }));
   return p;
 }
-function history(entries = [["push-up", [10]]], offset = 10, pending = false) {
+function history(entries = [["push-up", [10]]], offset = 10) {
   const plan = {
     ...newWorkout(),
     name: "Growth test",
@@ -137,7 +137,10 @@ test("initialization is deterministic and snapshots baseline evidence", () => {
     b = initial(source);
   assert.deepEqual(a, b);
   source.baselineAssessments[0].actual.reps = 99;
-  assert.equal(a.baselineEvidence[0].actual.reps, 10);
+  assert.equal(
+    a.baselineEvidence.find((b) => b.exercise.id === "push-up").actual.reps,
+    10,
+  );
 });
 test("initial conversion saturates in game range 40-60 and ignores body measurements", () => {
   for (const v of [0, 1, 5, 100, 999]) {
@@ -447,7 +450,11 @@ test("profile edits, template changes and snapshot renaming cannot reset establi
   s.sourceWorkoutId = "deleted-template";
   s.exercises[0].sets[0].target.reps = 99;
   assert.deepEqual(apply(established, [s]), established);
-  assert.equal(established.baselineEvidence[0].actual.reps, 10);
+  assert.equal(
+    established.baselineEvidence.find((b) => b.exercise.id === "push-up").actual
+      .reps,
+    10,
+  );
 });
 test("missing authoritative history blocks new reconciliation without losing ratings", () => {
   const s = history([["push-up", [10, 12]]]);
@@ -498,7 +505,11 @@ test("repository writes only player key, detaches submissions/results, and prese
   const pending = repo.initialize(p, data());
   p.baselineAssessments[0].actual.reps = 99;
   const saved = await pending;
-  assert.equal(saved.player.baselineEvidence[0].actual.reps, 10);
+  assert.equal(
+    saved.player.baselineEvidence.find((b) => b.exercise.id === "push-up")
+      .actual.reps,
+    10,
+  );
   saved.player.ratings.Chest = 99;
   assert.equal((await repo.load()).player.ratings.Chest, 46);
   assert.equal(adapter.values.get("ascend.coach.v1"), "keep profile");
@@ -550,4 +561,48 @@ test("rating tampering or malformed ledger cannot load as a valid player", () =>
   const invalid = JSON.parse(JSON.stringify(d));
   invalid.player.events[0].changes[0].after = NaN;
   assert.equal(isPlayerData(invalid), false);
+});
+
+test("new backdated results cannot silently alter already-awarded historical comparisons", () => {
+  const latest = history([["push-up", [10, 12]]], 100);
+  const p = apply(initial(), [latest]);
+  const backdated = history([["push-up", [11]]], 50);
+  assert.throws(() => apply(p, [latest, backdated]), /predates/);
+});
+test("future timestamps fail without consuming events and can retry after clock catches up", () => {
+  const s = history([["push-up", [10, 12]]], 100);
+  const p = initial();
+  assert.throws(() => apply(p, [s], null, at(20)), /clock/);
+  assert.equal(p.events.length, 0);
+  assert.ok(total(apply(p, [s], null, at(200))) > 0);
+});
+test("failed initialization never publishes or overwrites another storage boundary", async () => {
+  const adapter = memory();
+  const repo = new PlayerRepository(adapter, () => at(0));
+  await repo.load();
+  const write = adapter.write;
+  adapter.write = async () => {
+    throw new Error("disk full");
+  };
+  await assert.rejects(repo.initialize(profile(), data()), /disk full/);
+  assert.deepEqual(await repo.load(), { version: 1, player: null });
+  adapter.write = write;
+  assert.ok((await repo.initialize(profile(), data())).player);
+  assert.equal(adapter.values.size, 1);
+});
+test("allocation cannot confirm an unsupported provisional area even on a real PR", () => {
+  const p = apply(initial(null), [
+    history([
+      [
+        "bench-press",
+        [
+          [10, 8],
+          [12, 8],
+        ],
+      ],
+    ]),
+  ]);
+  assert.equal(p.status.Chest, "provisional");
+  assert.equal(p.ratings.Chest, 45);
+  assert.equal(total(p), 0);
 });
