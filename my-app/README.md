@@ -211,3 +211,13 @@ visual previews; tier progression is not implemented.
 See Game System section 47 for exact formulas and
 [Phase 3B verification](docs/PHASE3B_VERIFICATION.md) for automated checks, persistence
 failure behavior, limitations and physical iPhone test steps. Phase 3C is deferred.
+
+### Growth Debug (development only)
+
+In Expo Go using the normal development bundle, open PLAYER → GROWTH DEBUG.
+The read-only sheet shows saved three-decimal body ratings/status/OVR and separate
+newest-first growth, bonus and assessment histories with before/after/actual deltas.
+Reopen, foreground or REFRESH SAVED DATA to reread the persisted snapshot. It uses
+a read-only PlayerRepository reader exposed by GrowthProvider, never reconciliation
+or initialization. Production builds hide both the entry and panel. See the debug
+appendix in [Phase 3B verification](docs/PHASE3B_VERIFICATION.md) for tests and phone checks.

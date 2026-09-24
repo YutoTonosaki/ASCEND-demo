@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/primitives";
 import { PlayerCard } from "@/components/player/player-card";
 import { PersonalRecordsSection } from "@/components/player/personal-records";
+import { Action } from "@/components/training/controls";
+import { GrowthDebugPanel } from "@/components/player/growth-debug-panel";
 import { GrowthStatus } from "@/components/player/growth-status";
 import { cardTiers } from "@/config/visuals";
 import { bodyParts } from "@/config/training";
@@ -20,11 +22,14 @@ import type { CardTier, CardIntensity } from "@/types/domain";
 export default function PlayerScreen() {
   const [tier, setTier] = useState<CardTier>("bronze"),
     [intensity, setIntensity] = useState<CardIntensity>("high");
+  const [debugOpen, setDebugOpen] = useState(false);
   const { data } = useGrowth();
   const player = data?.player;
   return (
     <Screen kicker="PLAYER / YOUR IDENTITY" title="BUILT, NOT GIVEN">
       <GrowthStatus />
+      {__DEV__ && <Action label="GROWTH DEBUG" onPress={() => setDebugOpen(true)} />}
+      {__DEV__ && debugOpen && <GrowthDebugPanel onClose={() => setDebugOpen(false)} />}
       {player && (
         <>
           <PlayerCard

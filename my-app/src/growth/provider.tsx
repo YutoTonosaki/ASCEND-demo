@@ -11,18 +11,25 @@ import { useCoach } from "../coach/provider";
 import { PlayerRepository } from "../storage/player-repository";
 import { localStorageAdapter } from "../storage/local";
 import type { PlayerData } from "../types/growth";
+import { createGrowthDebugReader } from "./debug";
 interface Value {
   data: PlayerData | null;
   error: string | null;
   busy: boolean;
   initialize: () => Promise<void>;
   retry: () => Promise<void>;
+  readSavedDebugSnapshot: () => Promise<PlayerData>;
 }
 const Context = createContext<Value | null>(null);
 export function GrowthProvider({ children }: PropsWithChildren) {
   const [repository] = useState(
     () => new PlayerRepository(localStorageAdapter),
   );
+  const [debugReader] = useState(() => __DEV__ ? createGrowthDebugReader(localStorageAdapter) : null);
+  const readSavedDebugSnapshot = useCallback(() => {
+    if (!__DEV__ || !debugReader) return Promise.reject(new Error("Growth debug is unavailable in production."));
+    return debugReader();
+  }, [debugReader]);
   const sessions = useSessions(),
     coach = useCoach();
   const [data, setData] = useState<PlayerData | null>(null),
@@ -94,7 +101,7 @@ export function GrowthProvider({ children }: PropsWithChildren) {
     }
   }
   return (
-    <Context.Provider value={{ data, error, busy, initialize, retry }}>
+    <Context.Provider value={{ data, error, busy, initialize, retry, readSavedDebugSnapshot }}>
       {children}
     </Context.Provider>
   );

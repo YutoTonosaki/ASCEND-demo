@@ -119,12 +119,16 @@ curves must not silently recompute existing initial ratings.
   confirmed active growth, simulated Player-only write failure/retry, resume/reload,
   equal-result exclusion, completed-only distinct bonus, template deletion/Profile
   isolation, finish preview, real Home OVR and corrupt Player data/retry verified.
-- Existing PR/input/overlay/Coach browser regressions passed. Final plan/session
-  browser rerun results are recorded below when finished.
+- Existing `browser-records.cjs`, `browser-input.cjs`, `browser-audit.cjs`,
+  `browser-overlays.cjs`, `browser-sessions.cjs` and `browser-coach.cjs`: all passed
+  on the same production export. Plan/custom CRUD, workout execution/rest/history,
+  PRs, Coach and simulated modal safe areas remain functional.
 - Card and body-status screenshots at 320px were visually inspected; no horizontal
   overflow or browser console/page errors in the completed growth flow.
-- Parallel browser QA initially hit screenshot/click/navigation timeouts; growth
-  passed when rerun alone. Remaining affected scripts are rerun sequentially.
+- Parallel browser QA initially hit screenshot/click/navigation timeouts. Growth
+  passed when rerun alone; the affected plan and session scripts then passed when
+  run sequentially. No production-code change was needed for those reruns.
+- `git diff --check`: passed.
 - Optional Playwright remains external tooling. Use
   `NODE_PATH=/tmp/ascend-qa/node_modules`,
   `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-qa/browsers`, and `ASCEND_QA_URL` pointing
@@ -183,3 +187,60 @@ example numeric scenarios can be exercised in a separate test installation/data 
 Do not reset production history merely to test recovery. Storage corruption/failure
 and retry scenarios are covered using isolated automated data, not the user's phone.
 Stop after Phase 3B; Phase 3C remains unimplemented.
+
+
+## Development-only Growth Debug Panel
+
+PLAYER → GROWTH DEBUG opens a read-only full-screen sheet in development builds
+(including Expo Go with the normal Metro development bundle). The entry and panel
+are both guarded by `__DEV__`; production exports have no debug entry or panel.
+
+- CURRENT RATINGS shows all six saved fractional ratings to three decimal places,
+  ASSESSED/PROVISIONAL status and the existing derived integer OVR.
+- GROWTH EVENTS, BONUS EVENTS and ASSESSMENT EVENTS are separate, newest first.
+  Each starts with ten events and offers SHOW MORE. Dates include local display and
+  original UTC timestamp; exercise/session/set IDs identify the evidence. A bonus
+  has no single exercise ID and is labeled as a session bonus.
+- Every changed body part shows stored before/after values and their actual numeric
+  difference. An event with no changes explicitly shows zero addition. Assessment
+  replacements are labeled separately from PR growth awards. Decimal formatting
+  affects displayed current ratings only; no saved precision changes.
+- Opening/reopening, REFRESH SAVED DATA, foregrounding, and normal Provider data
+  updates read a fresh persisted snapshot. Missing data displays an uninitialized
+  message; unreadable data displays an error and can be reread, with no repair/reset.
+
+`GrowthProvider.readSavedDebugSnapshot` exposes an independent read-only reader built
+with the existing PlayerRepository. It calls only `load`, never provider `retry`,
+`initialize` or `reconcile`. Its adapter denies writes/removal. A failed debug read
+cannot invalidate the normal writer's retained data. The panel does not update the
+Provider's player state or call any PR/growth calculation. Ordinary background
+reconciliation of a previously confirmed workout remains the unchanged app behavior.
+
+Files added: `src/growth/debug.ts`, `src/components/player/growth-debug-panel.tsx`,
+`tests/growth-debug.test.cjs`, `tests/browser-growth-debug.cjs`. PLAYER and
+GrowthProvider gain the development entry and read API; PR/growth formulas,
+repositories, schema, Coach and workout behavior are unchanged.
+
+### Debug-panel verification
+
+- Domain/repository suite: 124 passed (120 existing + 4 read-only debug tests).
+- TypeScript and lint: passed during implementation; final checks below.
+- Production export and dev/prod browser checks: final results pending.
+- Physical iPhone testing is not claimed.
+
+### iPhone debug-panel check
+
+1. Run `cd my-app` then `npx expo start --go --lan` and open the normal development
+   bundle in Expo Go on the same Wi-Fi network.
+2. Open PLAYER → GROWTH DEBUG. Confirm three-decimal ratings/status and OVR match
+   the established Player. An uninitialized Player should remain uninitialized.
+3. Inspect the latest GROWTH, BONUS and ASSESSMENT sections. Subtract Before from
+   After and compare with Actual Δ. Initial assessments must be in their own section.
+4. Close and reopen, tap REFRESH SAVED DATA and background/foreground the app.
+   Without a new workout confirmation, saved ratings and event counts must not change.
+5. After genuinely confirming a qualifying new workout improvement, reopen the panel
+   and inspect its saved fractional change, even if PLAYER's integer rating is unchanged.
+6. Check top/bottom safe areas, scrolling, long IDs and SHOW MORE/CLOSE touch targets.
+   Do not edit/reset real phone data to simulate errors; automated tests use isolated data.
+
+This is a Phase 3B test aid only, not Phase 3C visualization or reward presentation.
