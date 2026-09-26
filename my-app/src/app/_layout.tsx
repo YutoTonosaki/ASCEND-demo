@@ -6,6 +6,7 @@ import { TrainingProvider } from "@/training/provider";
 import { SessionProvider } from "@/sessions/provider";
 import { GrowthProvider } from "@/growth/provider";
 import { CoachProvider } from "@/coach/provider";
+import { GrowthPresentationProvider } from "@/presentation/provider";
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
@@ -26,10 +27,12 @@ export default function RootLayout() {
           <SessionProvider>
             <CoachProvider>
               <GrowthProvider>
-                <StatusBar style="light" />
-                <Stack screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="(tabs)" />
-                </Stack>
+                <GrowthPresentationProvider>
+                  <StatusBar style="light" />
+                  <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="(tabs)" />
+                  </Stack>
+                </GrowthPresentationProvider>
               </GrowthProvider>
             </CoachProvider>
           </SessionProvider>

@@ -213,7 +213,8 @@ are both guarded by `__DEV__`; production exports have no debug entry or panel.
 with the existing PlayerRepository. It calls only `load`, never provider `retry`,
 `initialize` or `reconcile`. Its adapter denies writes/removal. A failed debug read
 cannot invalidate the normal writer's retained data. The panel does not update the
-Provider's player state or call any PR/growth calculation. Ordinary background
+Provider's player state or request PR/growth reconciliation. Existing repository
+validation still runs when reading. Ordinary background
 reconciliation of a previously confirmed workout remains the unchanged app behavior.
 
 Files added: `src/growth/debug.ts`, `src/components/player/growth-debug-panel.tsx`,
@@ -224,8 +225,19 @@ repositories, schema, Coach and workout behavior are unchanged.
 ### Debug-panel verification
 
 - Domain/repository suite: 124 passed (120 existing + 4 read-only debug tests).
-- TypeScript and lint: passed during implementation; final checks below.
-- Production export and dev/prod browser checks: final results pending.
+- `npm run typecheck` and `npm run lint`: passed.
+- `expo export --platform all --max-workers 1`: passed; iOS/Android bundles and
+  13 static web routes generated in `/tmp/ascend-debug-export`.
+- `tests/browser-growth-debug.cjs`: passed against development Metro and the
+  production export using isolated browser storage. Verified three-decimal ratings,
+  event kinds and exact differences, repeated open/refresh with zero storage writes,
+  fresh saved reads, missing/corrupt/retry states, 320/390px without horizontal
+  overflow, and production entry absence. No browser page exceptions occurred.
+- Visually inspected the 320px panel screenshot. Native safe areas still require
+  the phone checks below. The development web app emits an existing React warning
+  about `accessible={false}` on SVG (`src/components/ui/icon.tsx`); its Expo toast
+  can cover bottom tabs. This unrelated existing rendering code is unchanged.
+- `git diff --check`: passed. Browser tooling remains outside app dependencies.
 - Physical iPhone testing is not claimed.
 
 ### iPhone debug-panel check

@@ -9,6 +9,7 @@ import { targetLabel } from "@/training/plans";
 import type { ActualResult, WorkoutSession } from "@/types/session";
 import type { SetTarget } from "@/types/training";
 import { colors } from "@/config/theme";
+import { useGrowthPresentation } from "@/presentation/provider";
 export const durationLabel = (seconds: number) =>
   `${Math.floor(seconds / 60)
     .toString()
@@ -25,6 +26,7 @@ export function LiveWorkout({
   onComplete: (id: string) => void;
 }) {
   const { commit } = useSessions();
+  const presentGrowth = useGrowthPresentation();
   const current = position(session);
   const [now, setNow] = useState(() => Date.now());
   const [busy, setBusy] = useState(false);
@@ -82,8 +84,10 @@ export function LiveWorkout({
           setId: current.set.id,
           actual,
         });
-        if (next.completed.some((x) => x.id === session.id))
+        if (next.completed.some((x) => x.id === session.id)) {
           onComplete(session.id);
+          presentGrowth(session.id);
+        }
       } catch (e) {
         setError(
           e instanceof Error ? e.message : "Could not save. Please retry.",
@@ -93,7 +97,7 @@ export function LiveWorkout({
         setBusy(false);
       }
     },
-    [current, commit, session.id, onComplete],
+    [current, commit, session.id, onComplete, presentGrowth],
   );
   async function skipRest() {
     if (lock.current || !deadline) return;

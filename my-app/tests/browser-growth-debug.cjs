@@ -21,10 +21,21 @@ async function main(){
   const page=await browser.newPage({viewport:{width:320,height:844}}),errors=[];
   page.setDefaultTimeout(60000);
   page.on('pageerror',e=>errors.push(e.message));
-  const dev=process.env.ASCEND_QA_URL||'http://127.0.0.1:8107';
+  const dev=process.env.ASCEND_QA_URL||'http://localhost:8107';
   const prod=process.env.ASCEND_QA_PROD_URL||'http://127.0.0.1:8108';
   const button=name=>page.getByRole('button',{name,exact:true});
-  const open=async()=>{await page.getByRole('tab',{name:'PLAYER',exact:true}).click();await button('GROWTH DEBUG').click();};
+  const openPanel=async()=>{
+   // Metro development hydration can leave the initial rendered button briefly inert.
+   for(let attempt=0;attempt<3;attempt++){
+    await button('GROWTH DEBUG').click();
+    try{await button('CLOSE').waitFor({timeout:5000});return;}catch(e){if(attempt===2)throw e;}
+   }
+  };
+  const open=async()=>{
+   const tab=page.getByRole('tab',{name:'PLAYER',exact:true});
+   if(await tab.getAttribute('aria-selected')!=='true')await tab.click();
+   await openPanel();
+  };
   await page.goto(dev,{timeout:180000});await open();await page.getByText(/No initialized Player is saved/).waitFor();
   assert.equal(await page.evaluate(()=>localStorage.getItem('ascend.player.v1')),null);await button('CLOSE').click();
   const f=fixture();
@@ -32,7 +43,7 @@ async function main(){
   await page.goto(dev);await page.getByRole('tab',{name:'PLAYER',exact:true}).click();await page.getByTestId('player-card').waitFor();
   const before=await page.evaluate(()=>({...localStorage}));
   await page.evaluate(()=>{window.debugWrites=0;window.originalSetItem=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){window.debugWrites++;return window.originalSetItem.call(this,k,v);};});
-  await button('GROWTH DEBUG').click();await page.getByText('CURRENT RATINGS',{exact:true}).waitFor();
+  await openPanel();await page.getByText('CURRENT RATINGS',{exact:true}).waitFor();
   await page.getByText(`${f.player.player.ratings.Chest.toFixed(3)} · ASSESSED`,{exact:true}).waitFor();
   for(const heading of ['GROWTH EVENTS','BONUS EVENTS','ASSESSMENT EVENTS'])await page.getByText(heading,{exact:true}).waitFor();
   const growth=f.player.player.events.find(e=>e.kind==='growth').changes[0];
