@@ -206,6 +206,7 @@ function fixture(target) {
       ),
     );
     await page.screenshot({ path: "/tmp/ascend-card-large.png" });
+    assert.equal(await page.evaluate(() => localStorage.getItem("ascend.rewards.v1")), null);
     assert.deepEqual(errors, []);
     const f = fixture(74.999),
       ex = standardExercises.find((e) => e.id === "push-up"),
@@ -249,11 +250,22 @@ function fixture(target) {
       localStorage.getItem("ascend.presentation.v1"),
     );
     assert.ok(consumed);
+    const rewards = await page.evaluate(() =>
+      localStorage.getItem("ascend.rewards.v1"),
+    );
+    assert.equal(
+      JSON.parse(rewards).transactions.reduce((n, t) => n + t.amount, 0),
+      10,
+    );
     await page.goto(url);
     assert.equal(await page.getByTestId("card-evolution").count(), 0);
     assert.equal(
       await page.evaluate(() => localStorage.getItem("ascend.presentation.v1")),
       consumed,
+    );
+    assert.equal(
+      await page.evaluate(() => localStorage.getItem("ascend.rewards.v1")),
+      rewards,
     );
     assert.deepEqual(errors, []);
     console.log(

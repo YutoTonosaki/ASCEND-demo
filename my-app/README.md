@@ -1,4 +1,4 @@
-# ASCEND — native Phase 3B
+# ASCEND — native Phase 3C
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -232,3 +232,11 @@ rating calculations or player schema change. See [verification and device checks
 Cards now derive tier/finish from actual displayed OVR. PLAYER shows earned and
 next evolution instead of manual previews; fresh tier changes join the existing
 completion presentation with shared consumption. See [verification](docs/PHASE3C_2_VERIFICATION.md).
+
+## Phase 3C-3 — Consistency Rewards
+
+Fresh saved LiveWorkout completions award 10 Coins once per local calendar day,
+and 30 more upon the third distinct day of a Monday–Sunday week. HOME and SHOP
+show the real balance; HOME shows capped weekly days. Coins are not spendable.
+The independent reward ledger never changes Ratings, PRs or Card Tier. See
+`docs/PHASE3C_3_VERIFICATION.md` for storage, failure policy and device checks.

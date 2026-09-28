@@ -44,4 +44,3 @@ export const recovery: { area: BodyArea; state: RecoveryState }[] = [
   { area: "Core", state: "Ready" },
   { area: "Legs", state: "Ready" },
 ];
-export const creditBalance = 1250;

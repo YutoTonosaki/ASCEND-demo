@@ -1,21 +1,241 @@
-require('./register.cjs');
-const {chromium}=require('playwright'),assert=require('node:assert/strict');
-const {standardExercises}=require('../src/data/exercises.ts');const {newWorkout,newEntry}=require('../src/training/plans.ts');const {startSession,confirmSet,position}=require('../src/sessions/domain.ts');
-function active(at){const e=newEntry(standardExercises.find(x=>x.id==='push-up'));return startSession({...newWorkout(),name:'Consistency QA',exercises:[{...e,restSeconds:0,sets:e.sets.slice(0,1)}]},standardExercises,at);}
-(async()=>{const b=await chromium.launch();try{
-const page=await b.newPage({viewport:{width:320,height:844},timezoneId:'America/Los_Angeles',reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(45000);
-await page.addInitScript(()=>{const Native=Date;window.Date=class extends Native{constructor(...args){super(...(args.length?args:[Number(localStorage.getItem('qa-clock'))||Native.now()]));}static now(){return Number(localStorage.getItem('qa-clock'))||Native.now();}};});
-const url=process.env.ASCEND_QA_URL;const click=n=>page.getByRole('button',{name:n,exact:true}).click(),tab=n=>page.getByRole('tab',{name:n,exact:true}).click();const saved=()=>page.evaluate(()=>localStorage.getItem('ascend.rewards.v1'));
-await page.goto(url);await page.getByTestId('coin-balance').waitFor();assert.equal(await page.getByTestId('coin-balance').innerText(),'0 Coins');assert.equal(await saved(),null);
-let old=active('2026-09-20T19:00:00.000Z');old=confirmSet(old,position(old).set.id,{type:'reps',reps:1},'2026-09-20T19:00:00.000Z');await page.evaluate(s=>localStorage.setItem('ascend.sessions.v1',JSON.stringify({version:1,active:null,completed:[s]})),old);await page.goto(url);await tab('TRAIN');await click('WORKOUT HISTORY');assert.equal(await saved(),null);
-async function prepare(day){const at=`2026-09-${day}T19:00:00.000Z`,s=active(at);await page.evaluate(({s,at})=>{const d=JSON.parse(localStorage.getItem('ascend.sessions.v1'));d.active=s;localStorage.setItem('ascend.sessions.v1',JSON.stringify(d));localStorage.setItem('qa-clock',String(Date.parse(at)));},{s,at});await page.goto(url);await tab('TRAIN');await click('RESUME WORKOUT');}
-for(const [day,total,balance,days] of [[21,10,10,1],[21,0,10,1],[22,10,20,2],[23,40,60,3],[24,10,70,3]]){
-await prepare(day);await click('COMPLETE SET');await page.getByTestId('workout-coins').waitFor();assert.equal(await page.getByTestId('workout-coins').innerText(),`TOTAL EARNED · ${total?'+':''}${total} Coins`);if(total===40)await page.getByText('Weekly Consistency Bonus · +30 Coins',{exact:true}).waitFor();if(total===0)await page.getByText('Daily reward already earned today',{exact:true}).waitFor();await click('FINISH');await tab('HOME');assert.equal(await page.getByTestId('coin-balance').innerText(),`${balance} Coins`);assert.equal(await page.getByTestId('weekly-training').innerText(),`${days} / 3 DAYS`);await tab('SHOP');assert.equal(await page.getByTestId('coin-balance').innerText(),`${balance} Coins`);const raw=await saved();await tab('PLAYER');await tab('TRAIN');await click('WORKOUT HISTORY');await page.goto(url);await page.getByTestId('coin-balance').waitFor();assert.equal(await saved(),raw);
+require("./register.cjs");
+const { chromium } = require("playwright"),
+  assert = require("node:assert/strict");
+const { standardExercises } = require("../src/data/exercises.ts");
+const { newWorkout, newEntry } = require("../src/training/plans.ts");
+const {
+  startSession,
+  confirmSet,
+  position,
+} = require("../src/sessions/domain.ts");
+function active(at) {
+  const e = newEntry(standardExercises.find((x) => x.id === "push-up"));
+  return startSession(
+    {
+      ...newWorkout(),
+      name: "Consistency QA",
+      exercises: [{ ...e, restSeconds: 0, sets: e.sets.slice(0, 1) }],
+    },
+    standardExercises,
+    at,
+  );
 }
-await page.screenshot({path:'/tmp/ascend-rewards-home-320.png'});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-// A reward-only failed write cannot undo completed evidence; explicit retry is idempotent.
-await prepare(25);await page.evaluate(()=>{window.qaWrite=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='ascend.rewards.v1')throw Error('QA rewards write failure');return window.qaWrite.call(this,k,v);};});await click('COMPLETE SET');await page.getByText('Workout saved. Rewards could not be confirmed.',{exact:true}).waitFor();const history=await page.evaluate(()=>localStorage.getItem('ascend.sessions.v1'));await page.evaluate(()=>Storage.prototype.setItem=window.qaWrite);await click('RETRY REWARDS');await page.getByTestId('workout-coins').waitFor();assert.equal(await page.getByTestId('workout-coins').innerText(),'TOTAL EARNED · +10 Coins');assert.equal(await page.evaluate(()=>localStorage.getItem('ascend.sessions.v1')),history);
-await page.goto(url);await page.getByTestId('coin-balance').waitFor();assert.equal(await page.getByTestId('coin-balance').innerText(),'80 Coins');await page.evaluate(()=>localStorage.setItem('qa-clock',String(Date.parse('2026-09-28T19:00:00Z'))));await page.goto(url);await page.getByText('0 / 3 DAYS',{exact:true}).waitFor();assert.equal(await page.getByTestId('coin-balance').innerText(),'80 Coins');
-const raw=await saved();await page.evaluate(()=>localStorage.setItem('ascend.rewards.v1','damaged'));await page.goto(url);await page.getByText('Balance unavailable',{exact:true}).waitFor();await click('RETRY REWARDS');assert.equal(await saved(),'damaged');await page.evaluate(raw=>localStorage.setItem('ascend.rewards.v1',raw),raw);await click('RETRY REWARDS');await page.getByText('80 Coins',{exact:true}).waitFor();
-await page.evaluate(()=>{const nodes=[...document.querySelectorAll('[data-testid="coin-balance"],[data-testid="weekly-training"]')];for(const n of nodes)n.style.fontSize='32px';});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);console.log('PASS: daily 10/same-day 0/third-day 40, week reset, HOME/SHOP, historical/Player navigation/restart no awards, failure/retry/corruption isolation, 320px/reduced motion/large text.');
-}finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
+(async () => {
+  const b = await chromium.launch();
+  try {
+    const page = await b.newPage({
+        viewport: { width: 320, height: 844 },
+        timezoneId: "America/Los_Angeles",
+        reducedMotion: "reduce",
+      }),
+      errors = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.setDefaultTimeout(45000);
+    await page.addInitScript(() => {
+      const Native = Date;
+      window.Date = class extends Native {
+        constructor(...args) {
+          super(
+            ...(args.length
+              ? args
+              : [Number(localStorage.getItem("qa-clock")) || Native.now()]),
+          );
+        }
+        static now() {
+          return Number(localStorage.getItem("qa-clock")) || Native.now();
+        }
+      };
+    });
+    const url = process.env.ASCEND_QA_URL;
+    const click = (n) =>
+        page.getByRole("button", { name: n, exact: true }).click(),
+      tab = (n) => page.getByRole("tab", { name: n, exact: true }).click();
+    const assertBalance = async (expected) => {
+      await page.waitForFunction(expected => {
+        const nodes = [...document.querySelectorAll('[data-testid="coin-balance"]')];
+        return nodes.length > 0 && nodes.every(n => n.textContent === expected);
+      }, expected);
+      for (const text of await page.getByTestId("coin-balance").allTextContents()) assert.equal(text, expected);
+    };
+    const saved = () =>
+      page.evaluate(() => localStorage.getItem("ascend.rewards.v1"));
+    await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+    await page.getByText("0 Coins", { exact: true }).waitFor();
+    await assertBalance("0 Coins");
+    assert.equal(await saved(), null);
+    let old = active("2026-09-20T19:00:00.000Z");
+    old = confirmSet(
+      old,
+      position(old).set.id,
+      { type: "reps", reps: 1 },
+      "2026-09-20T19:00:00.000Z",
+    );
+    await page.evaluate(
+      (s) =>
+        localStorage.setItem(
+          "ascend.sessions.v1",
+          JSON.stringify({ version: 1, active: null, completed: [s] }),
+        ),
+      old,
+    );
+    await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+    await tab("TRAIN");
+    await click("WORKOUT HISTORY");
+    assert.equal(await saved(), null);
+    async function prepare(day) {
+      const at = `2026-09-${day}T19:00:00.000Z`,
+        s = active(at);
+      await page.evaluate(
+        ({ s, at }) => {
+          const d = JSON.parse(localStorage.getItem("ascend.sessions.v1"));
+          d.active = s;
+          localStorage.setItem("ascend.sessions.v1", JSON.stringify(d));
+          localStorage.setItem("qa-clock", String(Date.parse(at)));
+        },
+        { s, at },
+      );
+      await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+      await tab("TRAIN");
+      await click("RESUME WORKOUT");
+    }
+    for (const [day, total, balance, days] of [
+      [21, 10, 10, 1],
+      [21, 0, 10, 1],
+      [22, 10, 20, 2],
+      [23, 40, 60, 3],
+      [24, 10, 70, 3],
+    ]) {
+      await prepare(day);
+      await click("COMPLETE SET");
+      await page.getByTestId("workout-coins").waitFor();
+      assert.equal(
+        await page.getByTestId("workout-coins").innerText(),
+        `TOTAL EARNED · ${total ? "+" : ""}${total} Coins`,
+      );
+      if (total === 40)
+        await page
+          .getByText("Weekly Consistency Bonus · +30 Coins", { exact: true })
+          .waitFor();
+      if (total === 40) {
+        await page.getByTestId("workout-coins").scrollIntoViewIfNeeded();
+        await page.screenshot({path:"/tmp/ascend-rewards-complete-320.png"});
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      }
+      console.log(`Verified day ${day}: earned ${total}, balance ${balance}, weekly ${days}/3`);
+      if (total === 0)
+        await page
+          .getByText("Daily reward already earned today", { exact: true })
+          .waitFor();
+      await click("FINISH");
+      await tab("HOME");
+      await assertBalance(`${balance} Coins`);
+      assert.equal(
+        await page.getByTestId("weekly-training").innerText(),
+        `${days} / 3 DAYS`,
+      );
+      await tab("SHOP");
+      await assertBalance(`${balance} Coins`);
+      const raw = await saved();
+      await tab("PLAYER");
+      await tab("TRAIN");
+      await click("WORKOUT HISTORY");
+      await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+      await page
+        .getByTestId("coin-balance")
+        .filter({ visible: true })
+        .waitFor();
+      assert.equal(await saved(), raw);
+    }
+    await page.screenshot({ path: "/tmp/ascend-rewards-home-320.png" });
+    assert.ok(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    );
+    // A reward-only failed write cannot undo completed evidence; explicit retry is idempotent.
+    await prepare(25);
+    await page.evaluate(() => {
+      window.qaWrite = Storage.prototype.setItem;
+      Storage.prototype.setItem = function (k, v) {
+        if (k === "ascend.rewards.v1") throw Error("QA rewards write failure");
+        return window.qaWrite.call(this, k, v);
+      };
+    });
+    await click("COMPLETE SET");
+    await page
+      .getByText("Workout saved. Rewards could not be confirmed.", {
+        exact: true,
+      })
+      .waitFor();
+    const history = await page.evaluate(() =>
+      localStorage.getItem("ascend.sessions.v1"),
+    );
+    await page.evaluate(() => (Storage.prototype.setItem = window.qaWrite));
+    await click("RETRY REWARDS");
+    await page.getByTestId("workout-coins").waitFor();
+    assert.equal(
+      await page.getByTestId("workout-coins").innerText(),
+      "TOTAL EARNED · +10 Coins",
+    );
+    assert.equal(
+      await page.evaluate(() => localStorage.getItem("ascend.sessions.v1")),
+      history,
+    );
+    await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+    await page.getByText("80 Coins", { exact: true }).waitFor();
+    await assertBalance("80 Coins");
+    await page.evaluate(() =>
+      localStorage.setItem(
+        "qa-clock",
+        String(Date.parse("2026-09-28T19:00:00Z")),
+      ),
+    );
+    await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+    await page.getByText("0 / 3 DAYS", { exact: true }).waitFor();
+    await assertBalance("80 Coins");
+    const raw = await saved();
+    await page.evaluate(() =>
+      localStorage.setItem("ascend.rewards.v1", "damaged"),
+    );
+    await page.goto(url);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="coin-balance"]')].some(n => /Coins$|Balance unavailable/.test(n.textContent)));
+    await page.getByText("Balance unavailable", { exact: true }).waitFor();
+    await click("RETRY REWARDS");
+    assert.equal(await saved(), "damaged");
+    await page.evaluate(
+      (raw) => localStorage.setItem("ascend.rewards.v1", raw),
+      raw,
+    );
+    await click("RETRY REWARDS");
+    await page.getByText("80 Coins", { exact: true }).waitFor();
+    await page.evaluate(() => {
+      const nodes = [
+        ...document.querySelectorAll(
+          '[data-testid="coin-balance"],[data-testid="weekly-training"]',
+        ),
+      ];
+      for (const n of nodes) n.style.fontSize = "32px";
+    });
+    assert.ok(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    );
+    await page.screenshot({path:"/tmp/ascend-rewards-large-320.png"});
+    assert.deepEqual(errors, []);
+    console.log(
+      "PASS: daily 10/same-day 0/third-day 40, week reset, HOME/SHOP, historical/Player navigation/restart no awards, failure/retry/corruption isolation, 320px/reduced motion/large text.",
+    );
+  } finally {
+    await b.close();
+  }
+})().catch((e) => {
+  console.error(e);
+  process.exitCode = 1;
+});

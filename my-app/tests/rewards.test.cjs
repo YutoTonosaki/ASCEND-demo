@@ -274,7 +274,35 @@ test("deterministic day/week identity does not depend on session or growth", () 
     D.rewardId("weekly-consistency", "2026-09-21"),
   );
 });
-const {RewardsController}=require('../src/rewards/controller.ts');
-test('fresh intent controller never scans history and waits for finalized growth',()=>{const c=new RewardsController(),s=session();assert.deepEqual(c.claim([s.id],true),[]);c.request(s,'p',()=>{});assert.deepEqual(c.claim([],false),[]);assert.equal(c.claim([s.id],false).length,1);assert.deepEqual(c.claim([s.id],false),[]);});
-test('growth error/no Player does not disqualify Coins and settlement happens once',()=>{const c=new RewardsController(),s=session();let calls=0;c.request(s,null,()=>calls++);assert.equal(c.claim([],true).length,1);c.finish(s.id,'failed')();assert.equal(calls,1);c.retryFailed();assert.equal(c.claim([],true).length,1);assert.equal(c.finish(s.id,'saved'),null);c.request(s,null,()=>calls++);assert.deepEqual(c.claim([],true),[]);assert.equal(calls,1);});
-test('controller restart drops uncommitted intents instead of awarding history',()=>{const s=session(),c=new RewardsController();c.request(s,'p',()=>{});const fresh=new RewardsController();assert.deepEqual(fresh.claim([s.id],true),[]);});
+const { RewardsController } = require("../src/rewards/controller.ts");
+test("fresh intent controller never scans history and waits for finalized growth", () => {
+  const c = new RewardsController(),
+    s = session();
+  assert.deepEqual(c.claim([s.id], true), []);
+  c.request(s, "p", () => {});
+  assert.deepEqual(c.claim([], false), []);
+  assert.equal(c.claim([s.id], false).length, 1);
+  assert.deepEqual(c.claim([s.id], false), []);
+});
+test("growth error/no Player does not disqualify Coins and settlement happens once", () => {
+  const c = new RewardsController(),
+    s = session();
+  let calls = 0;
+  c.request(s, null, () => calls++);
+  assert.equal(c.claim([], true).length, 1);
+  c.finish(s.id, "failed")();
+  assert.equal(calls, 1);
+  c.retryFailed();
+  assert.equal(c.claim([], true).length, 1);
+  assert.equal(c.finish(s.id, "saved"), null);
+  c.request(s, null, () => calls++);
+  assert.deepEqual(c.claim([], true), []);
+  assert.equal(calls, 1);
+});
+test("controller restart drops uncommitted intents instead of awarding history", () => {
+  const s = session(),
+    c = new RewardsController();
+  c.request(s, "p", () => {});
+  const fresh = new RewardsController();
+  assert.deepEqual(fresh.claim([s.id], true), []);
+});
