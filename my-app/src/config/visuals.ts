@@ -1,5 +1,5 @@
 import type { AthleticRating, CardTier, RivalColor } from "@/types/domain";
-// Appearance only: no OVR thresholds or progression rules are assigned.
+// Appearance only; earned thresholds live in cards/domain.ts.
 export const cardTiers: Record<
   CardTier,
   { label: string; accent: string; deep: string }
@@ -7,14 +7,8 @@ export const cardTiers: Record<
   bronze: { label: "Bronze", accent: "#e6af7e", deep: "#513020" },
   silver: { label: "Silver", accent: "#d8e4ef", deep: "#354452" },
   gold: { label: "Gold", accent: "#f6d273", deep: "#5c461a" },
-  elite: { label: "Elite / Purple", accent: "#c4a0ff", deep: "#482967" },
-};
-// Display order only; this does not assign or calculate earned tiers.
-export const nextTierLabel: Record<CardTier, string> = {
-  bronze: "SILVER",
-  silver: "GOLD",
-  gold: "PURPLE / ELITE",
-  elite: "ASCEND",
+  elite: { label: "Purple", accent: "#c4a0ff", deep: "#482967" },
+  ascend: { label: "Ascend", accent: "#b9fff0", deep: "#123d39" },
 };
 export const rivalColors: Record<RivalColor, string> = {
   blue: "#69acff",

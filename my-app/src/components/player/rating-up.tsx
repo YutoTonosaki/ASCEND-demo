@@ -3,6 +3,8 @@ import { Text, View } from "react-native";
 import { Sheet, Action } from "@/components/training/controls";
 import { Panel, s } from "@/components/ui/primitives";
 import { colors } from "@/config/theme";
+import { PlayerCard } from "./player-card";
+import { cardTiers } from "@/config/visuals";
 import type { RatingUp } from "@/presentation/domain";
 
 /** A presentation error must not take down the saved workout/result screen. */
@@ -56,6 +58,33 @@ export function RatingUpScreen({
         <Panel title="OVR UP" kicker="OVERALL RATING">
           <Increase {...result.ovr} />
         </Panel>
+      )}
+      {result.evolution && (
+        <View testID="card-evolution" style={{ gap: 12 }}>
+          <Text
+            accessibilityRole="header"
+            style={[s.sectionTitle, { fontSize: 26 }]}
+          >
+            {result.evolution.to === "ascend"
+              ? "FINAL EVOLUTION"
+              : "CARD EVOLUTION"}
+          </Text>
+          <Text style={s.eyebrow}>
+            {cardTiers[result.evolution.from].label.toUpperCase()} →{" "}
+            {cardTiers[result.evolution.to].label.toUpperCase()}
+          </Text>
+          <PlayerCard
+            player={{
+              name: "PLAYER",
+              ovr: result.evolution.ovr,
+              bodyRatings: result.afterRatings,
+              archetype:
+                result.evolution.to === "ascend"
+                  ? "ASCEND ACHIEVED"
+                  : "NEW CARD TIER",
+            }}
+          />
+        </View>
       )}
       <Action label="CONTINUE" onPress={onContinue} />
     </Sheet>

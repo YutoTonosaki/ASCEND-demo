@@ -24,7 +24,6 @@ export default function Home() {
             name: "PLAYER",
             ovr: overall(player.ratings),
             archetype: "TRAINING PROFILE",
-            tier: "bronze",
           }}
           form={weekly.form}
         />

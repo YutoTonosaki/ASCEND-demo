@@ -114,8 +114,14 @@ async function main() {
     await page.getByTestId("player-card").scrollIntoViewIfNeeded();
     await noOverflow();
     await page.screenshot({ path: "/tmp/ascend-growth-card-320.png" });
-    await click("Gold");
-    await click("LOW");
+    assert.equal(
+      await page.getByRole("button", { name: "Gold", exact: true }).count(),
+      0,
+    );
+    assert.equal(
+      await page.getByText("CARD FINISH PREVIEW", { exact: true }).count(),
+      0,
+    );
     await noOverflow();
     await tab("TRAIN");
     await click("SAVED WORKOUTS · 1");

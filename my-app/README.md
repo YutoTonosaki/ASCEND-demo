@@ -56,16 +56,15 @@ The mobile usability pass is recorded in [Phase 1.1 verification](docs/PHASE1_1_
 ## Prototype behavior
 
 - All five bottom tabs navigate; the Home CTA opens Train.
-- Player previews four finishes and three effect intensities.
+- Player cards derive earned tier and finish from actual OVR; manual previews are removed.
 - Career previews four rival colors. Previews never alter ratings or save items.
 - Career collections and Shop
   remain unavailable. Custom Workout, Saved Workouts, My Exercises, Live Workout,
   factual Workout History, and rule-based AI Coach work.
-- The default card is high Bronze; the default rival is Blue. No OVR thresholds
-  are assigned. Career progress and balances remain illustrative; Player ratings, Personal Records and workout
-  history contains actual confirmed sessions.
-- Animations use React Native Animated, stop off-screen/in the background, and
-  respect the device's reduced-motion preference.
+- The rival defaults to Blue. Career progress and balances remain illustrative; Player
+  ratings, Personal Records and workout history use actual confirmed evidence.
+  Card thresholds are centralized in `src/cards/domain.ts`.
+- Cards use static gradients and highlights, fully readable with reduced motion.
 
 Phase 2A adds workout planning; Phase 2B adds execution, rest countdowns, resume,
 and actual history. Phase 2C adds rule-based recommendations. External AI services,
@@ -205,8 +204,8 @@ contains pure assessment/growth, validation and provider logic; it consumes the
 existing PR comparison API. `src/storage/player-repository.ts` serializes detached
 read/init/reconcile operations. OVR is the floored mean of six fractional body
 ratings, never independent persisted state. HOME and PLAYER share those ratings.
-No fictional athletic values are shown in the player card. Card finishes remain
-visual previews; tier progression is not implemented.
+No fictional athletic values are shown in the player card. Phase 3C-2 below adds
+earned tier and finish derivation without changing these growth rules.
 
 See Game System section 47 for exact formulas and
 [Phase 3B verification](docs/PHASE3B_VERIFICATION.md) for automated checks, persistence
@@ -227,3 +226,9 @@ appendix in [Phase 3B verification](docs/PHASE3B_VERIFICATION.md) for tests and 
 Finalized live workouts can present integer Rating/OVR increases using the existing
 saved ledger. Separate `ascend.presentation.v1` consumption prevents replay; no
 rating calculations or player schema change. See [verification and device checks](docs/PHASE3C_1_VERIFICATION.md).
+
+### Phase 3C-2 — Card Evolution
+
+Cards now derive tier/finish from actual displayed OVR. PLAYER shows earned and
+next evolution instead of manual previews; fresh tier changes join the existing
+completion presentation with shared consumption. See [verification](docs/PHASE3C_2_VERIFICATION.md).

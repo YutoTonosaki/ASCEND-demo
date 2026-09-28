@@ -1,13 +1,7 @@
 import { currentClub } from "@/data/club-career";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import {
-  Screen,
-  Panel,
-  Choice,
-  Placeholder,
-  s,
-} from "@/components/ui/primitives";
+import { Screen, Panel, Placeholder, s } from "@/components/ui/primitives";
 import { PlayerCard } from "@/components/player/player-card";
 import { PersonalRecordsSection } from "@/components/player/personal-records";
 import { Action } from "@/components/training/controls";
@@ -18,18 +12,21 @@ import { bodyParts } from "@/config/training";
 import { colors } from "@/config/theme";
 import { useGrowth } from "@/growth/provider";
 import { displayRating, overall } from "@/growth/domain";
-import type { CardTier, CardIntensity } from "@/types/domain";
+import { cardAppearance } from "@/cards/domain";
 export default function PlayerScreen() {
-  const [tier, setTier] = useState<CardTier>("bronze"),
-    [intensity, setIntensity] = useState<CardIntensity>("high");
   const [debugOpen, setDebugOpen] = useState(false);
   const { data } = useGrowth();
   const player = data?.player;
+  const appearance = player ? cardAppearance(overall(player.ratings)) : null;
   return (
     <Screen kicker="PLAYER / YOUR IDENTITY" title="BUILT, NOT GIVEN">
       <GrowthStatus />
-      {__DEV__ && <Action label="GROWTH DEBUG" onPress={() => setDebugOpen(true)} />}
-      {__DEV__ && debugOpen && <GrowthDebugPanel onClose={() => setDebugOpen(false)} />}
+      {__DEV__ && (
+        <Action label="GROWTH DEBUG" onPress={() => setDebugOpen(true)} />
+      )}
+      {__DEV__ && debugOpen && (
+        <GrowthDebugPanel onClose={() => setDebugOpen(false)} />
+      )}
       {player && (
         <>
           <PlayerCard
@@ -39,37 +36,23 @@ export default function PlayerScreen() {
               ovr: overall(player.ratings),
               bodyRatings: player.ratings,
               archetype: "TRAINING PROFILE",
-              tier,
-              intensity,
             }}
           />
-          <Panel title="CARD FINISH PREVIEW">
-            <Text style={s.fine}>
-              Explore appearances. Preview choices do not change your ratings or
-              save to your Player.
-            </Text>
-            <View style={s.choices}>
-              {(Object.keys(cardTiers) as CardTier[]).map((key) => (
-                <Choice
-                  key={key}
-                  label={key === "elite" ? "Purple" : cardTiers[key].label}
-                  selected={tier === key}
-                  onPress={() => setTier(key)}
-                />
-              ))}
-            </View>
-            <Text style={s.eyebrow}>EFFECT INTENSITY</Text>
-            <View style={s.choices}>
-              {(["low", "mid", "high"] as const).map((key) => (
-                <Choice
-                  key={key}
-                  label={key.toUpperCase()}
-                  selected={intensity === key}
-                  onPress={() => setIntensity(key)}
-                />
-              ))}
-            </View>
-          </Panel>
+          {appearance && (
+            <Panel
+              title="CURRENT TIER"
+              kicker={cardTiers[appearance.tier].label.toUpperCase()}
+            >
+              <Text style={s.fine}>
+                CURRENT FINISH · {appearance.finish.toUpperCase()}
+              </Text>
+              <Text style={s.muted}>
+                {appearance.next
+                  ? `NEXT EVOLUTION · ${cardTiers[appearance.next.tier].label.toUpperCase()} — OVR ${appearance.next.minimum}`
+                  : "MAXIMUM EVOLUTION"}
+              </Text>
+            </Panel>
+          )}
         </>
       )}
       <PersonalRecordsSection />

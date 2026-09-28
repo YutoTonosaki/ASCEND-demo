@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import type { Player } from "@/types/domain";
+import { cardAppearance } from "@/cards/domain";
 import { cardTiers } from "@/config/visuals";
 import { colors } from "@/config/theme";
 import { ClubIdentity } from "@/components/club/club-identity";
@@ -12,11 +13,11 @@ export function PlayerSummary({
   club,
   form,
 }: {
-  player: Pick<Player, "name" | "ovr" | "archetype" | "tier">;
+  player: Pick<Player, "name" | "ovr" | "archetype">;
   club?: ClubIdentityData;
   form: string;
 }) {
-  const palette = cardTiers[player.tier];
+  const palette = cardTiers[cardAppearance(player.ovr).tier];
   return (
     <Pressable
       accessibilityRole="button"
@@ -38,7 +39,9 @@ export function PlayerSummary({
         </View>
         <View style={styles.identity}>
           <Text style={styles.name}>{player.name}</Text>
-          <Text style={styles.archetype}>{player.archetype}</Text>
+          <Text testID="home-card-tier" style={styles.archetype}>
+            {palette.label.toUpperCase()}
+          </Text>
           {club && <ClubIdentity club={club} compact />}
           <Text style={styles.form}>● FORM {form}</Text>
         </View>

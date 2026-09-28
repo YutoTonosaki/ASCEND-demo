@@ -1,25 +1,21 @@
 import { displayRating } from "@/growth/domain";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { cardTiers } from "@/config/visuals";
-import { useCardMotion } from "@/animations/use-card-motion";
-import type { CardIntensity, CardTier, Player } from "@/types/domain";
+import { cardAppearance } from "@/cards/domain";
+import type { Player } from "@/types/domain";
 import { ClubIdentity } from "@/components/club/club-identity";
 import type { ClubIdentity as ClubIdentityData } from "@/types/club";
 import { Emblem } from "@/components/ui/icon";
 export function PlayerCard({
   player,
   club,
-  tier = player.tier,
-  intensity = player.intensity,
 }: {
-  player: Omit<Player, "ratings">;
+  player: Omit<Player, "ratings" | "tier" | "intensity">;
   club?: ClubIdentityData;
-  tier?: CardTier;
-  intensity?: CardIntensity;
 }) {
+  const { tier, finish, intensity } = cardAppearance(player.ovr);
   const palette = cardTiers[tier];
-  const motion = useCardMotion(intensity !== "low");
   return (
     <View
       testID="player-card"
@@ -43,56 +39,33 @@ export function PlayerCard({
           style={[c.inset, { borderColor: palette.accent + "45" }]}
         />
         {intensity !== "low" && (
-          <Animated.View
+          <View
             pointerEvents="none"
             style={[
               c.shine,
               {
-                opacity: motion.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.06, 0.2],
-                }),
-                transform: [
-                  {
-                    translateX: motion.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [-80, 160],
-                    }),
-                  },
-                  { rotate: "25deg" },
-                ],
+                opacity: intensity === "high" ? 0.12 : 0.06,
+                transform: [{ rotate: "25deg" }],
+                left: "50%",
               },
             ]}
           />
         )}
-        {intensity === "high" && (
-          <Animated.View
+        {tier === "ascend" && (
+          <View
             pointerEvents="none"
             style={[
-              StyleSheet.absoluteFill,
+              c.inset,
               {
-                opacity: motion.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.35, 0.95],
-                }),
+                top: 13,
+                left: 13,
+                right: 13,
+                bottom: 13,
+                borderColor: "#f8e7a888",
+                borderWidth: 2,
               },
             ]}
-          >
-            {[18, 39, 63, 82].map((left, index) => (
-              <View
-                key={left}
-                style={{
-                  position: "absolute",
-                  left: `${left}%`,
-                  top: 35 + index * 48,
-                  width: 3,
-                  height: 3,
-                  borderRadius: 2,
-                  backgroundColor: palette.accent,
-                }}
-              />
-            ))}
-          </Animated.View>
+          />
         )}
         <View style={c.top}>
           <Text style={[c.brand, { color: palette.accent }]}>ASCEND</Text>
@@ -140,7 +113,9 @@ export function PlayerCard({
             {palette.label.toUpperCase()}
           </Text>
           <Text style={[c.micro, { color: palette.accent }]}>
-            {intensity.toUpperCase()} FINISH
+            {tier === "ascend"
+              ? "MAXIMUM EVOLUTION"
+              : `${finish.toUpperCase()} FINISH`}
           </Text>
         </View>
       </LinearGradient>
@@ -174,6 +149,7 @@ const c = StyleSheet.create({
   },
   top: {
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
     gap: 8,
@@ -187,6 +163,7 @@ const c = StyleSheet.create({
   micro: { fontSize: 9, letterSpacing: 1 },
   hero: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 24,
@@ -205,13 +182,14 @@ const c = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 4,
+    flexWrap: "wrap",
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: "#ffffff28",
     paddingVertical: 17,
     marginVertical: 20,
   },
-  stat: { gap: 5, flex: 1 },
+  stat: { gap: 5, flexGrow: 1, flexBasis: "30%", minWidth: 52 },
   value: { fontSize: 24, fontWeight: "700", color: "#fff2e7" },
   label: { fontSize: 9, letterSpacing: 0.5 },
   bottom: {

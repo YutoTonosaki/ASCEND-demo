@@ -1,9 +1,12 @@
+import { cardEvolution } from "../cards/domain";
 import { bodyParts } from "../config/training";
 import { overall } from "../growth/domain";
 import type { GrowthPlayer } from "../types/growth";
-import type { BodyArea } from "../types/domain";
+import type { BodyArea, BodyRatings } from "../types/domain";
 
 export interface RatingUp {
+  evolution: ReturnType<typeof cardEvolution>;
+  afterRatings: BodyRatings;
   identity: string;
   sessionId: string;
   areas: { area: BodyArea; before: number; after: number; assessed: boolean }[];
@@ -63,6 +66,8 @@ export function ratingUp(
   const ovr = newOVR > oldOVR ? { before: oldOVR, after: newOVR } : null;
   return areas.length || ovr
     ? {
+        evolution: cardEvolution(oldOVR, newOVR),
+        afterRatings: { ...end },
         identity: presentationIdentity(player.id, sessionId),
         sessionId,
         areas,

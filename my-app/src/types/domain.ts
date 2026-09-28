@@ -1,4 +1,4 @@
-export type CardTier = "bronze" | "silver" | "gold" | "elite";
+export type CardTier = "bronze" | "silver" | "gold" | "elite" | "ascend";
 export type CardIntensity = "low" | "mid" | "high";
 export type RivalColor = "blue" | "red" | "purple" | "green";
 export type AthleticRating = "STR" | "PWR" | "END" | "CORE" | "ATH";

@@ -23,7 +23,8 @@ an integer rating change, not a PR reward. Assessment decreases are not celebrat
 Baseline initialization itself never requests a presentation.
 
 The screen uses the existing safe-area full-screen Sheet, dark/bronze tokens,
-scrollable content, accessible integer transitions, fixed CLOSE and CONTINUE.
+scrollable content, accessible integer transitions, fixed CLOSE and a CONTINUE
+action after the results.
 All qualifying areas appear together, with OVR UP below them. It intentionally
 uses a static presentation: there is no animation dependency, flashing, sound or
 motion requirement, and reduced-motion users receive identical information.
@@ -67,7 +68,26 @@ new growth retry or recalculation path. A rendering boundary isolates display er
 
 - Unit suite: 142 passed (124 existing including Growth Debug + 18 presentation tests).
 - TypeScript and lint: passed.
-- Platform export and browser checks: pending final verification.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-presentation-export`:
+  passed; iOS/Android Hermes bundles and 13 static web routes generated.
+- `tests/browser-presentation.cjs`: passed on the production export with isolated
+  test data. Verified actual LiveWorkout final confirmation, finalized presentation,
+  persisted consumption before display, dismissal, history/PLAYER navigation,
+  restart with unchanged Player/session storage, and restart while the presentation
+  is still visible without replay. Tested 320px with reduced motion and 390px;
+  both screenshots were visually inspected. No browser page exceptions occurred.
+- The initial browser restart used `/train` on a simple static server, which lacks
+  extensionless route fallback. Restarting through `/` with the same local storage
+  passed; no app-code change was needed for that test-host limitation.
+- `git diff --check`: passed. PR/growth formulas, Coach, Player schema/repository,
+  and Growth Debug production code are unchanged.
+- No new type/lint/export warnings were reported. The previously documented
+  development-Web SVG `accessible={false}` warning is outside this change; this
+  pass used the production web export, not a new Metro warning audit.
+- Playwright is isolated external tooling, not an app dependency. Run with
+  `NODE_PATH=/tmp/ascend-debug-qa/node_modules`,
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-debug-qa/browsers`, and `ASCEND_QA_URL`
+  pointing at a locally served production export.
 - No physical iPhone testing is claimed.
 
 ## iPhone Expo Go verification
