@@ -10,6 +10,8 @@ import type { ActualResult, WorkoutSession } from "@/types/session";
 import type { SetTarget } from "@/types/training";
 import { colors } from "@/config/theme";
 import { useGrowthPresentation } from "@/presentation/provider";
+import { useRewards } from "@/rewards/provider";
+import { WorkoutRewards } from "@/components/rewards/rewards";
 export const durationLabel = (seconds: number) =>
   `${Math.floor(seconds / 60)
     .toString()
@@ -27,6 +29,7 @@ export function LiveWorkout({
 }) {
   const { commit } = useSessions();
   const presentGrowth = useGrowthPresentation();
+  const { request: requestRewards } = useRewards();
   const current = position(session);
   const [now, setNow] = useState(() => Date.now());
   const [busy, setBusy] = useState(false);
@@ -84,9 +87,10 @@ export function LiveWorkout({
           setId: current.set.id,
           actual,
         });
-        if (next.completed.some((x) => x.id === session.id)) {
+        const completed = next.completed.find((x) => x.id === session.id);
+        if (completed) {
           onComplete(session.id);
-          presentGrowth(session.id);
+          requestRewards(completed, () => presentGrowth(session.id));
         }
       } catch (e) {
         setError(
@@ -97,7 +101,7 @@ export function LiveWorkout({
         setBusy(false);
       }
     },
-    [current, commit, session.id, onComplete, presentGrowth],
+    [current, commit, session.id, onComplete, presentGrowth, requestRewards],
   );
   async function skipRest() {
     if (lock.current || !deadline) return;
@@ -300,6 +304,7 @@ export function SessionSummary({
           completed
         </Text>
       </Panel>
+      <WorkoutRewards sessionId={session.id} />
       {session.exercises.map((entry) => (
         <Panel key={entry.id} title={entry.exercise.name}>
           {entry.sets.map((set, i) => (

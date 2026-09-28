@@ -8,6 +8,7 @@ import { PlayerSummary } from "@/components/player/player-summary";
 import { RivalPanel } from "@/components/rival/rival-panel";
 import { weekly, recovery, season } from "@/data/mock";
 import { colors } from "@/config/theme";
+import { CoinBalance, WeeklyTraining } from "@/components/rewards/rewards";
 export default function Home() {
   const { data } = useGrowth();
   const player = data?.player;
@@ -35,29 +36,9 @@ export default function Home() {
           <Button label="OPEN PLAYER" onPress={() => router.push("/player")} />
         </Panel>
       )}
+      <CoinBalance />
       <Panel>
-        <View style={s.sectionHeading}>
-          <Text style={s.sectionTitle}>WEEKLY TARGET</Text>
-          <Text style={h.progress}>
-            {weekly.completed}
-            <Text style={h.target}> / {weekly.target} workouts</Text>
-          </Text>
-        </View>
-        <View
-          accessible
-          accessibilityLabel={`${weekly.completed} of ${weekly.target} workouts this week`}
-          style={h.segments}
-        >
-          {Array.from({ length: weekly.target }, (_, i) => (
-            <View
-              key={i}
-              style={[
-                h.segment,
-                i < weekly.completed && { backgroundColor: colors.bronze },
-              ]}
-            />
-          ))}
-        </View>
+        <WeeklyTraining />
         <Button
           label="START TODAY'S TRAINING"
           onPress={() => router.push("/train")}
@@ -91,20 +72,6 @@ export default function Home() {
   );
 }
 const h = StyleSheet.create({
-  progress: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: colors.text,
-    fontVariant: ["tabular-nums"],
-  },
-  target: { fontSize: 13, color: colors.muted, fontWeight: "400" },
-  segments: { flexDirection: "row", gap: 6 },
-  segment: {
-    flex: 1,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.border,
-  },
   recovery: {
     flexDirection: "row",
     flexWrap: "wrap",

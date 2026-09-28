@@ -2,7 +2,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Screen, Panel, s } from "@/components/ui/primitives";
 import { Emblem, Icon, type IconName } from "@/components/ui/icon";
-import { creditBalance } from "@/data/mock";
+import { CoinBalance } from "@/components/rewards/rewards";
 import { colors, cosmeticCategories } from "@/config/theme";
 const icons: IconName[] = [
   "grid",
@@ -16,14 +16,10 @@ const icons: IconName[] = [
 export default function Shop() {
   return (
     <Screen kicker="SHOP / MAKE IT YOURS" title="YOUR OWN SIGNATURE">
-      <Panel>
-        <View style={s.sectionHeading}>
-          <Text style={s.eyebrow}>CREDIT BALANCE</Text>
-          <Text style={t.balance}>
-            {creditBalance.toLocaleString("en-US")} <Text style={t.cr}>CR</Text>
-          </Text>
-        </View>
-      </Panel>
+      <CoinBalance />
+      <Text style={s.fine}>
+        Customization is coming soon. Coins cannot be spent yet.
+      </Text>
       <Panel title="COSMETICS" kicker="COMING SOON">
         {cosmeticCategories.map((category, index) => (
           <View
@@ -50,8 +46,6 @@ export default function Shop() {
   );
 }
 const t = StyleSheet.create({
-  balance: { fontSize: 26, fontWeight: "800", color: colors.text },
-  cr: { fontSize: 13, color: colors.bronze },
   category: {
     flexDirection: "row",
     alignItems: "center",

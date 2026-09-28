@@ -65,7 +65,35 @@ same skip-rather-than-replay policy. Existing player/session/PR/Coach data is in
 
 - Full unit suite: 164 passed (142 existing + 22 card tests).
 - TypeScript and lint: passed.
-- Expo export and browser regressions: pending final results.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-card-export-final`:
+  passed; iOS/Android Hermes bundles and 13 static web routes generated.
+- Existing browser regressions passed: `browser-growth`, `browser-records`,
+  `browser-input`, `browser-audit`, `browser-overlays`, `browser-sessions`,
+  `browser-coach`, `browser-presentation`, and development-only `browser-growth-debug`.
+  The growth test now asserts removal of manual preview controls instead of pressing
+  the obsolete Gold/Low buttons. All remaining existing assertions are retained.
+- `browser-cards` passed: Bronze High and existing Silver/Gold/Purple/ASCEND render
+  consistently on HOME/PLAYER without historical popups or saved Player changes.
+  A fresh live workout crosses Silver → Gold, displays OVR UP before CARD EVOLUTION,
+  and shares the existing consumed identity without replay after restart.
+- Card and presentation tests were rerun on the final export after the text-layout
+  adjustment. Visually inspected the 320px evolution/ASCEND screenshots and 1.5×
+  text approximation; card headers and stats wrap. Presentation regression also
+  covers 390px, reduced motion, dismissal and interruption while visible.
+- Early card test attempts had an empty fixture workout name and an above-limit
+  planned rep target. Corrected the isolated fixtures to respect existing validation;
+  no workout validation or growth rules were changed to make tests pass.
+- TypeScript/lint have no new warnings. The known development-Web SVG
+  `accessible={false}` React warning remains unchanged; Growth Debug still passed
+  with zero writes on open/refresh and production entry absence. No page exceptions
+  occurred in the successful focused card/presentation flows.
+- `git diff --check` passed. PR/growth/Coach code, Player/session repositories and
+  presentation controller/provider/consumption repository remain unchanged.
+- Browser tooling remains outside app dependencies. Use
+  `NODE_PATH=/tmp/ascend-debug-qa/node_modules`,
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-debug-qa/browsers`, and `ASCEND_QA_URL`
+  pointing to a local production export. Growth Debug additionally requires a
+  development Metro URL and `ASCEND_QA_PROD_URL` for its production check.
 - Browser fixtures for high ratings are isolated synthetic, schema-valid ledgers;
   they test presentation, not the Phase 3B balancing formula. Production records
   are never modified to force a tier. Existing growth tests cover the formulas.
