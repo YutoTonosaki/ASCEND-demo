@@ -84,7 +84,45 @@ Future reward rebalance/schema changes need explicit compatibility handling.
 
 ## Verification
 
-Verification results are recorded below after the final checks.
+- `npm test`: **200 passed, 0 failed** (164 existing + 36 reward tests).
+- `npm run typecheck`: passed. `npm run lint`: passed without new warnings.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-rewards-final-export`:
+  passed, generating iOS/Android Hermes bundles and 13 static web routes.
+- `browser-rewards.cjs`: passed first-day +10, same-day zero, third-day +40,
+  capped distinct days, next-week reset with preserved balance, HOME/SHOP agreement,
+  reload/history/PLAYER no awards, reward-only write failure/retry, and corrupt
+  data preservation/recovery. Isolated browser time fixtures use local dates;
+  developer workout history was never changed.
+- Existing `browser-growth`, `browser-records`, `browser-input`, `browser-audit`,
+  `browser-overlays`, `browser-sessions`, `browser-coach`, `browser-presentation`
+  and `browser-cards`: all passed. Card Evolution additionally verifies one daily
+  award, unchanged reward storage after restart, and no historical rewards.
+- Development `browser-growth-debug`: passed; opening/refreshing still performs
+  zero storage writes, and production debug navigation remains absent.
+- 320px HOME, weekly-bonus completion and enlarged reward-text screenshots visually
+  inspected. Reward browser flow has no horizontal overflow or page exceptions;
+  reduced motion is enabled. Existing regressions also cover 390px and simulated
+  modal safe areas. Native Dynamic Type/VoiceOver/safe areas need phone checks.
+- `git diff --check`: passed. Compared with the pre-rewards commit, PR, Growth,
+  Coach, Player/session repositories and presentation controller/provider/repository
+  production files are unchanged. Only the LiveWorkout completion integration
+  releases its existing presentation request after the independent reward attempt.
+- Early reward browser attempts exposed test-only hydration timing and duplicate
+  mounted tab selectors. Tests now wait for loaded state and assert agreement of
+  all mounted balance values; no product logic was altered for those retries.
+- Development Metro reported the existing SVG `accessible={false}` React warning,
+  an Expo update advisory and an old cache deserialization fallback to a full crawl.
+  Debug verification subsequently passed. Final type/lint/export reported no new
+  warnings. Dependencies were not upgraded for unrelated advisories.
+- Playwright/Prettier remain isolated in `/tmp/ascend-rewards-qa`, outside app
+  dependencies. Browser tests used the production reward export; the final export
+  also removes the unused mock credit constant, with no runtime behavior change.
+  Set `NODE_PATH=/tmp/ascend-rewards-qa/node_modules`,
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-rewards-qa/browsers`, and `ASCEND_QA_URL`
+  to the served export. Growth Debug uses a Metro development URL plus
+  `ASCEND_QA_PROD_URL` for its production check.
+- Physical iPhone testing was **not performed** for this phase. User verification
+  of Phase 3C-2 does not verify the new rewards functionality.
 
 ## iPhone Expo Go verification
 

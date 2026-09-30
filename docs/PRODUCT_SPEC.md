@@ -120,6 +120,21 @@ Consistency is also separate from long-term physical ability.
 
 ---
 
+### Phase 3B implemented rating model
+
+PLAYER uses six body-part ratings and OVR derived as their arithmetic mean, floored
+for display and capped at 99. Fictional athletic ratings are removed from the player
+card. Existing optional Baselines establish primary Chest/Legs/Core values; missing
+areas remain provisional. Initialization is explicit and snapshots its evidence.
+First suitable new performance can assess a provisional area; first PRs give no growth.
+Later comparable improvements give bounded fractional growth with early multipliers,
+high-rating diminishing, normalized body allocation and per-event/session/day caps.
+Completed workouts with multiple distinct exercise improvements can receive a small
+capped bonus. Old history does not award retroactive growth. Exact versioned game
+rules are in Game System section 47. Ratings are game abstractions, not fitness ranks.
+Player persistence is independent of sessions, plans and profile; retries preserve
+stored ratings. Phase 3C-1 presentation is described below; Career and rewards remain deferred.
+
 # 6. Body Ratings
 
 V1 Body Ratings:
@@ -169,10 +184,9 @@ BRONZE
 
 Exact OVR boundaries remain configurable and may be balanced later.
 
-The current tier is earned through ability, not selected like a cosmetic. PLAYER
-shows current Bronze / OVR 58 / next Silver separately from its appearance preview.
-The four finish and three intensity controls only preview the card; they do not
-change or persist the Player's earned tier. No tier calculations are active.
+Phase 3C-2 replaces manual preview controls with earned appearance derived from
+actual OVR and compact next-evolution information. See its threshold table below.
+Phase 3B actual OVR and six body ratings remain unchanged.
 
 ---
 
@@ -358,18 +372,81 @@ reps, weight in kilograms + reps, or duration in seconds. All-set controls speed
 common changes; expandable details allow individual targets, rest, and ordering.
 Users can view, edit, duplicate, and confirm deletion of plans. Duplicates receive
 independent plan/entry/set IDs. No estimated duration is shown without a reliable
-basis. Start Workout is unavailable until active sessions are implemented.
+basis. Start Workout now opens a separate Live Workout session after saving.
 
 Planning targets are never actual performance: a 12/12/12 target can later coexist
 with a 14/12/10 session result. Saving a plan does not complete a workout, change
-Form or ratings, or award rewards. AI Coach and actual Workout History remain
-unavailable. A future AI Coach will produce this same editable plan shape.
+Form or ratings, or award rewards. Phase 2C AI Coach produces this same editable
+plan shape. Workout History reads completed sessions, never templates.
 
 Custom exercises, Recent selections, and saved plans persist on the device.
 Corrupt/incompatible storage remains unchanged with retry or explicit backed-up
 reset; storage failures show a retryable error. Unsaved workout changes remain
 while switching tabs, but are not persisted across app reloads. Back asks before
 discarding a changed workout. No cloud sync is added.
+
+Phase 2A.5 is a small data audit with the same UI. Existing version-1 plans retain
+their IDs, order, per-set targets, and rest configuration. Safe normalization may
+fill absent optional custom metadata or clean Recent, after a local raw backup;
+it never invents planned performance. Unrecoverable data keeps the existing retry
+and backed-up reset flow. Standard metadata now represents Dead Hang across Back
+and Arms, Inverted Row using Low Bar, and Jumping Jack across Legs and Shoulders.
+These broad labels do not calculate development or prescribe training.
+
+### Phase 2B: execution evidence
+
+Start a saved workout to copy its name, ordered targets/rest, and full exercise
+metadata into an independently identified session. Record actual reps, kg + reps,
+or seconds separately. Inputs begin at targets, but only COMPLETE SET records
+performance; zero is valid. One set advances per confirmation. Positive rest before
+another set uses a persisted deadline; expiry or SKIP REST continues in snapshot
+order. The last confirmation saves a factual summary and completed history.
+
+One active session survives reload and tab navigation. Resume from TRAIN; unconfirmed
+input edits reset to the target after reload. No destructive exit is added. Workout
+History shows date, exercises, sets, duration, and target/actual evidence. FINISH
+only returns to TRAIN. Template/catalog edits and deletion never relabel history.
+Duration includes rest and time away. Time-based actual seconds are entered manually;
+the integrated exercise timer and sound/haptic cues below remain future work.
+
+Sessions use a separately validated `ascend.sessions.v1` version-1 document with
+isolated retry/backed-up reset. Existing plan storage is unchanged. No rating,
+PR, Form, recovery, weekly, reward, or AI calculations run in Phase 2B.
+
+### Phase 2C: AI Coach foundation
+
+AI Coach is a deterministic local recommendation tool, not an AI chat or external
+service. Optional setup collects experience, goal (default strength), optional
+height/weight, location/equipment, preferred minutes/count and optional weekly days.
+Default 8 minutes / up to 3 exercises keeps proposals short. Setup is skippable;
+Settings and AI Coach can reopen the profile. Body measurements never infer strength.
+
+An optional baseline uses existing Push-up, Bodyweight Squat and Plank entries.
+Users may confirm a comfortable result performed now, enter a known result, or
+skip individual/all movements. No maximum test is required; stop for pain, dizziness
+or unusual discomfort. Baselines are profile references, never fabricated sessions.
+
+Automatic proposals use profile preferences and completed session evidence.
+Customize Today overrides body areas, location, equipment, minutes and count for
+one proposal. Equipment is a hard all-items constraint and Bodyweight is implicit.
+Location labels do not grant equipment access: the selected list is what the user
+can use there. No separate Home/Gym inventories are inferred from missing metadata.
+Custom exercises need explicit familiar-movement opt-in because difficulty is unknown.
+
+Targets indicate completed-session evidence, baseline evidence, an initial suggestion,
+or a required load confirmation. Recent matching confirmed results take priority;
+zero results never become missing data. Unknown external loads remain unset until
+explicitly entered/confirmed. Templates keep existing positive reps/seconds rules.
+Proposals consider recent body-area involvement, retain ordinary rests, and reduce
+sets/count to fit an approximate time budget. No recovered/ready percentages or
+negative rest-day feedback. Impossible constraints show an explanation/manual option.
+
+Review shows targets and their basis. Accept saves exactly one standard WorkoutPlan;
+Customize opens the existing builder. Generating alone saves no template or session.
+Starting still requires a saved plan and uses the existing Live Workout engine.
+Profile edits affect future proposals only. `ascend.coach.v1` has independent
+validation, retry and explicit backed-up reset; no existing storage migration.
+No OVR, progression, PR, reward, weekly/Form or Career system is updated.
 
 ---
 
@@ -488,6 +565,27 @@ Bench Press performance
 Squat performance
 
 PRs provide strong evidence of real improvement.
+
+### Phase 3A: Personal Records foundation
+
+PLAYER displays real PRs from validated, explicitly confirmed session sets, including
+confirmed sets in the persisted active workout. Targets and optional Baseline entries
+never qualify. Repetitions and seconds use the highest single set. Weighted records
+keep maximum completed kg and independent best repetitions at each exact kg load.
+At least one completed rep is required for a weighted record; zero kg remains valid.
+Explicit zero reps/seconds remain valid records for their respective tracking types.
+
+Stable exercise IDs preserve records across renaming and template deletion. Different
+tracking types remain independent if an exercise changes tracking type later. Display
+names come from the latest eligible historical snapshot. No name-based merging.
+
+An initial value establishes a record; greater values improve it; equal/lower values
+maintain it. PLAYER shows current bests, achievement dates and expandable load details.
+Comparison APIs expose the preceding record and per-metric outcomes for later growth;
+no growth, OVR, rewards, Career or automatic progression runs in Phase 3A.
+Records are derived on read from existing local session storage, never saved in a
+second database. Empty/loading/storage-error states replace fictional record values.
+
 
 ---
 
@@ -924,25 +1022,15 @@ Season victories can also create trophies.
 
 ---
 
-# 36. Credits
+# 36. Coins
 
-ASCEND contains an in-game currency.
+Phase 3C-3 uses Coins (replacing the earlier temporary CR / Credits label).
+Fresh saved workouts earn +10 once per local calendar day. Three distinct local
+workout days in a Monday–Sunday week award +30 once. See Game System section 50.
 
-Temporary name:
-
-CR — Credits
-
-Credits are earned through gameplay.
-
-Potential sources:
-
-- workouts;
-- Weekly Target;
-- Matches;
-- Season completion;
-- achievements.
-
-Credits purchase cosmetic content.
+Coins cannot be spent in the current app and never affect Ratings, OVR or Card Tier.
+Cosmetic purchases and possible Match/Season/achievement sources are future scope;
+they are not implemented by Phase 3C-3.
 
 ---
 
@@ -1249,3 +1337,33 @@ Interest incentives must respect recovery, sustainable progression, and weekly
 consistency; they must not encourage excessive training. Cosmetic rules are
 unchanged. Phase 1 supplies types/configuration/mock visuals only; dynamic Club
 Career belongs to Phase 4. Phase 2 remains the workout system.
+
+## Phase 3C-1 implemented completion presentation
+
+Fresh live-workout completion may show one full-screen Rating UP for net integer
+body increases, followed by OVR UP when the existing six-rating mean increases.
+The persisted finalized growth ledger is the evidence; no new growth is awarded.
+Assessment adjustments are labeled separately. Decimal-only growth stays in the
+existing developer debug panel. Continue/Close returns to the saved result.
+Historical completions never auto-replay. Display consumption is persisted separately
+before showing; interruption favors skipping over replay. See the Phase 3C-1 report.
+
+## Phase 3C-2 earned card appearance
+
+HOME and PLAYER reflect actual displayed OVR: Bronze 0–59 (Standard 0–49, High
+50–59), Silver 60–74, Gold 75–89, Purple 90–98, ASCEND at 99. PLAYER shows current
+tier/finish and next required OVR instead of manual visual selectors. ASCEND shows
+maximum evolution. New tier transitions appear after Rating/OVR UP using the same
+consumed session identity; older history never auto-celebrates. Card evolution is
+appearance only and grants no physical growth, Coins or inventory.
+
+## Phase 3C-3 consistency rewards
+
+Fresh saved workouts receive +10 Coins once per local calendar day. Three distinct
+days within Monday–Sunday add +30 once; HOME shows at most 3/3 DAYS. Rest is not
+penalized, there is no streak, and no PR or Rating improvement is required. HOME
+and SHOP display the real balance; Coins are not spendable yet. Workout completion
+shows only durably committed rewards, with independent retryable failure feedback.
+Old history earns nothing retroactively. The separate rewards ledger preserves
+resolved local days/weeks across timezone changes and never changes Player data.
+See Game System section 50 and the Phase 3C-3 verification report.

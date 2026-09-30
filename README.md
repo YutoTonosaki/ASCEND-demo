@@ -247,7 +247,7 @@ When implementing a phase:
 7. verify TypeScript;
 8. report changes;
 9. stop before the next phase.
-## Current application — Phase 2A
+## Current application — Phase 3C-2
 
 The native Expo application is in [`my-app`](./my-app/README.md). Run it on your
 phone from this repository root:
@@ -272,7 +272,51 @@ per-set targets and configurable rest. These are plans, not recorded performance
 
 Training data is stored locally through an AsyncStorage repository with schema
 validation and serialized writes. No account, backend, or API is required.
-Player/Career values remain illustrative. Active sessions, timers, and actual
-workout history are Phase 2B; physical progression remains Phase 3.
+Player/Career values remain illustrative. Phase 2B adds saved-workout execution,
+rest countdowns, resumable sessions, and factual history; physical progression
+remains Phase 3.
 
 See [`my-app/README.md`](./my-app/README.md) for architecture and verification.
+
+Phase 2A.5 audits the existing training foundation: shared exercise validation,
+corrected V1 movement metadata, detached repository copies, and conservative
+version-1 data normalization. It is a stabilization checkpoint before Live Workout;
+it did not introduce execution or progression.
+
+Phase 2B records confirmed reps, kg + reps, or seconds independently of targets.
+Sessions copy exercise metadata and survive later template/catalog changes.
+One active workout resumes from TRAIN after reload; completed sessions appear in
+Workout History. Session storage uses `ascend.sessions.v1` independently of plans.
+See [Phase 2B verification](my-app/docs/PHASE2B_VERIFICATION.md).
+
+
+Phase 2C adds a local, deterministic AI Coach: optional profile/baseline setup,
+equipment- and history-aware proposals, explicit unknown-load confirmation, and
+review/customization through the existing workout builder. Proposals, saved plans,
+and historical sessions remain separate. No external AI API or progression engine.
+See [Phase 2C verification](my-app/docs/PHASE2C_VERIFICATION.md).
+
+
+Phase 3A adds exercise-specific Personal Records on PLAYER, derived from confirmed
+session sets (including persisted confirmed sets in the active workout). Reps and
+seconds use a single-set maximum; weighted records keep maximum kg and best reps
+at every recorded load. No independent PR storage, migration, growth or rewards.
+See [Phase 3A verification](my-app/docs/PHASE3A_VERIFICATION.md).
+
+
+Phase 3B adds explicit Player initialization from optional existing Baselines,
+provisional/assessed body ratings, bounded PR-based fractional growth and mean-body
+OVR. Player state and the duplicate-prevention ledger use `ascend.player.v1`;
+pre-initialization history remains PR evidence without retroactive growth.
+See [Phase 3B verification](my-app/docs/PHASE3B_VERIFICATION.md).
+Phase 3C-1 adds integer Rating UP / OVR UP presentation only; see
+[verification](my-app/docs/PHASE3C_1_VERIFICATION.md). Career, Match, rewards,
+Shop and rewards remain deferred. Phase 3C-2 adds earned Card Evolution; see
+[verification](my-app/docs/PHASE3C_2_VERIFICATION.md).
+
+## Phase 3C-3 — Consistency Rewards
+
+The native app awards Daily Workout +10 Coins and weekly three-distinct-day +30
+Coins from fresh, saved completions only. HOME uses real weekly days and HOME/SHOP
+show the persisted balance. Coins do not affect physical progression and cannot
+be spent. See `my-app/docs/PHASE3C_3_VERIFICATION.md` for verification and limits.
