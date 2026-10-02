@@ -1163,25 +1163,10 @@ ARCHETYPE
 
 # 44. Career
 
-CAREER contains:
-
-CURRENT SEASON
-
-CURRENT CLUB
-
-CLUB DETAILS
-
-TRANSFER CENTER
-
-RIVAL
-
-MATCH
-
-SEASON HISTORY
-
-TROPHY ROOM
-
-PAST PLAYER CARDS
+Phase 4A displays first-Club onboarding, current Club, Club details, real Player
+status and permanent tenure history. Season, Match and Transfer Center are future
+placeholders. There are no mock win/loss records, standings or transfer offers.
+Season History, Trophy Room and Past Player Cards await later phases.
 
 ---
 
@@ -1367,3 +1352,18 @@ shows only durably committed rewards, with independent retryable failure feedbac
 Old history earns nothing retroactively. The separate rewards ledger preserves
 resolved local days/weeks across timezone changes and never changes Player data.
 See Game System section 50 and the Phase 3C-3 verification report.
+
+## Phase 4A — Club identity and onboarding
+
+CAREER replaces the mock Season/Rival dashboard with not-started onboarding or a
+real current-Club dashboard, joined date, history and expandable Club profile.
+An initialized Player chooses Tokyo Zenith, Osaka Forge or Yokohama Nova, inspects
+details, then explicitly confirms JOIN CLUB. Recommended OVR never blocks selection.
+There is no change/reset Club control after joining. Missing Career storage is not
+an implicit Tokyo Zenith assignment; existing Player/workout/Coins remain intact.
+
+Twelve fictional Clubs span Japan, England, Germany, Spain, Italy and France.
+Reputation 1–5 and preferred body areas are informational future-facing metadata;
+archetype preferences stay empty until that system exists. No physical-stat effects.
+HOME and the earned Player Card show optional real Club identity. Future systems
+use subtle Coming Soon placeholders without fabricated matches or standings.

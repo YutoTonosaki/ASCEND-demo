@@ -605,3 +605,11 @@ factual completion rewards, real HOME weekly progress and HOME/SHOP balance.
 No purchases, inventory, streak penalties or physical Rating effects. Verification
 and remaining device checks: `my-app/docs/PHASE3C_3_VERIFICATION.md`. Phase 3C
 implementation is complete after automated verification; Phase 4 is not started.
+
+## Phase 4A — Career Foundation & Club System
+
+Adds a 12-Club fictional catalog, three Japanese starting choices with explicit
+confirmation, independent Career persistence, validated tenure history and real
+HOME/PLAYER/CAREER identity. Removes the mock Career Season/Rival statistics.
+Verification is recorded in `my-app/docs/PHASE4A_VERIFICATION.md`. Phase 4B and all
+Season/Match/Transfer/Shop systems remain outside this implementation.

@@ -1,14 +1,15 @@
 # Game logic boundary
 
-Reserved for future pure game modules. Phase 1 contains no game calculations.
-UI consumes typed fixtures from `src/data/mock.ts`. Add progression, recovery,
-match, and season logic here only in their authorized roadmap phases.
-Storage adapters belong in `src/storage`, not presentation components.
+Pure domain logic lives beside its providers (`growth`, `records`, `rewards`,
+`career` and `cards`); persistence belongs in `src/storage`, not UI components.
+Future Match/Season modules may use this directory when those phases are authorized.
 
-Club Career is also deferred to Phase 4. Its contracts are in `src/types/club.ts`;
-the draft catalog is `src/config/clubs.ts`, and current mock career data is
-`src/data/club-career.ts`. Future interest/offer/window decisions belong in pure
-game modules here, never card components. Explicit transfer acceptance must
-preserve tenures and Season identity snapshots without modifying physical ratings.
+Phase 4A Career persistence lives in `src/career/` and
+`src/storage/career-repository.ts`. The Club catalog is `src/config/clubs.ts`;
+future-facing contracts remain in `src/types/club.ts`. The obsolete mock
+`data/club-career.ts` has been removed.
 
-Phase 4A Career persistence now lives in `src/career/` and `src/storage/career-repository.ts`. The former mock `data/club-career.ts` has been removed. Seasons, scouting and transfers remain future work.
+Seasons, scouting and transfers remain future work. Explicit transfer acceptance
+must preserve tenures and immutable Season identity snapshots without modifying
+physical ratings. Interest/offer/window rules belong in pure domain modules,
+never card components.

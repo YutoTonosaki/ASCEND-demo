@@ -1,4 +1,4 @@
-# ASCEND — native Phase 3C
+# ASCEND — native Phase 4A
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -240,3 +240,10 @@ and 30 more upon the third distinct day of a Monday–Sunday week. HOME and SHOP
 show the real balance; HOME shows capped weekly days. Coins are not spendable.
 The independent reward ledger never changes Ratings, PRs or Card Tier. See
 `docs/PHASE3C_3_VERIFICATION.md` for storage, failure policy and device checks.
+
+## Phase 4A — Career Foundation
+
+CAREER offers explicit Japanese first-Club selection and persisted affiliation.
+HOME, PLAYER and evolved cards share that identity. No Club is assigned until
+confirmation; OVR recommendations are not locks. See `docs/PHASE4A_VERIFICATION.md`
+for catalog, independent storage, tests, limitations and iPhone steps.

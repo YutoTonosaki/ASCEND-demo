@@ -320,3 +320,11 @@ The native app awards Daily Workout +10 Coins and weekly three-distinct-day +30
 Coins from fresh, saved completions only. HOME uses real weekly days and HOME/SHOP
 show the persisted balance. Coins do not affect physical progression and cannot
 be spent. See `my-app/docs/PHASE3C_3_VERIFICATION.md` for verification and limits.
+
+## Phase 4A — Career Foundation
+
+The native app now has 12 original fictional Clubs, explicit first-club selection
+from Japan, and an independent persistent Career. HOME, PLAYER and Card Evolution
+use the selected Club identity. No Club is inferred from old mock content.
+Career never changes physical progression or Coins. See
+`my-app/docs/PHASE4A_VERIFICATION.md`; Seasons, Matches and Transfers remain deferred.

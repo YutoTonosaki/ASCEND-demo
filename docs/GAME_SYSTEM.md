@@ -688,11 +688,11 @@ Avoid magic numbers distributed across UI code.
 
 # 39. Club Career Model (Phase 4 contracts)
 
-Keep Club Career separate from physical Player ratings. The Phase 1 TypeScript
-contracts are in `my-app/src/types/club.ts`; fixtures and the replaceable Club
-catalog live in `src/data/club-career.ts` and `src/config/clubs.ts` within that app.
-No Club calculation, Club persistence, or transfer state machine is added.
-The Phase 2A storage adapter persists training plans only.
+Keep Club Career separate from physical Player ratings. The original future-facing
+contracts are in `my-app/src/types/club.ts`; the catalog is `src/config/clubs.ts`.
+Phase 4A replaces mock affiliation with independent Career persistence (section 51).
+The table below also describes later Transfer/Season contracts, not implemented
+systems. The old `src/data/club-career.ts` mock has been removed.
 
 | Concept | Data / invariant |
 | --- | --- |
@@ -706,14 +706,13 @@ The Phase 2A storage adapter persists training plans only.
 
 Catalog Club reputation describes an organization's standing. The Player's
 `clubReputation` describes their relationship/standing at the current Club; its
-scale is TBD and it can be unset. Neither value is a physical rating. The mock
-uses an unset Player standing and role, rather than pretending to calculate them.
+scale is TBD and it is not persisted by Phase 4A. Neither value is a physical rating.
+Phase 4A displays Club Member without calculating standing or role progression.
 
-Dates use ISO calendar dates; display them without time-zone month shifts.
-Historical records must store identity copies, including crest geometry/colors,
-not only IDs resolved against the mutable live catalog. TypeScript readonly
-contracts express intent; future persistence must copy/validate data and enforce
-immutability. Current data remains in memory only.
+Phase 4A tenure dates use ISO timestamps and local display (section 51). Future
+immutable Season Cards must store identity copies, including crest geometry/colors,
+not only IDs resolved against a mutable live catalog. The current tenure foundation
+retains stable Club IDs; it does not implement permanent Season Cards.
 
 # 40. Club Reputation and Interest
 
@@ -1278,3 +1277,37 @@ Factual workout results show committed Daily/Weekly Coins and weekly days; norma
 Rating/Card Evolution remains the only full-screen progression presentation.
 Rewards do not alter PRs, Ratings, OVR, tiers or presentation consumption. HOME and
 SHOP show Coins without spending, inventory or purchases. Phase 4 remains deferred.
+
+# 51. Phase 4A Career Foundation
+
+The existing `src/config/clubs.ts` catalog now has 12 original Clubs and crests.
+Lowercase environment identifiers supplement existing generic uppercase league
+identifiers; no licensed league or real club assets are used. Reputation 1–5 means
+development, growing competitive, established, high-level, elite. Recommended OVR
+and preferred body areas never gate first selection or enter progression formulas.
+Archetype preferences remain empty; no scouting/interest calculation runs.
+
+`ascend.career.v1` independently stores version 1 and a Career containing Player ID
+and ordered `clubHistory` entries {clubId, joinedAt, leftAt}. Current Club and joined
+time derive from the last entry. Exactly one final entry is open; prior tenures
+must close at the next joinedAt, with valid ISO timestamps and known Club IDs.
+Contradictions fail closed. The stable IDs must remain in the catalog permanently;
+Phase 4A history resolves display identity from that catalog. Future immutable
+Season Cards will need identity snapshots as described in section 39; none are
+created in this phase. No transfer command or speculative Season records exist.
+
+Missing storage means Career not started. Onboarding requires the existing Player
+identity (initialize explicitly on PLAYER if absent), and offers the three Japanese
+Clubs without OVR checks. Inspecting/backing out writes nothing. Explicit JOIN CLUB
+queues a fresh read and a single complete write, with an ISO timestamp captured at
+the confirmation commit attempt. State publishes only after successful persistence.
+Repeated confirmations return the established Career without another tenure or
+club switch. Mismatched Player identity blocks takeover. Corrupt/newer/unreadable
+storage is preserved and blocks writes; retry never resets data. No other key is
+written. This uses the existing single-app-instance repository concurrency model.
+
+CAREER displays the real affiliation, profile, current OVR/tier and tenure. HOME,
+PLAYER and Card Evolution render that same optional identity. No PR, Growth, OVR,
+Card Tier, reward, Coach or presentation-consumption rule changes. Phase 4B may add
+Seasons at a separate boundary; no Match, Rival generation, Transfer or reward
+engine is included in 4A.
