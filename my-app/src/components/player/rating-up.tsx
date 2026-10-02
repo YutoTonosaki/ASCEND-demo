@@ -1,3 +1,4 @@
+import { useCareer } from "@/career/provider";
 import { Component, type PropsWithChildren } from "react";
 import { Text, View } from "react-native";
 import { Sheet, Action } from "@/components/training/controls";
@@ -27,6 +28,7 @@ export function RatingUpScreen({
   result: RatingUp;
   onContinue: () => void;
 }) {
+  const { club } = useCareer();
   return (
     <Sheet
       title={result.areas.length ? "RATING UP" : "OVR UP"}
@@ -74,6 +76,7 @@ export function RatingUpScreen({
             {cardTiers[result.evolution.to].label.toUpperCase()}
           </Text>
           <PlayerCard
+            club={club}
             player={{
               name: "PLAYER",
               ovr: result.evolution.ovr,

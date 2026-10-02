@@ -144,6 +144,8 @@ function fixture(target) {
     page.on("pageerror", (e) => errors.push(e.message));
     const url = process.env.ASCEND_QA_URL;
     await page.goto(url);
+    const careerRaw = JSON.stringify({version:1,career:{playerId:"card-qa",clubHistory:[{clubId:"tokyo-zenith",joinedAt:new Date().toISOString(),leftAt:null}]}});
+    await page.evaluate(raw=>localStorage.setItem("ascend.career.v1",raw),careerRaw);
     for (const [ovr, tier] of [
       [50, "BRONZE"],
       [60, "SILVER"],
@@ -162,6 +164,8 @@ function fixture(target) {
       await page.getByRole("tab", { name: "PLAYER", exact: true }).click();
       const card = page.getByTestId("player-card");
       await card.waitFor();
+      await card.getByLabel("Tokyo Zenith, Japan",{exact:true}).waitFor();
+      assert.equal(await page.evaluate(()=>localStorage.getItem("ascend.career.v1")),careerRaw);
       assert.ok((await card.innerText()).includes(tier));
       if (ovr === 50)
         assert.ok((await card.innerText()).includes("HIGH FINISH"));
@@ -241,6 +245,8 @@ function fixture(target) {
       .getByRole("button", { name: "COMPLETE SET", exact: true })
       .click();
     await page.getByTestId("card-evolution").waitFor();
+    await page.getByTestId("card-evolution").getByLabel("Tokyo Zenith, Japan",{exact:true}).waitFor();
+    assert.equal(await page.evaluate(()=>localStorage.getItem("ascend.career.v1")),careerRaw);
     const body = await page.locator("body").innerText();
     assert.ok(body.indexOf("OVR UP") < body.indexOf("CARD EVOLUTION"));
     assert.ok(body.includes("SILVER → GOLD"));

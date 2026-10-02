@@ -1,4 +1,4 @@
-import { currentClub } from "@/data/club-career";
+import { useCareer } from "@/career/provider";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Screen, Panel, Placeholder, s } from "@/components/ui/primitives";
@@ -14,6 +14,7 @@ import { useGrowth } from "@/growth/provider";
 import { displayRating, overall } from "@/growth/domain";
 import { cardAppearance } from "@/cards/domain";
 export default function PlayerScreen() {
+  const { club: currentClub } = useCareer();
   const [debugOpen, setDebugOpen] = useState(false);
   const { data } = useGrowth();
   const player = data?.player;

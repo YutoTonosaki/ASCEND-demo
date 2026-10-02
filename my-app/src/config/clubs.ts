@@ -1,4 +1,4 @@
-import type { Club, ClubReputationLevel, LeagueId } from "@/types/club";
+import type { Club, ClubReputationLevel, LeagueId } from "../types/club";
 
 export const leagues: Record<
   LeagueId,
@@ -19,13 +19,14 @@ export const clubReputationLevels: Record<ClubReputationLevel, string> = {
   4: "High-level",
   5: "Elite",
 };
-/** Phase 1 catalog: one fictional club. Additional league content is intentionally deferred. */
+/** Original fictional ASCEND clubs. Expectations are informational, never eligibility gates. */
 export const clubs: Readonly<Record<string, Club>> = {
   "tokyo-zenith": {
     id: "tokyo-zenith",
     name: "Tokyo Zenith",
     shortName: "TZ",
     league: "JAPAN",
+    environment: "japan",
     country: "Japan",
     crest: {
       viewBox: "0 0 40 44",
@@ -36,9 +37,247 @@ export const clubs: Readonly<Record<string, Club>> = {
     secondaryColor: "#252a32",
     reputation: 1,
     recommendedOVR: 45,
-    preferredArchetypes: ["ALL-ROUNDER"],
-    preferredAttributes: ["ATH", "END"],
+    preferredArchetypes: [],
+    preferredAttributes: ["Core", "Legs"],
     description:
       "A Tokyo club built on versatile athletes, patient development, and lasting commitment.",
   },
+  "osaka-forge": {
+    id: "osaka-forge",
+    name: "Osaka Forge",
+    shortName: "OF",
+    league: "JAPAN",
+    environment: "japan",
+    country: "Japan",
+    reputation: 2,
+    recommendedOVR: 50,
+    primaryColor: "#f39a71",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Chest", "Arms"],
+    description:
+      "Patient craft and steady commitment shape this Osaka training collective.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M10 15 20 9 30 15v14L20 35 10 29Z M16 18h8v8h-8Z",
+    },
+  },
+  "yokohama-nova": {
+    id: "yokohama-nova",
+    name: "Yokohama Nova",
+    shortName: "YN",
+    league: "JAPAN",
+    environment: "japan",
+    country: "Japan",
+    reputation: 3,
+    recommendedOVR: 58,
+    primaryColor: "#83d8df",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Core", "Legs"],
+    description:
+      "A coastal club built around adaptable athletes and a thoughtful training culture.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M20 8 31 31H9Z M18 19h4v14h-4Z",
+    },
+  },
+  "london-crown": {
+    id: "london-crown",
+    name: "London Crown",
+    shortName: "LC",
+    league: "ENGLAND",
+    environment: "england",
+    country: "England",
+    reputation: 5,
+    recommendedOVR: 88,
+    primaryColor: "#d6bc79",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Back", "Core"],
+    description:
+      "An ambitious London institution that values composure and complete preparation.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M9 16 15 22 20 10 25 22 31 16v17H9Z",
+    },
+  },
+  "northbridge-united": {
+    id: "northbridge-united",
+    name: "Northbridge United",
+    shortName: "NU",
+    league: "ENGLAND",
+    environment: "england",
+    country: "England",
+    reputation: 2,
+    recommendedOVR: 53,
+    primaryColor: "#83bde6",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Legs", "Back"],
+    description:
+      "A community-rooted club where consistent effort builds lasting identity.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M10 12h5v16h10V12h5v21H10Z",
+    },
+  },
+  "berlin-einheit": {
+    id: "berlin-einheit",
+    name: "Berlin Einheit",
+    shortName: "BE",
+    league: "GERMANY",
+    environment: "germany",
+    country: "Germany",
+    reputation: 3,
+    recommendedOVR: 64,
+    primaryColor: "#aabce4",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Back", "Shoulders"],
+    description:
+      "Connected purpose and balanced preparation define this Berlin collective.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M9 12h8v8h6v-8h8v20h-8v-8h-6v8H9Z",
+    },
+  },
+  "munich-adler": {
+    id: "munich-adler",
+    name: "Munich Adler",
+    shortName: "MA",
+    league: "GERMANY",
+    environment: "germany",
+    country: "Germany",
+    reputation: 5,
+    recommendedOVR: 86,
+    primaryColor: "#df9cb7",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Chest", "Legs"],
+    description:
+      "A precise, ambitious club with a tradition of patient athletic development.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M8 16 20 9 32 16 25 18 20 32 15 18Z",
+    },
+  },
+  "madrid-solaris": {
+    id: "madrid-solaris",
+    name: "Madrid Solaris",
+    shortName: "MS",
+    league: "SPAIN",
+    environment: "spain",
+    country: "Spain",
+    reputation: 4,
+    recommendedOVR: 77,
+    primaryColor: "#e5c56e",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Core", "Legs"],
+    description:
+      "Bright ambition meets measured preparation at this Madrid club.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M18 9h4v8h8v4h-8v12h-4V21h-8v-4h8Z",
+    },
+  },
+  "valencia-orbit": {
+    id: "valencia-orbit",
+    name: "Valencia Orbit",
+    shortName: "VO",
+    league: "SPAIN",
+    environment: "spain",
+    country: "Spain",
+    reputation: 2,
+    recommendedOVR: 55,
+    primaryColor: "#e9a479",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Shoulders", "Core"],
+    description:
+      "A welcoming development environment built around coordinated movement.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M10 13h20v6H16v8h14v6H10Z",
+    },
+  },
+  "milano-veloce": {
+    id: "milano-veloce",
+    name: "Milano Veloce",
+    shortName: "MV",
+    league: "ITALY",
+    environment: "italy",
+    country: "Italy",
+    reputation: 4,
+    recommendedOVR: 78,
+    primaryColor: "#9dcdb3",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Legs", "Core"],
+    description:
+      "Deliberate preparation and a clear sense of identity guide this Milano club.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M8 13h6l6 13 6-13h6L20 36Z",
+    },
+  },
+  "paris-elan": {
+    id: "paris-elan",
+    name: "Paris Élan",
+    shortName: "PE",
+    league: "FRANCE",
+    environment: "france",
+    country: "France",
+    reputation: 5,
+    recommendedOVR: 87,
+    primaryColor: "#bea2ef",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Shoulders", "Core"],
+    description:
+      "An expressive Paris club that values versatility and sustained commitment.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M11 11h20v5H16v5h12v5H16v5h15v5H11Z",
+    },
+  },
+  "lyon-apex": {
+    id: "lyon-apex",
+    name: "Lyon Apex",
+    shortName: "LA",
+    league: "FRANCE",
+    environment: "france",
+    country: "France",
+    reputation: 3,
+    recommendedOVR: 63,
+    primaryColor: "#a8cde3",
+    secondaryColor: "#202730",
+    preferredArchetypes: [],
+    preferredAttributes: ["Back", "Arms"],
+    description:
+      "A grounded club focused on purposeful training and long-term development.",
+    crest: {
+      viewBox: "0 0 40 44",
+      outlinePath: "M20 2 36 11v22L20 42 4 33V11Z",
+      markPath: "M8 32 18 10h4l10 22h-6l-6-14-6 14Z",
+    },
+  },
 };
+
+export const startingClubs = Object.values(clubs).filter(
+  (club) => club.environment === "japan",
+);
+export function clubById(id: string): Club | undefined {
+  return Object.hasOwn(clubs, id) ? clubs[id] : undefined;
+}

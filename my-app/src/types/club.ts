@@ -1,4 +1,4 @@
-import type { AthleticRating } from "./domain";
+import type { BodyArea } from "./domain";
 
 export type LeagueId =
   "JAPAN" | "ENGLAND" | "SPAIN" | "GERMANY" | "ITALY" | "FRANCE";
@@ -31,12 +31,15 @@ export interface ClubIdentity {
   readonly primaryColor: string;
   readonly secondaryColor: string;
 }
+export type ClubEnvironment =
+  "japan" | "england" | "germany" | "spain" | "italy" | "france";
 export interface Club extends ClubIdentity {
+  readonly environment: ClubEnvironment;
   readonly reputation: ClubReputationLevel;
   /** Illustrative expectation, never a hard eligibility lock or rating bonus. */
   readonly recommendedOVR: number;
   readonly preferredArchetypes: readonly string[];
-  readonly preferredAttributes: readonly AthleticRating[];
+  readonly preferredAttributes: readonly BodyArea[];
   readonly description: string;
 }
 export interface ClubTenure {

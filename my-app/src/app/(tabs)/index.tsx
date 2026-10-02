@@ -1,6 +1,6 @@
 import { useGrowth } from "@/growth/provider";
 import { overall } from "@/growth/domain";
-import { currentClub } from "@/data/club-career";
+import { useCareer } from "@/career/provider";
 import { Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Screen, Panel, Button, s } from "@/components/ui/primitives";
@@ -10,6 +10,7 @@ import { weekly, recovery, season } from "@/data/mock";
 import { colors } from "@/config/theme";
 import { CoinBalance, WeeklyTraining } from "@/components/rewards/rewards";
 export default function Home() {
+  const { club: currentClub } = useCareer();
   const { data } = useGrowth();
   const player = data?.player;
   return (

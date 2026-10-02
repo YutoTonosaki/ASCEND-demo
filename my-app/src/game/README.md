@@ -10,3 +10,5 @@ the draft catalog is `src/config/clubs.ts`, and current mock career data is
 `src/data/club-career.ts`. Future interest/offer/window decisions belong in pure
 game modules here, never card components. Explicit transfer acceptance must
 preserve tenures and Season identity snapshots without modifying physical ratings.
+
+Phase 4A Career persistence now lives in `src/career/` and `src/storage/career-repository.ts`. The former mock `data/club-career.ts` has been removed. Seasons, scouting and transfers remain future work.

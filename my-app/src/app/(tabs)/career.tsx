@@ -1,136 +1,183 @@
-import { currentClub, clubJoinedLabel } from "@/data/club-career";
-import { ClubCrest } from "@/components/club/club-identity";
-import { Icon } from "@/components/ui/icon";
 import { useState } from "react";
-import { Text, View, StyleSheet, Pressable } from "react-native";
-import {
-  Screen,
-  Panel,
-  Choice,
-  Placeholder,
-  s,
-} from "@/components/ui/primitives";
-import { RivalAvatar } from "@/components/rival/rival-avatar";
-import { season, rival } from "@/data/mock";
-import { rivalColors } from "@/config/visuals";
-import { colors } from "@/config/theme";
-import type { RivalColor } from "@/types/domain";
-export default function Career() {
-  const [clubExpanded, setClubExpanded] = useState(false);
-  const [color, setColor] = useState<RivalColor>(rival.color);
+import { Text, View } from "react-native";
+import { router } from "expo-router";
+import { Screen, Panel, Placeholder, s } from "@/components/ui/primitives";
+import { Action, Sheet } from "@/components/training/controls";
+import { ClubCrest } from "@/components/club/club-identity";
+import { startingClubs, clubReputationLevels, clubById } from "@/config/clubs";
+import { useCareer } from "@/career/provider";
+import { useGrowth } from "@/growth/provider";
+import { overall } from "@/growth/domain";
+import { cardAppearance } from "@/cards/domain";
+import { cardTiers } from "@/config/visuals";
+import type { Club } from "@/types/club";
+function ClubProfile({ club }: { club: Club }) {
   return (
-    <Screen kicker="CAREER / THE LONG GAME" title="WRITE YOUR STORY">
-      <Panel title="CURRENT CHAPTER">
-        <View style={s.sectionHeading}>
-          <Text style={c.season}>
-            SEASON <Text style={{ color: colors.blue }}>{season.number}</Text>
+    <View style={{ gap: 10 }}>
+      <View style={s.row}>
+        <ClubCrest club={club} size={42} />
+        <View style={s.flex}>
+          <Text style={s.sectionTitle}>{club.name}</Text>
+          <Text style={s.fine}>
+            {club.shortName} · {club.country}
           </Text>
-          <View style={{ gap: 3 }}>
-            <Text style={s.eyebrow}>CURRENT RECORD</Text>
-            <Text style={[s.number, { fontSize: 26 }]}>
-              {season.wins}
-              <Text style={c.unit}>W</Text> — {season.losses}
-              <Text style={c.unit}>L</Text>
-            </Text>
-          </View>
         </View>
-        {currentClub && (
-          <View style={c.club}>
-            <Text style={s.eyebrow}>CURRENT CLUB</Text>
-            <View style={s.row}>
-              <ClubCrest club={currentClub} size={30} />
-              <View style={s.flex}>
-                <Text style={c.clubName}>{currentClub.name}</Text>
+      </View>
+      <Text style={s.muted}>
+        Reputation {club.reputation} / 5 ·{" "}
+        {clubReputationLevels[club.reputation]}
+      </Text>
+      <Text style={s.muted}>
+        Recommended OVR {club.recommendedOVR} · Informational only
+      </Text>
+      <Text style={s.muted}>{club.description}</Text>
+      <Text style={s.fine}>
+        Profile interests · {club.preferredAttributes.join(" / ")}. No effect on
+        your ratings.
+      </Text>
+    </View>
+  );
+}
+export default function CareerScreen() {
+  const career = useCareer(),
+    growth = useGrowth();
+  const [selecting, setSelecting] = useState(false),
+    [selected, setSelected] = useState<Club | null>(null),
+    [details, setDetails] = useState(false);
+  const player = growth.data?.player,
+    record = career.data?.career;
+  const canChoose =
+    !!player && !growth.error && !record && !!career.data && !career.error;
+  return (
+    <Screen kicker="CAREER / YOUR CLUB" title="WRITE YOUR STORY">
+      {career.error ? (
+        <Panel title="CAREER UNAVAILABLE">
+          <Text style={s.muted}>{career.error}</Text>
+          <Action
+            label="RETRY CAREER"
+            disabled={career.busy}
+            onPress={() => void career.retry()}
+          />
+        </Panel>
+      ) : !career.data ? (
+        <Text style={s.muted}>Loading career…</Text>
+      ) : record && career.club ? (
+        <>
+          <Panel title="CURRENT CLUB">
+            <ClubCrest club={career.club} size={52} />
+            <Text testID="current-club" style={s.sectionTitle}>
+              {career.club.name}
+            </Text>
+            <Text style={s.muted}>
+              {career.club.country} · Reputation {career.club.reputation} / 5
+            </Text>
+            <Action label="CLUB DETAILS" onPress={() => setDetails(!details)} />
+            {details && <ClubProfile club={career.club} />}
+          </Panel>
+          <Panel title="PLAYER STATUS">
+            <Text style={s.sectionTitle}>
+              {player
+                ? `OVR ${overall(player.ratings)} · ${cardTiers[cardAppearance(overall(player.ratings)).tier].label.toUpperCase()}`
+                : "Player data unavailable"}
+            </Text>
+            <Text style={s.muted}>Club Member</Text>
+          </Panel>
+          <Panel title="CAREER RECORD">
+            {record.clubHistory.map((entry, i) => (
+              <View
+                key={`${entry.clubId}:${entry.joinedAt}:${i}`}
+                style={{ gap: 5 }}
+              >
+                <Text style={s.sectionTitle}>
+                  {clubById(entry.clubId)!.name}
+                </Text>
+                <Text style={s.muted}>
+                  Joined {new Date(entry.joinedAt).toLocaleDateString()}
+                </Text>
                 <Text style={s.fine}>
-                  {currentClub.country}
-                  {clubJoinedLabel ? ` · Joined ${clubJoinedLabel}` : ""}
+                  {entry.leftAt
+                    ? `Left ${new Date(entry.leftAt).toLocaleDateString()}`
+                    : "Current club"}
                 </Text>
               </View>
-            </View>
-          </View>
-        )}
-        <View style={c.divider} />
-        <View style={s.sectionHeading}>
-          <View style={{ gap: 8 }}>
-            <Text style={s.eyebrow}>CURRENT RIVAL</Text>
-            <Text style={c.rival}>{rival.name}</Text>
-          </View>
-          <Text style={c.rival}>
-            {rival.ovr} <Text style={s.tiny}>OVR</Text>
+            ))}
+          </Panel>
+          <Panel title="YOUR NEXT CHAPTER">
+            <Placeholder title="SEASON" description="Coming soon" />
+            <Placeholder title="MATCH" description="Coming soon" />
+            <Placeholder title="TRANSFER CENTER" description="Coming soon" />
+          </Panel>
+        </>
+      ) : (
+        <Panel title="CAREER NOT STARTED">
+          <Text style={s.sectionTitle}>BEGIN YOUR JOURNEY</Text>
+          <Text style={s.muted}>
+            Choose your first Japanese club and begin your ASCEND career.
           </Text>
-        </View>
-        <View style={c.avatar}>
-          <RivalAvatar color={color} size={184} />
-        </View>
-        <View style={s.sectionHeading}>
-          <Text style={s.eyebrow}>NEXT MATCH</Text>
-          <Text style={c.rival}>{season.nextMatch}</Text>
-        </View>
-      </Panel>
-      <Panel title="RIVAL COLOR">
-        <View style={s.choices}>
-          {(Object.keys(rivalColors) as RivalColor[]).map((key) => (
-            <Choice
-              key={key}
-              label={key[0].toUpperCase() + key.slice(1)}
-              selected={color === key}
-              color={rivalColors[key]}
-              onPress={() => setColor(key)}
+          {player && !growth.error ? (
+            <Action
+              label="START CAREER"
+              onPress={() => {
+                setSelected(null);
+                setSelecting(true);
+              }}
             />
-          ))}
-        </View>
-      </Panel>
-      <Panel title="YOUR LEGACY" kicker="CAREER">
-        {currentClub && (
-          <View>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Club details"
-              accessibilityState={{ expanded: clubExpanded }}
-              onPress={() => setClubExpanded((value) => !value)}
-              style={({ pressed }) => [s.utilityRow, pressed && s.pressed]}
-            >
-              <ClubCrest club={currentClub} size={20} />
-              <View style={s.flex}>
-                <Text style={s.utilityTitle}>CLUB</Text>
-                <Text style={s.fine}>{currentClub.name}</Text>
-              </View>
-              <Icon name="arrow" size={16} />
-            </Pressable>
-            {clubExpanded && (
-              <Text style={[s.muted, { paddingTop: 10 }]}>
-                {currentClub.description}
+          ) : (
+            <>
+              <Text style={s.fine}>
+                Initialize your Player before choosing a club. Your existing
+                training and Coins stay intact.
               </Text>
-            )}
-          </View>
-        )}
-        <Placeholder
-          title="TRANSFER CENTER"
-          description="Coming soon"
-          icon="lock"
-        />
-        <Placeholder title="SEASON HISTORY" icon="grid" />
-        <Placeholder title="TROPHY ROOM" icon="career" />
-        <Placeholder title="PAST PLAYER CARDS" icon="player" />
-      </Panel>
+              <Action
+                label="OPEN PLAYER"
+                onPress={() => router.push("/player")}
+              />
+            </>
+          )}
+        </Panel>
+      )}
+      {selecting && canChoose && (
+        <Sheet
+          title={
+            selected
+              ? `JOIN ${selected.name.toUpperCase()}?`
+              : "CHOOSE YOUR FIRST CLUB"
+          }
+          onClose={() => setSelecting(false)}
+        >
+          {selected ? (
+            <>
+              <ClubProfile club={selected} />
+              <Text style={s.muted}>
+                This will become your first club. Club changes will be available
+                through future transfers.
+              </Text>
+              <Action
+                label="BACK TO CLUBS"
+                disabled={career.busy}
+                onPress={() => setSelected(null)}
+              />
+              <Action
+                label={career.busy ? "JOINING…" : "JOIN CLUB"}
+                disabled={career.busy}
+                onPress={() => void career.join(selected.id)}
+              />
+            </>
+          ) : (
+            <>
+              {startingClubs.map((club) => (
+                <Panel key={club.id}>
+                  <ClubProfile club={club} />
+                  <Action
+                    label={`INSPECT ${club.name.toUpperCase()}`}
+                    onPress={() => setSelected(club)}
+                  />
+                </Panel>
+              ))}
+            </>
+          )}
+        </Sheet>
+      )}
     </Screen>
   );
 }
-const c = StyleSheet.create({
-  season: {
-    color: colors.text,
-    fontSize: 30,
-    fontWeight: "900",
-    letterSpacing: -2,
-  },
-  club: { gap: 7 },
-  clubName: { fontSize: 15, fontWeight: "700", color: colors.text },
-  unit: { fontSize: 18, color: colors.muted },
-  divider: { height: 1, backgroundColor: colors.border },
-  rival: { fontSize: 20, fontWeight: "700", color: colors.text },
-  avatar: {
-    alignItems: "center",
-    backgroundColor: "#142031",
-    borderRadius: 12,
-  },
-});
