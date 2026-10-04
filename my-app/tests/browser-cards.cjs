@@ -231,11 +231,15 @@ function fixture(target) {
       standardExercises,
       new Date().toISOString(),
     );
-    await page.evaluate((f) => {
-      localStorage.clear();
-      localStorage.setItem("ascend.player.v1", JSON.stringify(f.player));
-      localStorage.setItem("ascend.sessions.v1", JSON.stringify(f.sessions));
-    }, f);
+    await page.evaluate(
+      ({ f, careerRaw }) => {
+        localStorage.clear();
+        localStorage.setItem("ascend.player.v1", JSON.stringify(f.player));
+        localStorage.setItem("ascend.sessions.v1", JSON.stringify(f.sessions));
+        localStorage.setItem("ascend.career.v1", careerRaw);
+      },
+      { f, careerRaw },
+    );
     await page.goto(url);
     await page.getByRole("tab", { name: "TRAIN", exact: true }).click();
     await page

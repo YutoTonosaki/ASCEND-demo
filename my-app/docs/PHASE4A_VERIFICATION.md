@@ -90,7 +90,46 @@ request Growth reconciliation or a progression presentation. Coins remain unchan
 
 ## Verification
 
-Final browser/export results will be recorded after verification completes.
+- `npm test`: **220 passed, 0 failed** (200 existing + 20 Career/catalog tests).
+- `npm run typecheck`: passed. `npm run lint`: passed with no new warnings.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-career-export`:
+  passed; iOS/Android Hermes bundles and 13 static web routes generated. An earlier
+  export was interrupted; the complete rerun succeeded.
+- `browser-career`: passed not-started state, Player initialization prerequisite,
+  three Japanese options, inspect/back with zero writes, explicit confirmation,
+  injected Career-only write failure/retry, double tap, one permanent tenure,
+  current profile, HOME/PLAYER consistency, unchanged Player/reward/session storage,
+  PR/history accessibility, reload, corrupt/newer schema preservation, 320px,
+  enlarged text and reduced motion. No browser page exceptions occurred.
+- Existing `browser-growth`, `browser-records`, `browser-input`, `browser-audit`,
+  `browser-overlays`, `browser-sessions`, `browser-coach`, `browser-presentation`,
+  `browser-cards` and `browser-rewards`: all passed against the production export.
+- `browser-cards` now also verifies persisted Tokyo Zenith on earned card tiers
+  and the new evolution card, without changing Career storage. Its initial run
+  cleared the isolated Career fixture before the evolution scenario; restoring
+  that fixture after the test reset fixed the test. Product code and existing
+  assertions were not weakened. The focused rerun passed, including consumed-ID
+  persistence and unchanged reward balance after restart.
+- Development `browser-growth-debug`: passed, including zero storage writes on
+  open/refresh, unchanged saved data and production debug-entry absence.
+- Visually inspected 320px active Career, expanded profile, 1.5x browser text
+  approximation and evolved-card screenshots. No horizontal overflow in the
+  verified flows. Existing overlay regression checks simulated safe areas; native
+  VoiceOver, Dynamic Type and iPhone safe areas still require device verification.
+- `git diff --check`: passed. PR/Growth/Rewards/Coach/Session domain/provider files,
+  Player/session repositories and presentation consumption are unchanged from
+  the pre-Career commit. The evolved-card UI only receives optional Club identity.
+- Development Metro retains the existing SVG `accessible={false}` React warning.
+  This is not a new Career calculation/persistence warning. No new type/lint/export
+  warning was reported; no unrelated dependency upgrade was made.
+- Playwright is external QA tooling, not an app dependency. Most checks used
+  `/tmp/ascend-rewards-qa`; after temporary tools were cleaned up, the final card
+  rerun used `NODE_PATH=/tmp/ascend-phase4a-qa/node_modules` and
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-phase4a-qa/browsers` with `ASCEND_QA_URL`
+  pointing to the served export. Development Debug additionally uses Metro and
+  `ASCEND_QA_PROD_URL`.
+- Physical iPhone testing has **not** been performed for Phase 4A. Prior user
+  verification of Phase 3C does not verify Career onboarding.
 
 ## Limitations and Phase 4B hand-off
 
