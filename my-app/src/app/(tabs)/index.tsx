@@ -1,3 +1,4 @@
+import { HomeSeason } from "@/components/career/seasons";
 import { useGrowth } from "@/growth/provider";
 import { overall } from "@/growth/domain";
 import { useCareer } from "@/career/provider";
@@ -5,8 +6,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Screen, Panel, Button, s } from "@/components/ui/primitives";
 import { PlayerSummary } from "@/components/player/player-summary";
-import { RivalPanel } from "@/components/rival/rival-panel";
-import { weekly, recovery, season } from "@/data/mock";
+import { weekly, recovery } from "@/data/mock";
 import { colors } from "@/config/theme";
 import { CoinBalance, WeeklyTraining } from "@/components/rewards/rewards";
 export default function Home() {
@@ -14,11 +14,7 @@ export default function Home() {
   const { data } = useGrowth();
   const player = data?.player;
   return (
-    <Screen
-      home
-      kicker={`THE FACILITY / SEASON ${season.number}`}
-      title="YOUR NEXT LEVEL"
-    >
+    <Screen home kicker="THE FACILITY" title="YOUR NEXT LEVEL">
       {player ? (
         <PlayerSummary
           club={currentClub}
@@ -45,7 +41,7 @@ export default function Home() {
           onPress={() => router.push("/train")}
         />
       </Panel>
-      <RivalPanel />
+      <HomeSeason />
       <Panel title="RECOVERY" kicker="REST IS PART OF THE PLAN">
         <View style={h.recovery}>
           {recovery.map((item) => (

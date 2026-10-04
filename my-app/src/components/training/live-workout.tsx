@@ -1,3 +1,4 @@
+import { useSeasons } from "@/seasons/provider";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Text, View } from "react-native";
 import { useIsFocused } from "expo-router";
@@ -28,6 +29,7 @@ export function LiveWorkout({
   onComplete: (id: string) => void;
 }) {
   const { commit } = useSessions();
+  const { record: recordSeason } = useSeasons();
   const presentGrowth = useGrowthPresentation();
   const { request: requestRewards } = useRewards();
   const current = position(session);
@@ -91,6 +93,7 @@ export function LiveWorkout({
         if (completed) {
           onComplete(session.id);
           requestRewards(completed, () => presentGrowth(session.id));
+          recordSeason(completed, next);
         }
       } catch (e) {
         setError(
@@ -101,7 +104,15 @@ export function LiveWorkout({
         setBusy(false);
       }
     },
-    [current, commit, session.id, onComplete, presentGrowth, requestRewards],
+    [
+      current,
+      commit,
+      session.id,
+      onComplete,
+      presentGrowth,
+      requestRewards,
+      recordSeason,
+    ],
   );
   async function skipRest() {
     if (lock.current || !deadline) return;

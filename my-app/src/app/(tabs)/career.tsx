@@ -1,3 +1,4 @@
+import { SeasonPanel } from "@/components/career/seasons";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { router } from "expo-router";
@@ -74,6 +75,7 @@ export default function CareerScreen() {
             <Action label="CLUB DETAILS" onPress={() => setDetails(!details)} />
             {details && <ClubProfile club={career.club} />}
           </Panel>
+          <SeasonPanel />
           <Panel title="PLAYER STATUS">
             <Text style={s.sectionTitle}>
               {player
@@ -103,7 +105,6 @@ export default function CareerScreen() {
             ))}
           </Panel>
           <Panel title="YOUR NEXT CHAPTER">
-            <Placeholder title="SEASON" description="Coming soon" />
             <Placeholder title="MATCH" description="Coming soon" />
             <Placeholder title="TRANSFER CENTER" description="Coming soon" />
           </Panel>
