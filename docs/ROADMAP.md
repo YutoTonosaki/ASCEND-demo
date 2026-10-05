@@ -613,3 +613,11 @@ confirmation, independent Career persistence, validated tenure history and real
 HOME/PLAYER/CAREER identity. Removes the mock Career Season/Rival statistics.
 Verification is recorded in `my-app/docs/PHASE4A_VERIFICATION.md`. Phase 4B and all
 Season/Match/Transfer/Shop systems remain outside this implementation.
+
+## Phase 4B — Monthly Season System
+
+Explicit local-month start/close, independent validated persistence, immutable Club
+and fractional Player snapshots, fresh completed-session/PR associations, factual
+CAREER/HOME statistics and completed Season details. No retrospective Seasons or
+automatic month-change writes. See `my-app/docs/PHASE4B_VERIFICATION.md` for checks
+and device verification instructions. Phase 4C is not implemented.

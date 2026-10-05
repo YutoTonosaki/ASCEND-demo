@@ -247,7 +247,7 @@ When implementing a phase:
 7. verify TypeScript;
 8. report changes;
 9. stop before the next phase.
-## Current application — Phase 3C-2
+## Current application — Phase 4B
 
 The native Expo application is in [`my-app`](./my-app/README.md). Run it on your
 phone from this repository root:
@@ -327,4 +327,12 @@ The native app now has 12 original fictional Clubs, explicit first-club selectio
 from Japan, and an independent persistent Career. HOME, PLAYER and Card Evolution
 use the selected Club identity. No Club is inferred from old mock content.
 Career never changes physical progression or Coins. See
-`my-app/docs/PHASE4A_VERIFICATION.md`; Seasons, Matches and Transfers remain deferred.
+`my-app/docs/PHASE4A_VERIFICATION.md`; Matches and Transfers remain deferred.
+
+## Phase 4B — Monthly Seasons
+
+CAREER supports explicit START SEASON / COMPLETE SEASON, immutable Club and Player
+snapshots, completed-workout/local-day/PR statistics and permanent Season history.
+Seasons use local calendar months and independent `ascend.seasons.v1` storage.
+Skipped months do not create invented Seasons. No Season rewards or Match systems.
+See [Phase 4B verification](my-app/docs/PHASE4B_VERIFICATION.md).

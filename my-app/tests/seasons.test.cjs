@@ -528,3 +528,76 @@ test("read failure blocks writes", async () => {
   await assert.rejects(r.start(x.career, x.player, x.club, clock(startAt)));
   assert.equal(f.writes, 0);
 });
+
+test("multiple improved weighted metrics count one source set", () => {
+  const x = started();
+  function weighted(at, kg, reps) {
+    const exercise = standardExercises.find(
+      (e) => e.trackingType === "weight_reps",
+    );
+    const entry = newEntry(exercise);
+    const s = startSession(
+      {
+        ...newWorkout(),
+        name: "Weighted season",
+        exercises: [{ ...entry, restSeconds: 0, sets: entry.sets.slice(0, 1) }],
+      },
+      standardExercises,
+      at,
+    );
+    return confirmSet(
+      s,
+      position(s).set.id,
+      { type: "weight_reps", weightKg: kg, reps },
+      at,
+    );
+  }
+  const a = weighted("2026-10-04T12:00:00.000Z", 10, 8);
+  const b = weighted("2026-10-05T12:00:00.000Z", 12, 8);
+  const c = weighted("2026-10-06T12:00:00.000Z", 12, 9);
+  assert.equal(
+    D.captureEvidence(x.data.seasons[0], c, history(a, b, c)).prSetIds.length,
+    1,
+  );
+});
+
+test("pre-start set improvements in a later completed session are excluded", () => {
+  const x = started();
+  const old = workout("2026-10-01T12:00:00.000Z", 5);
+  const entry = newEntry(standardExercises.find((e) => e.id === "push-up"));
+  let s = startSession(
+    {
+      ...newWorkout(),
+      name: "Boundary session",
+      exercises: [{ ...entry, restSeconds: 0, sets: entry.sets.slice(0, 2) }],
+    },
+    standardExercises,
+    "2026-10-02T12:00:00.000Z",
+  );
+  s = confirmSet(
+    s,
+    position(s).set.id,
+    { type: "reps", reps: 10 },
+    "2026-10-02T12:00:01.000Z",
+  );
+  s = confirmSet(
+    s,
+    position(s).set.id,
+    { type: "reps", reps: 5 },
+    "2026-10-04T12:00:00.000Z",
+  );
+  const e = D.captureEvidence(x.data.seasons[0], s, history(old, s));
+  assert.ok(e);
+  assert.deepEqual(e.prSetIds, []);
+});
+
+test("evidence cannot be written under a different Player identity", async () => {
+  const x = started(),
+    f = memory(JSON.stringify(x.data));
+  const r = new SeasonsRepository(f.adapter),
+    w = workout("2026-10-04T12:00:00.000Z");
+  const owner = fixture();
+  owner.player.id = "different";
+  await assert.rejects(r.record(owner, w, history(w), clock(w.completedAt)));
+  assert.equal(f.writes, 0);
+});

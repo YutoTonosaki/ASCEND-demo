@@ -1,4 +1,4 @@
-# ASCEND — native Phase 4A
+# ASCEND — native Phase 4B
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -247,3 +247,13 @@ CAREER offers explicit Japanese first-Club selection and persisted affiliation.
 HOME, PLAYER and evolved cards share that identity. No Club is assigned until
 confirmation; OVR recommendations are not locks. See `docs/PHASE4A_VERIFICATION.md`
 for catalog, independent storage, tests, limitations and iPhone steps.
+
+## Phase 4B — Monthly Seasons
+
+`src/seasons/` contains local calendar, immutable snapshots, evidence rules and
+Provider integration. `src/storage/seasons-repository.ts` owns independent
+`ascend.seasons.v1`; `src/components/career/seasons.tsx` renders CAREER/HOME.
+Start/close require explicit actions, and fresh saved workout callbacks alone
+associate evidence. No historical scan, physical growth or Season reward.
+See [Phase 4B verification](docs/PHASE4B_VERIFICATION.md) for schema, limitations,
+automated results and physical iPhone steps. Phase 4C is not implemented.

@@ -1367,3 +1367,21 @@ Reputation 1–5 and preferred body areas are informational future-facing metada
 archetype preferences stay empty until that system exists. No physical-stat effects.
 HOME and the earned Player Card show optional real Club identity. Future systems
 use subtle Coming Soon placeholders without fabricated matches or standings.
+
+## Phase 4B — Monthly Season interface
+
+After Career onboarding, CAREER offers START SEASON for the current device-local
+month. Opening a tab or crossing midnight writes nothing. One active Season shows
+starting/current OVR, integer OVR change, completed workouts, distinct training days
+and factual PR improvements. HOME shows compact matching identity/progress; no fake
+Match or Season record is shown. PLAYER retains its existing layout.
+
+COMPLETE SEASON is available only after that month. It freezes current saved Player
+values and associated statistics, then allows explicit start of the current month.
+Returning in January after October produces Season 02 in January, not fabricated
+November/December records. Completed history opens a safe-area factual detail sheet
+with immutable Club identity and starting/final Player snapshots. Delayed completion
+captures values at the explicit action, not a guessed month-end rating.
+
+No streak, penalties, Season Coins, trophies, Rival, Match or Transfer implementation.
+Storage and evidence rules are specified in Game System section 52.

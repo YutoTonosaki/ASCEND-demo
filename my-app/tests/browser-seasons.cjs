@@ -159,7 +159,6 @@ const career = beginCareer(
       await ready();
       await tab("TRAIN");
       await button("RESUME WORKOUT").click();
-      const input = page.getByRole("spinbutton").first(); // Current controls use text inputs, choose explicit label below.
       const actual = page.getByRole("textbox", { name: /reps/i }).first();
       await actual.fill(String(reps));
       await button("COMPLETE SET").click();

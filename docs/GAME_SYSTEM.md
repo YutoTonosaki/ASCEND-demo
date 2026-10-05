@@ -1311,3 +1311,63 @@ PLAYER and Card Evolution render that same optional identity. No PR, Growth, OVR
 Card Tier, reward, Coach or presentation-consumption rule changes. Phase 4B may add
 Seasons at a separate boundary; no Match, Rival generation, Transfer or reward
 engine is included in 4A.
+
+## 52. Phase 4B — Monthly Season foundation
+
+One explicit Season occupies a canonical device-local `YYYY-MM` month. The first
+actual Season is 1; later explicitly started Seasons increment by one. Calendar
+months may be skipped. At most one final Season is active. A valid existing Career
+and matching initialized Player are required; Season actions initialize neither.
+
+`ascend.seasons.v1` is `{version:1,seasons:[]}`. Each Season stores deterministic
+`id = JSON([playerId, careerStartedAt, monthId])`, number, monthId, owner namespace,
+start calendar context, copied Club, starting Player snapshot, evidence[], and
+nullable end. Status derives from end. Calendar context stores ISO factual time,
+localDay, monthId and timezone offset. Local getters resolve identity at capture;
+historical contexts are never recomputed after travel. Current availability uses
+the current device-local month, refreshed on foreground and every 30 seconds.
+
+Club snapshots copy the existing complete JSON catalog value: stable ID, name,
+short name, environment/country/league, reputation/recommended OVR, colors, crest
+geometry, and preference metadata. Historical rendering uses this copy, not the
+current catalog. Player snapshots copy six canonical fractional ratings plus the
+existing overall() display OVR and derived tier/finish. These redundant display
+values are validated against the fractional snapshot, never used to change Player.
+
+START SEASON captures the saved Player state supplied at the explicit action.
+COMPLETE SEASON requires a later local month, freezes the supplied current saved
+Player snapshot and final statistics. A delayed close is an observation at close,
+not a reconstruction of month-end fitness. No reward or growth is issued. Repeated
+start/close operations are idempotent. Completed snapshots cannot be edited.
+
+Only fresh successful LiveWorkout completion callbacks submit evidence. The saved
+completed session must be present and identical in the supplied committed history.
+Evidence stores sessionId, captured calendar context and PR source identities.
+It excludes completion before Season start or outside the active month. Workouts
+count unique associated sessions; training days count distinct captured localDay.
+PRs use the unchanged Phase 3A comparisons against authoritative confirmed history:
+a set with at least one `improved` metric counts once, identified by JSON
+[sessionId, entryId, setId]. Multiple weighted metrics do not inflate the count.
+First/equal/lower records and pre-start set confirmations do not count. Active
+workout sets are PR comparison evidence but do not add Season workout statistics
+until that workout completes. No independent PR engine or full history copy is
+persisted. Final statistics are frozen on close.
+
+The repository serializes fresh read/validate/mutate/whole-document write. It writes
+only the Season key. Missing storage reads empty without a write. Corrupt/newer,
+identity mismatch or contradictory histories are preserved and block writes.
+Failed start/close never publishes the proposed state. Failed evidence association
+does not affect workouts, PRs, Growth, Coins or presentation consumption. Explicit
+retry can resubmit captured in-memory completion evidence idempotently. Termination
+before successful association can lose that association; there is no historical
+scan or invented recovery callback. The saved workout itself remains intact.
+
+Root ordering adds SeasonsProvider inside CareerProvider and outside Rewards and
+GrowthPresentation; Career already sits inside Growth. No circular dependency or
+new reconciliation path. Snapshot actions use saved Provider state; pending future
+growth is not predicted. Start/close flush pending Season requests before writing.
+There is no multi-instance transaction lock, cloud recovery or clock-tamper defense.
+
+Phase 4C can consume stable Season IDs and immutable snapshots/evidence. It must not
+rewrite old Club/Player snapshots or conflate monthly statistics with weekly Coins.
+Rivals, Matches, transfers, Season Cards, trophies and Season rewards remain deferred.
