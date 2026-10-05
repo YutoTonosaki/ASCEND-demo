@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Panel, s } from "@/components/ui/primitives";
@@ -8,6 +9,7 @@ import { colors } from "@/config/theme";
 import type { ExerciseRecord } from "@/types/records";
 
 export function PersonalRecordsSection() {
+  const { tr } = useLocalization();
   const { data, error, retry } = useSessions();
   const result = useMemo(
     () =>
@@ -17,28 +19,24 @@ export function PersonalRecordsSection() {
     [data],
   );
   return (
-    <Panel title="PERSONAL RECORDS" kicker="YOUR BEST SETS">
+    <Panel title={tr("records.title")} kicker={tr("records.subtitle")}>
       {error ? (
         <>
-          <ErrorText message="Workout records could not be loaded. Your saved data has been kept." />
-          <Action label="RETRY RECORDS" onPress={() => void retry()} />
+          <ErrorText message={tr("records.loadError")} />
+          <Action label={tr("records.retry")} onPress={() => void retry()} />
         </>
       ) : !data ? (
-        <Text style={s.muted}>Loading records…</Text>
+        <Text style={s.muted}>{tr("records.loading")}</Text>
       ) : (
         <>
           <Text style={s.fine}>
-            Confirmed sets only, including your current workout.
-          </Text>
+            {tr("records.confirmedOnly")}</Text>
           {result.rejectedSessions > 0 && (
-            <ErrorText message="Some workout records could not be read." />
+            <ErrorText message={tr("records.partialError")} />
           )}
           {result.records.length === 0 ? (
             <Text style={s.muted}>
-              Your records start here. Confirm a workout set to see your best
-              reps, time or weight. Weighted records need at least one completed
-              rep.
-            </Text>
+              {tr("records.empty")}</Text>
           ) : (
             result.records.map((record) => (
               <RecordRow
@@ -53,6 +51,8 @@ export function PersonalRecordsSection() {
   );
 }
 function RecordRow({ record }: { record: ExerciseRecord }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const [expanded, setExpanded] = useState(false);
   const weighted = record.trackingType === "weight_reps";
   const unit = weighted
@@ -68,28 +68,27 @@ function RecordRow({ record }: { record: ExerciseRecord }) {
       style={r.record}
       testID={`pr-${record.exerciseId}-${record.trackingType}`}
     >
-      <Text style={r.name}>{record.name}</Text>
+      <Text style={r.name}>{l.exercise({id:record.exerciseId,name:record.name})}</Text>
       <Text style={s.eyebrow}>
-        {weighted ? "MAX COMPLETED WEIGHT" : "BEST SINGLE SET"}
+        {weighted ? tr("records.maxWeight") : tr("records.bestSet")}
       </Text>
       <Text style={r.value}>
-        {record.best.value} <Text style={r.unit}>{unit}</Text>
+        {record.best.value} <Text style={r.unit}>{l.display(unit)}</Text>
       </Text>
       {atMax && (
         <Text style={s.muted}>
-          Best at this weight · {atMax.best.value} reps
-        </Text>
+          {tr("records.bestAtWeight")}{atMax.best.value} {tr("units.repsShort")}</Text>
       )}
       <Text style={s.fine}>
-        First recorded{" "}
-        {new Date(record.best.source.confirmedAt).toLocaleDateString()}
+        {tr("records.first")}{" "}
+        {l.date(record.best.source.confirmedAt)}
       </Text>
       {weighted && (
         <>
           <Action
-            label={`${expanded ? "HIDE" : "VIEW"} RECORDS BY WEIGHT · ${record.name}`}
+            label={`${expanded ? tr("common.hide") : tr("common.view")} RECORDS BY WEIGHT · ${l.exercise({id:record.exerciseId,name:record.name})}`}
             displayLabel={
-              expanded ? "HIDE RECORDS BY WEIGHT" : "VIEW RECORDS BY WEIGHT"
+              expanded ? tr("records.hideWeights") : tr("records.viewWeights")
             }
             onPress={() => setExpanded(!expanded)}
           />
@@ -97,7 +96,7 @@ function RecordRow({ record }: { record: ExerciseRecord }) {
             record.byWeight.map((load) => (
               <View key={load.weightKg} style={r.load}>
                 <Text style={s.muted}>{load.weightKg} kg</Text>
-                <Text style={r.reps}>{load.best.value} reps</Text>
+                <Text style={r.reps}>{load.best.value}  {tr("units.repsShort")}</Text>
               </View>
             ))}
         </>

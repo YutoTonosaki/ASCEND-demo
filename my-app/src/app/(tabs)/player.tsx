@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useCareer } from "@/career/provider";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -14,13 +15,15 @@ import { useGrowth } from "@/growth/provider";
 import { displayRating, overall } from "@/growth/domain";
 import { cardAppearance } from "@/cards/domain";
 export default function PlayerScreen() {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { club: currentClub } = useCareer();
   const [debugOpen, setDebugOpen] = useState(false);
   const { data } = useGrowth();
   const player = data?.player;
   const appearance = player ? cardAppearance(overall(player.ratings)) : null;
   return (
-    <Screen kicker="PLAYER / YOUR IDENTITY" title="BUILT, NOT GIVEN">
+    <Screen kicker={tr("player.kicker")} title={tr("player.title")}>
       <GrowthStatus />
       {__DEV__ && (
         <Action label="GROWTH DEBUG" onPress={() => setDebugOpen(true)} />
@@ -33,24 +36,24 @@ export default function PlayerScreen() {
           <PlayerCard
             club={currentClub}
             player={{
-              name: "PLAYER",
+              name: tr("nav.player"),
               ovr: overall(player.ratings),
               bodyRatings: player.ratings,
-              archetype: "TRAINING PROFILE",
+              archetype: tr("coach.profile"),
             }}
           />
           {appearance && (
             <Panel
-              title="CURRENT TIER"
-              kicker={cardTiers[appearance.tier].label.toUpperCase()}
+              title={tr("player.currentTier")}
+              kicker={l.display(cardTiers[appearance.tier].label).toUpperCase()}
             >
               <Text style={s.fine}>
-                CURRENT FINISH · {appearance.finish.toUpperCase()}
+                {tr("player.finish")}{l.display(appearance.finish.toUpperCase())}
               </Text>
               <Text style={s.muted}>
                 {appearance.next
-                  ? `NEXT EVOLUTION · ${cardTiers[appearance.next.tier].label.toUpperCase()} — OVR ${appearance.next.minimum}`
-                  : "MAXIMUM EVOLUTION"}
+                  ? tr("player.nextEvolution",{tier:l.display(cardTiers[appearance.next.tier].label).toUpperCase(),ovr:appearance.next.minimum})
+                  : tr("player.maximum")}
               </Text>
             </Panel>
           )}
@@ -58,22 +61,22 @@ export default function PlayerScreen() {
       )}
       <PersonalRecordsSection />
       {player && (
-        <Panel title="BODY RATINGS" kicker="OUT OF 99">
+        <Panel title={tr("player.bodyRatings")} kicker={tr("player.outOf")}>
           {bodyParts.map((area) => (
             <View
               key={area}
               testID={`rating-${area}`}
               accessible
-              accessibilityLabel={`${area}: ${displayRating(player.ratings[area])} out of 99, ${player.status[area]}`}
+              accessibilityLabel={tr("player.ratingAccessibility",{area:l.display(area),rating:displayRating(player.ratings[area]),status:l.display(player.status[area].toUpperCase())})}
               style={r.rating}
             >
               <View style={r.labels}>
                 <View style={s.flex}>
-                  <Text style={r.label}>{area}</Text>
+                  <Text style={r.label}>{l.display(area)}</Text>
                   <Text style={s.fine}>
                     {player.status[area] === "assessed"
-                      ? "ASSESSED"
-                      : "PROVISIONAL"}
+                      ? tr("player.assessed")
+                      : tr("player.provisional")}
                   </Text>
                 </View>
                 <Text style={r.value}>
@@ -91,20 +94,14 @@ export default function PlayerScreen() {
             </View>
           ))}
           <Text style={s.fine}>
-            Direct assessments: Push-up → Chest; Pull-up → Back; Overhead Press
-            (5+ reps) → Shoulders; Diamond Push-up → Arms; Plank → Core;
-            Bodyweight Squat → Legs. Other movements can improve assessed areas
-            but cannot establish an initial rating.
-          </Text>
+            {tr("player.assessments")}</Text>
           <Text style={s.fine}>
-            A first assessment replaces the provisional estimate and may move it
-            up or down. It is not a growth reward.
-          </Text>
+            {tr("player.assessmentNote")}</Text>
         </Panel>
       )}
-      <Panel title="PLAYER DEVELOPMENT" kicker="COMING SOON">
-        <Placeholder title="SKILL TREE" icon="grid" />
-        <Placeholder title="ARCHETYPE" icon="player" />
+      <Panel title={tr("player.development")} kicker={tr("common.comingSoon")}>
+        <Placeholder title={tr("player.skillTree")} icon="grid" />
+        <Placeholder title={tr("player.archetype")} icon="player" />
       </Panel>
     </Screen>
   );

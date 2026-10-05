@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { Text, View } from "react-native";
 import { Choice, s } from "@/components/ui/primitives";
 import { Counter } from "@/components/training/controls";
@@ -13,16 +14,18 @@ export function CoachPreferencesForm({
   onChange: (value: CoachPreferences) => void;
   focus?: boolean;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   return (
     <View style={{ gap: 12 }}>
       {focus && (
         <>
-          <Text style={s.eyebrow}>TARGET BODY PARTS · EMPTY = AUTOMATIC</Text>
+          <Text style={s.eyebrow}>{tr("coach.focus")}</Text>
           <View style={s.choices}>
             {bodyParts.map((part) => (
               <Choice
                 key={part}
-                label={part}
+                label={l.display(part)}
                 selected={value.bodyParts.includes(part)}
                 onPress={() =>
                   onChange({
@@ -37,31 +40,29 @@ export function CoachPreferencesForm({
           </View>
         </>
       )}
-      <Text style={s.eyebrow}>TRAINING LOCATION</Text>
+      <Text style={s.eyebrow}>{tr("coach.location")}</Text>
       <View style={s.choices}>
         {(Object.keys(locationLabels) as (keyof typeof locationLabels)[]).map(
           (location) => (
             <Choice
               key={location}
-              label={locationLabels[location]}
+              label={l.display(locationLabels[location])}
               selected={value.location === location}
               onPress={() => onChange({ ...value, location })}
             />
           ),
         )}
       </View>
-      <Text style={s.eyebrow}>AVAILABLE EQUIPMENT</Text>
+      <Text style={s.eyebrow}>{tr("coach.equipment")}</Text>
       <Text style={s.fine}>
-        Select only what you can use at this location. Bodyweight is always
-        available.
-      </Text>
+        {tr("coach.equipmentNote")}</Text>
       <View style={s.choices}>
         {equipmentOptions
           .filter((item) => item !== "Bodyweight")
           .map((item) => (
             <Choice
               key={item}
-              label={item}
+              label={l.display(item)}
               selected={value.equipment.includes(item)}
               onPress={() =>
                 onChange({
@@ -75,22 +76,21 @@ export function CoachPreferencesForm({
           ))}
       </View>
       <Counter
-        label="Available minutes"
-        displayLabel="Minutes"
+        label={tr("coach.minutes")}
+        displayLabel={tr("units.minutes")}
         value={value.durationMinutes}
         max={coachConfig.maxMinutes}
         onChange={(durationMinutes) => onChange({ ...value, durationMinutes })}
       />
       <Counter
-        label="Preferred exercise count"
-        displayLabel="Exercises"
+        label={tr("coach.exerciseCount")}
+        displayLabel={tr("units.exercises")}
         value={value.exerciseCount}
         max={coachConfig.maxCount}
         onChange={(exerciseCount) => onChange({ ...value, exerciseCount })}
       />
       <Text style={s.fine}>
-        Exercise count is a maximum; a shorter plan may fit your time better.
-      </Text>
+        {tr("coach.countNote")}</Text>
     </View>
   );
 }

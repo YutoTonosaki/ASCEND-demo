@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import type { PropsWithChildren } from "react";
 import {
   Pressable,
@@ -112,10 +113,11 @@ export function Placeholder({
   description?: string;
   icon?: IconName;
 }) {
+ const { tr } = useLocalization();
   return (
     <View
       accessible
-      accessibilityLabel={`${title}. Coming soon.${description ? ` ${description}` : ""}`}
+      accessibilityLabel={tr("common.unavailableLabel",{title,description:description ? ` ${description}` : ""})}
       accessibilityState={{ disabled: true }}
       style={s.utilityRow}
     >

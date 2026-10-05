@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { Text } from "react-native";
 import { router } from "expo-router";
 import { Panel, s } from "@/components/ui/primitives";
@@ -7,20 +8,21 @@ import { useCoach } from "@/coach/provider";
 import { useSessions } from "@/sessions/provider";
 import { overall } from "@/growth/domain";
 export function GrowthStatus() {
+  const { tr } = useLocalization();
   const growth = useGrowth(),
     coach = useCoach(),
     sessions = useSessions();
   const player = growth.data?.player;
   return (
     <Panel
-      title={player ? "PLAYER RATING" : "YOUR STARTING POINT"}
+      title={player ? tr("player.rating") : tr("player.startingPoint")}
       kicker={player ? `OVR ${overall(player.ratings)}` : undefined}
     >
       {growth.error && (
         <>
           <ErrorText message={growth.error} />
           <Action
-            label="RETRY PLAYER DATA"
+            label={tr("player.retry")}
             disabled={growth.busy}
             onPress={() => void growth.retry()}
           />
@@ -28,36 +30,30 @@ export function GrowthStatus() {
       )}
       {sessions.error && (
         <>
-          <ErrorText message="Growth is paused until workout history can be read." />
+          <ErrorText message={tr("player.paused")} />
           <Action
-            label="RETRY WORKOUT HISTORY"
+            label={tr("train.retryHistory")}
             onPress={() => void sessions.retry()}
           />
         </>
       )}
       {!growth.data && !growth.error && (
-        <Text style={s.muted}>Loading player ratings…</Text>
+        <Text style={s.muted}>{tr("player.loading")}</Text>
       )}
       {player ? (
         <Text style={s.fine}>
-          Game ratings, not a fitness ranking. Provisional areas await a
-          supported assessment. Lower workout results do not reduce assessed
-          ratings.
-        </Text>
+          {tr("player.gameNote")}</Text>
       ) : (
         growth.data &&
         !growth.error && (
           <>
             <Text style={s.muted}>
-              Start from your existing Push-up, Bodyweight Squat and Plank
-              baselines. Missing areas begin provisional. Earlier workouts
-              remain PR evidence; growth starts here.
-            </Text>
+              {tr("player.initializeNote")}</Text>
             {coach.error && (
               <>
-                <ErrorText message="Your training profile could not be read." />
+                <ErrorText message={tr("player.profileError")} />
                 <Action
-                  label="RETRY TRAINING PROFILE"
+                  label={tr("coach.retryProfile")}
                   onPress={() => void coach.retry()}
                 />
               </>
@@ -66,22 +62,19 @@ export function GrowthStatus() {
               !coach.error &&
               !sessions.error && (
                 <Text style={s.fine}>
-                  Loading your profile and workout history…
-                </Text>
+                  {tr("player.loadingEvidence")}</Text>
               )}
             <Action
-              label={growth.busy ? "STARTING…" : "INITIALIZE PLAYER"}
+              label={growth.busy ? tr("player.starting") : tr("player.initialize")}
               disabled={growth.busy || !coach.data || !sessions.data}
               onPress={() => void growth.initialize()}
             />
             <Action
-              label="REVIEW BASELINES"
+              label={tr("player.reviewBaselines")}
               onPress={() => router.push("/training-profile")}
             />
             <Text style={s.fine}>
-              Baselines are optional. Later profile edits will not rewrite your
-              starting ratings.
-            </Text>
+              {tr("player.baselinesOptional")}</Text>
           </>
         )
       )}

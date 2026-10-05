@@ -1,15 +1,17 @@
+import { useLocalization, type TranslationKey } from "@/localization";
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/config/theme";
 import { Icon, type IconName } from "@/components/ui/icon";
-const tabs: { name: string; title: string; icon: IconName }[] = [
-  { name: "index", title: "HOME", icon: "home" },
-  { name: "train", title: "TRAIN", icon: "train" },
-  { name: "player", title: "PLAYER", icon: "player" },
-  { name: "career", title: "CAREER", icon: "career" },
-  { name: "shop", title: "SHOP", icon: "shop" },
+const tabs: { name: string; title: TranslationKey; icon: IconName }[] = [
+  { name: "index", title: "nav.home", icon: "home" },
+  { name: "train", title: "nav.train", icon: "train" },
+  { name: "player", title: "nav.player", icon: "player" },
+  { name: "career", title: "nav.career", icon: "career" },
+  { name: "shop", title: "nav.shop", icon: "shop" },
 ];
 export default function TabLayout() {
+  const { tr } = useLocalization();
   const insets = useSafeAreaInsets();
   return (
     <Tabs
@@ -37,8 +39,8 @@ export default function TabLayout() {
           key={tab.name}
           name={tab.name}
           options={{
-            title: tab.title,
-            tabBarAccessibilityLabel: tab.title,
+            title: tr(tab.title),
+            tabBarAccessibilityLabel: tr(tab.title),
             tabBarIcon: ({ color }) => <Icon name={tab.icon} color={color} />,
           }}
         />

@@ -1,9 +1,11 @@
+import { useLocalization } from "@/localization";
 import { StyleSheet, Text, View } from "react-native";
 import { rival, season } from "@/data/mock";
 import { colors } from "@/config/theme";
 import { Panel, s } from "@/components/ui/primitives";
 import { RivalAvatar } from "./rival-avatar";
 export function RivalPanel() {
+ const l = useLocalization();
   return (
     <Panel>
       <View style={r.row}>

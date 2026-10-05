@@ -1,3 +1,4 @@
+import { LocalizationProvider } from "@/localization";
 import { DarkTheme, ThemeProvider, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -26,7 +27,7 @@ export default function RootLayout() {
           },
         }}
       >
-        <TrainingProvider>
+        <LocalizationProvider><TrainingProvider>
           <SessionProvider>
             <CoachProvider>
               <GrowthProvider>
@@ -45,7 +46,7 @@ export default function RootLayout() {
               </GrowthProvider>
             </CoachProvider>
           </SessionProvider>
-        </TrainingProvider>
+        </TrainingProvider></LocalizationProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

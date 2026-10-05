@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useCareer } from "@/career/provider";
 import { Component, type PropsWithChildren } from "react";
 import { Text, View } from "react-native";
@@ -28,36 +29,36 @@ export function RatingUpScreen({
   result: RatingUp;
   onContinue: () => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { club } = useCareer();
   return (
     <Sheet
-      title={result.areas.length ? "RATING UP" : "OVR UP"}
+      title={result.areas.length ? tr("presentation.ratingUp") : tr("presentation.ovrUp")}
       onClose={onContinue}
     >
-      <Text style={s.eyebrow}>WORKOUT COMPLETE</Text>
+      <Text style={s.eyebrow}>{tr("train.complete")}</Text>
       <Text
         accessibilityRole="header"
         style={[s.sectionTitle, { fontSize: 28 }]}
       >
-        YOUR WORK. YOUR PROGRESS.
-      </Text>
-      <Text style={s.muted}>A new level, earned one session at a time.</Text>
+        {tr("presentation.kicker")}</Text>
+      <Text style={s.muted}>{tr("presentation.description")}</Text>
       {result.areas.map((change) => (
         <Panel
-          key={change.area}
+          key={l.display(change.area)}
           title={change.area.toUpperCase()}
-          kicker={change.assessed ? "ASSESSMENT UPDATED" : "RATING UP"}
+          kicker={change.assessed ? tr("presentation.assessed") : tr("presentation.ratingUp")}
         >
           <Increase before={change.before} after={change.after} />
           {change.assessed && (
             <Text style={s.fine}>
-              Includes your first assessment of this area.
-            </Text>
+              {tr("presentation.assessmentNote")}</Text>
           )}
         </Panel>
       ))}
       {result.ovr && (
-        <Panel title="OVR UP" kicker="OVERALL RATING">
+        <Panel title={tr("presentation.ovrUp")} kicker={tr("presentation.overall")}>
           <Increase {...result.ovr} />
         </Panel>
       )}
@@ -68,8 +69,8 @@ export function RatingUpScreen({
             style={[s.sectionTitle, { fontSize: 26 }]}
           >
             {result.evolution.to === "ascend"
-              ? "FINAL EVOLUTION"
-              : "CARD EVOLUTION"}
+              ? tr("presentation.final")
+              : tr("presentation.evolution")}
           </Text>
           <Text style={s.eyebrow}>
             {cardTiers[result.evolution.from].label.toUpperCase()} →{" "}
@@ -78,26 +79,27 @@ export function RatingUpScreen({
           <PlayerCard
             club={club}
             player={{
-              name: "PLAYER",
+              name: tr("nav.player"),
               ovr: result.evolution.ovr,
               bodyRatings: result.afterRatings,
               archetype:
                 result.evolution.to === "ascend"
-                  ? "ASCEND ACHIEVED"
-                  : "NEW CARD TIER",
+                  ? tr("presentation.achieved")
+                  : tr("presentation.newTier"),
             }}
           />
         </View>
       )}
-      <Action label="CONTINUE" onPress={onContinue} />
+      <Action label={tr("common.continue")} onPress={onContinue} />
     </Sheet>
   );
 }
 function Increase({ before, after }: { before: number; after: number }) {
+ const { tr } = useLocalization();
   return (
     <View
       accessible
-      accessibilityLabel={`${before} to ${after}, up ${after - before}`}
+      accessibilityLabel={tr("presentation.increase",{before,after,delta:after-before})}
       style={{ gap: 8 }}
     >
       <Text

@@ -1,17 +1,21 @@
+import { useLocalization, supportedLocales } from "@/localization";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SafeAreaModal } from "./safe-area-modal";
 import { colors } from "@/config/theme";
 import { Icon } from "./icon";
 export function SettingsControl() {
+ const l = useLocalization();
+  const { tr, locale, setLocale, retry, error, busy, loading } = useLocalization();
+  const [language, setLanguage] = useState(false);
   const [open, setOpen] = useState(false);
   return (
     <>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Settings"
+        accessibilityLabel={tr("settings.open")}
         onPress={() => setOpen(true)}
         style={({ pressed }) => [
           styles.control,
@@ -33,19 +37,19 @@ export function SettingsControl() {
         onRequestClose={() => setOpen(false)}
       >
         <SafeAreaView style={styles.overlay}>
-          <View
+          <ScrollView
             accessibilityViewIsModal
             role="dialog"
-            aria-label="Settings"
-            style={styles.sheet}
+            aria-label={tr("settings.open")}
+            style={{maxHeight:"90%",width:"100%",maxWidth:460,alignSelf:"center"}}
+            contentContainerStyle={styles.sheet}
           >
             <View style={styles.heading}>
               <Text accessibilityRole="header" style={styles.title}>
-                SETTINGS
-              </Text>
+                {tr("settings.title")}</Text>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Close settings"
+                accessibilityLabel={tr("settings.close")}
                 onPress={() => setOpen(false)}
                 style={({ pressed }) => [
                   styles.control,
@@ -55,20 +59,31 @@ export function SettingsControl() {
                 <Icon name="close" />
               </Pressable>
             </View>
-            <Text style={styles.copy}>Make ASCEND your own.</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel={tr("settings.language")} style={styles.row} onPress={() => setLanguage(!language)}>
+              <Text style={styles.label}>{tr("settings.language")}</Text>
+              <Text style={styles.label}>{supportedLocales.find(l => l.id === locale)!.name}</Text>
+            </Pressable>
+            {language && <View style={{gap:8}}>
+              {supportedLocales.map(option => <Pressable key={option.id} accessibilityRole="button" accessibilityLabel={option.name} accessibilityState={{selected:locale === option.id, disabled: busy || loading || error}} disabled={busy || loading || error} onPress={() => void setLocale(option.id)} style={[styles.row, {minHeight:48}]}>
+                <Text style={styles.label}>{option.name}</Text>
+                {locale === option.id && <Text style={styles.label}>✓ {tr("settings.selected")}</Text>}
+              </Pressable>)}
+            </View>}
+            {error && <View style={{gap:8}}><Text accessibilityRole="alert" style={styles.copy}>{tr("settings.failure")}</Text><Pressable accessibilityRole="button" onPress={() => void retry()} disabled={busy} style={styles.row}><Text style={styles.label}>{tr("settings.retry")}</Text></Pressable></View>}
+            <Text style={styles.copy}>{tr("settings.description")}</Text>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Training profile"
+              accessibilityLabel={tr("settings.profile")}
               style={styles.row}
               onPress={() => {
                 setOpen(false);
                 router.push("/training-profile");
               }}
             >
-              <Text style={styles.label}>Training profile</Text>
-              <Text style={styles.soon}>EDIT</Text>
+              <Text style={styles.label}>{tr("settings.profile")}</Text>
+              <Text style={styles.soon}>{tr("common.edit")}</Text>
             </Pressable>
-          </View>
+          </ScrollView>
         </SafeAreaView>
       </SafeAreaModal>
     </>

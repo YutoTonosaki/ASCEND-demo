@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useSeasons } from "@/seasons/provider";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Text, View } from "react-native";
@@ -28,6 +29,8 @@ export function LiveWorkout({
   session: WorkoutSession;
   onComplete: (id: string) => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { commit } = useSessions();
   const { record: recordSeason } = useSeasons();
   const presentGrowth = useGrowthPresentation();
@@ -144,13 +147,12 @@ export function LiveWorkout({
     <>
       <Text style={t.name}>{session.name}</Text>
       <Text style={s.fine}>
-        {completed} / {total} sets completed
-      </Text>
+        {completed} / {total} {tr("train.setsCompleted")}</Text>
       <ErrorText message={error} />
       {deadline ? (
-        <Panel title="REST">
+        <Panel title={tr("train.rest")}>
           <Text
-            accessibilityLabel="Rest remaining"
+            accessibilityLabel={tr("train.restRemaining")}
             style={{
               fontSize: 56,
               fontWeight: "800",
@@ -162,25 +164,25 @@ export function LiveWorkout({
               Math.max(0, Math.ceil((Date.parse(deadline) - now) / 1000)),
             )}
           </Text>
-          <Text style={s.eyebrow}>NEXT</Text>
+          <Text style={s.eyebrow}>{tr("common.next")}</Text>
           <Text style={t.name}>
-            {current.entry.exercise.name} · Set {current.setIndex + 1}
+            {l.exercise(current.entry.exercise)} · Set {current.setIndex + 1}
           </Text>
           <Action
-            label="SKIP REST"
+            label={tr("train.skipRest")}
             disabled={busy}
             onPress={() => void skipRest()}
           />
         </Panel>
       ) : (
         <Panel
-          title={current.entry.exercise.name}
+          title={l.exercise(current.entry.exercise)}
           kicker={`EXERCISE ${current.exerciseIndex + 1} / ${session.exercises.length}`}
         >
           <Text style={s.eyebrow}>
-            SET {current.setIndex + 1} / {current.entry.sets.length}
+            {tr("train.set")}{current.setIndex + 1} / {current.entry.sets.length}
           </Text>
-          <Text style={s.fine}>TARGET</Text>
+          <Text style={s.fine}>{tr("train.target")}</Text>
           <Text
             style={{ color: colors.bronze, fontSize: 28, fontWeight: "800" }}
           >
@@ -195,20 +197,19 @@ export function LiveWorkout({
         </Panel>
       )}
       {session.exercises.some((e) => e.sets.some((set) => set.result)) && (
-        <Panel title="CONFIRMED SETS">
+        <Panel title={tr("train.confirmed")}>
           {session.exercises.map((entry) => (
             <View key={entry.id} style={{ gap: 6 }}>
               {entry.sets.map((set, i) =>
                 set.result ? (
                   <View key={set.id} style={t.item}>
                     <Text style={t.name}>
-                      ✓ {entry.exercise.name} · Set {i + 1} complete
-                    </Text>
+                      ✓ {l.exercise(entry.exercise)} · Set {i + 1} {tr("train.completeSuffix")}</Text>
                     <Text style={s.fine}>
-                      Target · {targetLabel(set.target)}
+                      {tr("train.targetLabel")}{targetLabel(set.target)}
                     </Text>
                     <Text style={s.muted}>
-                      Actual · {actualLabel(set.result.actual)}
+                      {tr("train.actualLabel")}{actualLabel(set.result.actual)}
                     </Text>
                   </View>
                 ) : null,
@@ -218,9 +219,7 @@ export function LiveWorkout({
         </Panel>
       )}
       <Text style={s.fine}>
-        Confirmed sets are saved. You can leave this screen and resume from
-        TRAIN.
-      </Text>
+        {tr("train.confirmedNote")}</Text>
     </>
   );
 }
@@ -233,6 +232,8 @@ function ActualInput({
   busy: boolean;
   onConfirm: (actual: ActualResult) => Promise<void>;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const [actual, setActual] = useState(() => prefill(target));
   const submitted = useRef(false);
   async function submit() {
@@ -243,11 +244,11 @@ function ActualInput({
   }
   return (
     <View style={{ gap: 12 }}>
-      <Text style={s.eyebrow}>ACTUAL</Text>
+      <Text style={s.eyebrow}>{tr("train.actual")}</Text>
       {actual.type === "time" ? (
         <Counter
-          label="Actual seconds"
-          displayLabel="Seconds"
+          label={tr("train.actualSeconds")}
+          displayLabel={tr("units.seconds")}
           value={actual.seconds}
           min={0}
           max={Number.MAX_SAFE_INTEGER}
@@ -257,8 +258,8 @@ function ActualInput({
       ) : (
         <>
           <Counter
-            label="Actual reps"
-            displayLabel="Reps"
+            label={tr("train.actualReps")}
+            displayLabel={tr("units.reps")}
             value={actual.reps}
             min={0}
             max={Number.MAX_SAFE_INTEGER}
@@ -266,7 +267,7 @@ function ActualInput({
           />
           {actual.type === "weight_reps" && (
             <Counter
-              label="Actual weight kg"
+              label={tr("train.actualKg")}
               displayLabel="kg"
               value={actual.weightKg}
               min={0}
@@ -278,9 +279,9 @@ function ActualInput({
         </>
       )}
       {busy ? (
-        <Action label="SAVING SET…" disabled onPress={() => {}} />
+        <Action label={tr("train.savingSet")} disabled onPress={() => {}} />
       ) : (
-        <Button label="COMPLETE SET" onPress={() => void submit()} />
+        <Button label={tr("train.completeSet")} onPress={() => void submit()} />
       )}
     </View>
   );
@@ -292,12 +293,14 @@ export function SessionSummary({
   session: WorkoutSession;
   onFinish: () => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const total = session.exercises.reduce((n, e) => n + e.sets.length, 0);
   return (
     <>
-      <Panel title={session.name} kicker="COMPLETED">
+      <Panel title={session.name} kicker={tr("common.completed")}>
         <Text style={s.muted}>
-          {new Date(session.completedAt!).toLocaleString()}
+          {l.date(session.completedAt!, true)}
         </Text>
         <Text style={s.sectionTitle}>
           {durationLabel(
@@ -309,28 +312,26 @@ export function SessionSummary({
             ),
           )}
         </Text>
-        <Text style={s.fine}>Duration · includes rest and time away</Text>
+        <Text style={s.fine}>{tr("train.durationNote")}</Text>
         <Text style={s.muted}>
-          {session.exercises.length} exercises · {total} / {total} sets
-          completed
-        </Text>
+          {session.exercises.length} exercises · {total} / {total} {tr("train.setsCompleted")}</Text>
       </Panel>
       <WorkoutRewards sessionId={session.id} />
       {session.exercises.map((entry) => (
-        <Panel key={entry.id} title={entry.exercise.name}>
+        <Panel key={entry.id} title={l.exercise(entry.exercise)}>
           {entry.sets.map((set, i) => (
             <View key={set.id} style={t.item}>
-              <Text style={s.eyebrow}>SET {i + 1} · COMPLETE</Text>
-              <Text style={s.fine}>Target · {targetLabel(set.target)}</Text>
+              <Text style={s.eyebrow}>{tr("train.set")} {i + 1} · COMPLETE</Text>
+              <Text style={s.fine}>{tr("train.targetLabel")} {targetLabel(set.target)}</Text>
               <Text style={t.name}>
-                Actual ·{" "}
-                {set.result ? actualLabel(set.result.actual) : "Not recorded"}
+                {tr("train.actualLabel")}{" "}
+                {set.result ? actualLabel(set.result.actual) : tr("common.notRecorded")}
               </Text>
             </View>
           ))}
         </Panel>
       ))}
-      <Button label="FINISH" onPress={onFinish} />
+      <Button label={tr("common.finish")} onPress={onFinish} />
     </>
   );
 }

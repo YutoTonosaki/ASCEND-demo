@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useEffect, useState } from "react";
 import { BackHandler, Text, View } from "react-native";
 import { useIsFocused } from "expo-router";
@@ -28,6 +29,8 @@ type Page =
   | "summary"
   | "coach";
 export function TrainingWorkspace() {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const {
     data,
     library,
@@ -104,28 +107,28 @@ export function TrainingWorkspace() {
   return (
     <Screen
       key={page}
-      kicker="TRAIN / FIND YOUR FOCUS"
+      kicker={tr("train.kicker")}
       title={
         page === "coach"
-          ? "AI COACH"
+          ? tr("train.coach")
           : page === "live"
-            ? "LIVE WORKOUT"
+            ? tr("train.live")
             : page === "history"
-              ? "WORKOUT HISTORY"
+              ? tr("train.history")
               : page === "summary"
-                ? "WORKOUT COMPLETE"
+                ? tr("train.complete")
                 : page === "home"
-                  ? "PUT IN THE WORK"
+                  ? tr("train.title")
                   : page === "builder"
-                    ? "CUSTOM WORKOUT"
+                    ? tr("train.custom")
                     : page === "saved"
-                      ? "SAVED WORKOUTS"
+                      ? tr("train.saved")
                       : page === "exercises"
-                        ? "MY EXERCISES"
-                        : "YOUR WORKOUT"
+                        ? tr("train.myExercises")
+                        : tr("train.yourWorkout")
       }
     >
-      {page !== "home" && <Action label="BACK" onPress={back} />}
+      {page !== "home" && <Action label={tr("common.back")} onPress={back} />}
       <ErrorText message={error} />
       {notice && (
         <Text accessibilityLiveRegion="polite" style={s.muted}>
@@ -133,16 +136,16 @@ export function TrainingWorkspace() {
         </Text>
       )}
       {!sessions.data && (
-        <Panel title={sessions.error ? "WORKOUT SESSIONS" : "LOADING SESSIONS"}>
+        <Panel title={sessions.error ? tr("train.sessions") : tr("train.loadingSessions")}>
           <ErrorText message={sessions.error} />
           {sessions.error && (
             <>
               <Action
-                label="RETRY SESSIONS"
+                label={tr("train.retrySessions")}
                 onPress={() => void sessions.retry()}
               />
               <Action
-                label="RESET SESSION DATA"
+                label={tr("train.resetSessions")}
                 onPress={() =>
                   setConfirmation({
                     title: "RESET SESSION DATA?",
@@ -175,14 +178,13 @@ export function TrainingWorkspace() {
         <>
           {sessions.data.completed.length === 0 && (
             <Text style={s.muted}>
-              Your completed workouts will appear here.
-            </Text>
+              {tr("train.historyEmpty")}</Text>
           )}
           {sessions.data.completed.map((session) => (
             <Panel
               key={session.id}
               title={session.name}
-              kicker={new Date(session.completedAt!).toLocaleDateString()}
+              kicker={l.date(session.completedAt!)}
             >
               <Text style={s.muted}>
                 {session.exercises.length} exercises ·{" "}
@@ -201,21 +203,21 @@ export function TrainingWorkspace() {
         </>
       )}
       {page === "home" && !data && sessions.data && (
-        <Panel title="YOUR SESSIONS">
+        <Panel title={tr("train.yourSessions")}>
           {sessions.data.active && (
-            <Button label="RESUME WORKOUT" onPress={() => navigate("live")} />
+            <Button label={tr("train.resume")} onPress={() => navigate("live")} />
           )}
-          <Action label="WORKOUT HISTORY" onPress={() => navigate("history")} />
+          <Action label={tr("train.history")} onPress={() => navigate("history")} />
         </Panel>
       )}
       {!data ? (
-        <Panel title={loadError ? "TRAINING DATA" : "LOADING"}>
+        <Panel title={loadError ? tr("train.data") : tr("common.loadingUpper")}>
           <ErrorText message={loadError} />
           {loadError && (
             <>
-              <Action label="RETRY" onPress={() => void retry()} />
+              <Action label={tr("common.retry")} onPress={() => void retry()} />
               <Action
-                label="RESET TRAINING DATA"
+                label={tr("train.resetData")}
                 onPress={() =>
                   setConfirmation({
                     title: "RESET TRAINING DATA?",
@@ -235,29 +237,28 @@ export function TrainingWorkspace() {
               {sessions.data?.active && (
                 <Panel
                   title={sessions.data.active.name}
-                  kicker="WORKOUT IN PROGRESS"
+                  kicker={tr("train.inProgress")}
                 >
                   <Button
-                    label="RESUME WORKOUT"
+                    label={tr("train.resume")}
                     onPress={() => navigate("live")}
                   />
                 </Panel>
               )}
-              <Text style={s.muted}>Choose your way to train.</Text>
-              <Panel title="AI COACH">
+              <Text style={s.muted}>{tr("train.choose")}</Text>
+              <Panel title={tr("train.coach")}>
                 <Text style={s.muted}>
-                  A short workout from your preferences and training.
-                </Text>
+                  {tr("train.coachNote")}</Text>
                 <Action
-                  label="OPEN AI COACH"
+                  label={tr("train.openCoach")}
                   onPress={() => navigate("coach")}
                 />
               </Panel>
-              <Panel title="CUSTOM WORKOUT">
-                <Text style={s.muted}>Your session. Your approach.</Text>
-                <Button label="CREATE WORKOUT" onPress={create} />
+              <Panel title={tr("train.custom")}>
+                <Text style={s.muted}>{tr("train.customNote")}</Text>
+                <Button label={tr("train.create")} onPress={create} />
               </Panel>
-              <Panel title="YOUR TRAINING">
+              <Panel title={tr("train.yourTraining")}>
                 <Action
                   label={`SAVED WORKOUTS · ${data.workouts.length}`}
                   onPress={() => navigate("saved")}
@@ -267,7 +268,7 @@ export function TrainingWorkspace() {
                   onPress={() => navigate("exercises")}
                 />
                 <Action
-                  label="WORKOUT HISTORY"
+                  label={tr("train.history")}
                   disabled={!sessions.data}
                   onPress={() => navigate("history")}
                 />
@@ -291,10 +292,10 @@ export function TrainingWorkspace() {
           )}
           {page === "saved" && (
             <>
-              <Button label="+ CREATE WORKOUT" onPress={create} />
+              <Button label={tr("train.createPlus")} onPress={create} />
               {data.workouts.length === 0 && (
-                <Panel title="YOUR NEXT SESSION STARTS HERE">
-                  <Text style={s.muted}>Save a workout and make it yours.</Text>
+                <Panel title={tr("train.emptyTitle")}>
+                  <Text style={s.muted}>{tr("train.emptyNote")}</Text>
                 </Panel>
               )}
               {data.workouts.map((workout) => (
@@ -305,8 +306,7 @@ export function TrainingWorkspace() {
                       (sum, e) => sum + e.sets.length,
                       0,
                     )}{" "}
-                    sets
-                  </Text>
+                    {tr("units.sets")}</Text>
                   <Action
                     label={`VIEW · ${workout.name}`}
                     onPress={() => {
@@ -346,13 +346,12 @@ export function TrainingWorkspace() {
                       {entry.sets.map(targetLabel).join(" / ")}
                     </Text>
                     <Text style={s.fine}>
-                      Rest target · {entry.restSeconds} sec
-                    </Text>
+                      {tr("train.restTarget")}{entry.restSeconds} {tr("units.sec")}</Text>
                   </View>
                 ))}
               </Panel>
               <Button
-                label="EDIT WORKOUT"
+                label={tr("train.edit")}
                 onPress={() => {
                   setPlan(copyWorkoutPlan(selected));
                   setDirty(false);
@@ -361,7 +360,7 @@ export function TrainingWorkspace() {
               />
               <View style={t.row}>
                 <Action
-                  label="DUPLICATE WORKOUT"
+                  label={tr("train.duplicate")}
                   disabled={busy}
                   onPress={() =>
                     void perform(async () => {
@@ -372,7 +371,7 @@ export function TrainingWorkspace() {
                   }
                 />
                 <Action
-                  label="DELETE WORKOUT"
+                  label={tr("train.delete")}
                   disabled={busy}
                   onPress={() =>
                     setConfirmation({
@@ -392,7 +391,7 @@ export function TrainingWorkspace() {
               </View>
               <Action
                 label={
-                  sessions.data?.active ? "RESUME WORKOUT" : "START WORKOUT"
+                  sessions.data?.active ? tr("train.resume") : tr("train.start")
                 }
                 disabled={busy || !sessions.data}
                 onPress={() =>
@@ -412,33 +411,31 @@ export function TrainingWorkspace() {
           {page === "exercises" && (
             <>
               <Button
-                label="+ CREATE CUSTOM EXERCISE"
+                label={tr("train.createExercisePlus")}
                 onPress={() => setEditor("new")}
               />
               {data.customExercises.length === 0 && (
                 <Text style={s.muted}>
-                  Add your own movements once, then select them whenever you
-                  train.
-                </Text>
+                  {tr("train.exerciseNote")}</Text>
               )}
               {data.customExercises.map((exercise) => (
-                <Panel key={exercise.id} title={exercise.name}>
+                <Panel key={exercise.id} title={l.exercise(exercise)}>
                   <Text style={s.muted}>
-                    {exercise.primaryBodyParts.join(", ")} ·{" "}
-                    {trackingLabels[exercise.trackingType]}
+                    {exercise.primaryBodyParts.map(l.display).join(", ")} ·{" "}
+                    {l.display(trackingLabels[exercise.trackingType])}
                   </Text>
                   <View style={t.row}>
                     <Action
-                      label={`EDIT · ${exercise.name}`}
+                      label={`EDIT · ${l.exercise(exercise)}`}
                       onPress={() => setEditor(exercise)}
                     />
                     <Action
-                      label={`DELETE · ${exercise.name}`}
+                      label={`DELETE · ${l.exercise(exercise)}`}
                       disabled={busy}
                       onPress={() =>
                         setConfirmation({
                           title: "DELETE EXERCISE?",
-                          message: `Delete ${exercise.name}? Exercises used in saved workouts must be removed from those workouts first.`,
+                          message: `Delete ${l.exercise(exercise)}? Exercises used in saved workouts must be removed from those workouts first.`,
                           action: () =>
                             void perform(
                               () =>
@@ -460,7 +457,7 @@ export function TrainingWorkspace() {
       )}
       {editor && (
         <Sheet
-          title={editor === "new" ? "CREATE EXERCISE" : "EDIT EXERCISE"}
+          title={editor === "new" ? tr("train.createExercise") : tr("train.editExercise")}
           onClose={() => setEditor(null)}
         >
           <ExerciseEditor

@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { Choice, Button, s } from "@/components/ui/primitives";
@@ -22,6 +23,8 @@ export function ExerciseEditor({
   onDone: (exercise: CustomExercise) => void;
   onCancel: () => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { commit } = useTraining();
   const [exercise, setExercise] = useState<CustomExercise>(() =>
     existing
@@ -59,16 +62,16 @@ export function ExerciseEditor({
   return (
     <View style={{ gap: 12 }}>
       <Field
-        label="EXERCISE NAME"
-        value={exercise.name}
+        label={tr("exercise.name")}
+        value={l.exercise(exercise)}
         onChange={(name) => setExercise({ ...exercise, name })}
       />
-      <Text style={s.eyebrow}>PRIMARY BODY PART</Text>
+      <Text style={s.eyebrow}>{tr("exercise.primary")}</Text>
       <View style={s.choices}>
         {bodyParts.map((part) => (
           <Choice
             key={part}
-            label={part}
+            label={l.display(part)}
             selected={exercise.primaryBodyParts.includes(part)}
             onPress={() =>
               setExercise({
@@ -82,14 +85,14 @@ export function ExerciseEditor({
           />
         ))}
       </View>
-      <Text style={s.eyebrow}>SECONDARY BODY PARTS · OPTIONAL</Text>
+      <Text style={s.eyebrow}>{tr("exercise.secondary")}</Text>
       <View style={s.choices}>
         {bodyParts
           .filter((p) => !exercise.primaryBodyParts.includes(p))
           .map((part) => (
             <Choice
               key={part}
-              label={part}
+              label={l.display(part)}
               selected={exercise.secondaryBodyParts.includes(part)}
               onPress={() =>
                 setExercise({
@@ -102,7 +105,7 @@ export function ExerciseEditor({
             />
           ))}
       </View>
-      <Text style={s.eyebrow}>EQUIPMENT</Text>
+      <Text style={s.eyebrow}>{tr("exercise.equipment")}</Text>
       <View style={s.choices}>
         {equipmentOptions.map((option) => (
           <Choice
@@ -120,7 +123,7 @@ export function ExerciseEditor({
           />
         ))}
       </View>
-      <Text style={s.eyebrow}>TRACKING TYPE</Text>
+      <Text style={s.eyebrow}>{tr("exercise.trackingType")}</Text>
       <View style={s.choices}>
         {(Object.keys(trackingLabels) as TrackingType[]).map((type) => (
           <Choice
@@ -131,7 +134,7 @@ export function ExerciseEditor({
           />
         ))}
       </View>
-      <Text style={s.eyebrow}>CATEGORY</Text>
+      <Text style={s.eyebrow}>{tr("exercise.category")}</Text>
       <View style={s.choices}>
         {categories.map((category) => (
           <Choice
@@ -144,11 +147,11 @@ export function ExerciseEditor({
       </View>
       <ErrorText message={error} />
       {busy ? (
-        <Text style={s.muted}>Saving…</Text>
+        <Text style={s.muted}>{tr("common.saving")}</Text>
       ) : (
-        <Button label="SAVE EXERCISE" onPress={() => void save()} />
+        <Button label={tr("exercise.save")} onPress={() => void save()} />
       )}
-      <Action label="CANCEL" onPress={onCancel} />
+      <Action label={tr("common.cancel")} onPress={onCancel} />
     </View>
   );
 }

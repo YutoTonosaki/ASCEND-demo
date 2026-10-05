@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { Choice, Panel, s } from "@/components/ui/primitives";
@@ -27,6 +28,7 @@ export function ProfileEditor({
   onDone: () => void;
   onCancel: () => void;
 }) {
+  const { tr } = useLocalization();
   const { data, save } = useCoach();
   const [profile, setProfile] = useState<TrainingProfile>(() =>
     data?.profile
@@ -84,29 +86,27 @@ export function ProfileEditor({
   }
   return (
     <>
-      <Text style={s.eyebrow}>TRAINING PROFILE · {step} / 3</Text>
+      <Text style={s.eyebrow}>{tr("profile.step")} {step} / 3</Text>
       <ErrorText message={error} />
       {step === 1 && (
         <>
           <Text style={s.muted}>
-            A few preferences to make training easier. Measurements are optional
-            and never used to guess your strength.
-          </Text>
+            {tr("profile.note")}</Text>
           <Field
-            label="HEIGHT CM · OPTIONAL"
+            label={tr("profile.height")}
             value={height}
             onChange={setHeight}
-            placeholder="Not provided"
+            placeholder={tr("profile.notProvided")}
             maxLength={8}
           />
           <Field
-            label="WEIGHT KG · OPTIONAL"
+            label={tr("profile.weight")}
             value={weight}
             onChange={setWeight}
-            placeholder="Not provided"
+            placeholder={tr("profile.notProvided")}
             maxLength={8}
           />
-          <Text style={s.eyebrow}>EXPERIENCE</Text>
+          <Text style={s.eyebrow}>{tr("profile.experience")}</Text>
           <View style={s.choices}>
             {(
               Object.keys(experienceLabels) as (keyof typeof experienceLabels)[]
@@ -119,7 +119,7 @@ export function ProfileEditor({
               />
             ))}
           </View>
-          <Text style={s.eyebrow}>PRIMARY GOAL</Text>
+          <Text style={s.eyebrow}>{tr("profile.goal")}</Text>
           <View style={s.choices}>
             {(Object.keys(goalLabels) as (keyof typeof goalLabels)[]).map(
               (key) => (
@@ -132,7 +132,7 @@ export function ProfileEditor({
               ),
             )}
           </View>
-          <Action label="NEXT · ENVIRONMENT" onPress={basicNext} />
+          <Action label={tr("profile.nextEnvironment")} onPress={basicNext} />
         </>
       )}
       {step === 2 && (
@@ -149,10 +149,10 @@ export function ProfileEditor({
               })
             }
           />
-          <Text style={s.eyebrow}>TRAINING DAYS PER WEEK · OPTIONAL</Text>
+          <Text style={s.eyebrow}>{tr("profile.days")}</Text>
           <View style={s.choices}>
             <Choice
-              label="No preference"
+              label={tr("profile.noPreference")}
               selected={profile.preferredTrainingDaysPerWeek === null}
               onPress={() =>
                 setProfile({ ...profile, preferredTrainingDaysPerWeek: null })
@@ -169,21 +169,16 @@ export function ProfileEditor({
               />
             ))}
           </View>
-          <Action label="NEXT · OPTIONAL BASELINE" onPress={() => setStep(3)} />
-          <Action label="PREVIOUS STEP" onPress={() => setStep(1)} />
+          <Action label={tr("profile.nextBaseline")} onPress={() => setStep(3)} />
+          <Action label={tr("profile.previous")} onPress={() => setStep(1)} />
         </>
       )}
       {step === 3 && (
         <>
           <Text style={s.muted}>
-            Optional starting reference. Choose a familiar movement, or enter a
-            result you already know. No maximum effort needed.
-          </Text>
+            {tr("profile.baselineNote")}</Text>
           <Text style={s.fine}>
-            Stop if you feel pain, dizziness or unusual discomfort. Skip any
-            movement you are not comfortable with. These entries do not create
-            workout history or fitness scores.
-          </Text>
+            {tr("profile.safety")}</Text>
           {standardExercises
             .filter(
               (e) =>
@@ -211,24 +206,24 @@ export function ProfileEditor({
               />
             ))}
           <Action
-            label="SAVE TRAINING PROFILE"
+            label={tr("profile.save")}
             disabled={busy}
             onPress={() => void finish()}
           />
           <Action
-            label="SKIP ALL BASELINES & SAVE"
+            label={tr("profile.skipSave")}
             disabled={busy}
             onPress={() => void finish(true)}
           />
           <Action
-            label="PREVIOUS STEP"
+            label={tr("profile.previous")}
             disabled={busy}
             onPress={() => setStep(2)}
           />
         </>
       )}
       <Action
-        label={data?.profile ? "CANCEL PROFILE EDIT" : "SKIP FOR NOW"}
+        label={data?.profile ? tr("profile.cancel") : tr("coach.skip")}
         disabled={busy}
         onPress={onCancel}
       />
@@ -244,6 +239,8 @@ function BaselineInput({
   existing?: BaselineAssessment;
   onChange: (baseline: BaselineAssessment | null) => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(() =>
     existing
@@ -256,31 +253,31 @@ function BaselineInput({
     existing?.source ?? "known",
   );
   return (
-    <Panel title={exercise.name}>
+    <Panel title={l.exercise(exercise)}>
       {editing ? (
         <>
           <View style={s.choices}>
             <Choice
-              label="Known result"
+              label={tr("profile.known")}
               selected={source === "known"}
               onPress={() => setSource("known")}
             />
             <Choice
-              label="Performed now"
+              label={tr("profile.now")}
               selected={source === "performed"}
               onPress={() => setSource("performed")}
             />
           </View>
           <Counter
-            label={`${exercise.name} baseline`}
-            displayLabel={exercise.trackingType === "time" ? "Seconds" : "Reps"}
+            label={`${l.exercise(exercise)} baseline`}
+            displayLabel={exercise.trackingType === "time" ? tr("units.seconds") : tr("units.reps")}
             value={value}
             min={0}
             max={exercise.trackingType === "time" ? 7200 : 999}
             onChange={setValue}
           />
           <Action
-            label={`CONFIRM BASELINE · ${exercise.name}`}
+            label={`CONFIRM BASELINE · ${l.exercise(exercise)}`}
             onPress={() => {
               onChange({
                 exercise: copyExercise(exercise),
@@ -295,7 +292,7 @@ function BaselineInput({
             }}
           />
           <Action
-            label={`SKIP · ${exercise.name}`}
+            label={`SKIP · ${l.exercise(exercise)}`}
             onPress={() => {
               onChange(null);
               setEditing(false);
@@ -307,15 +304,15 @@ function BaselineInput({
           <Text style={s.fine}>
             {existing
               ? `Recorded · ${existing.actual.type === "time" ? `${existing.actual.seconds} sec` : `${existing.actual.reps} reps`}`
-              : "Not assessed"}
+              : tr("profile.notAssessed")}
           </Text>
           <Action
-            label={`${existing ? "EDIT" : "ADD"} BASELINE · ${exercise.name}`}
+            label={`${existing ? tr("common.edit") : tr("common.add")} BASELINE · ${l.exercise(exercise)}`}
             onPress={() => setEditing(true)}
           />
           {existing && (
             <Action
-              label={`REMOVE BASELINE · ${exercise.name}`}
+              label={`REMOVE BASELINE · ${l.exercise(exercise)}`}
               onPress={() => onChange(null)}
             />
           )}

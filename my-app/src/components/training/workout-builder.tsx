@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { Button, Panel, s } from "@/components/ui/primitives";
@@ -16,6 +17,8 @@ export function WorkoutBuilder({
   onChange: (p: WorkoutPlan) => void;
   onSaved: () => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { library, commit } = useTraining();
   const [picker, setPicker] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -53,19 +56,17 @@ export function WorkoutBuilder({
   return (
     <>
       <Field
-        label="WORKOUT NAME"
+        label={tr("train.workoutName")}
         value={plan.name}
         onChange={(name) => onChange({ ...plan, name })}
-        placeholder="e.g. Push day"
+        placeholder={tr("train.workoutPlaceholder")}
       />
       <Text style={s.fine}>
-        Set your targets. Adjust each set whenever you need.
-      </Text>
+        {tr("train.targetsNote")}</Text>
       {plan.exercises.length === 0 && (
-        <Panel title="BUILD YOUR SESSION">
+        <Panel title={tr("train.build")}>
           <Text style={s.muted}>
-            Choose your first exercise to get started.
-          </Text>
+            {tr("train.firstExercise")}</Text>
         </Panel>
       )}
       {plan.exercises.map((entry, index) => {
@@ -75,7 +76,7 @@ export function WorkoutBuilder({
         return (
           <Panel
             key={entry.id}
-            title={`${index + 1}. ${exercise.name}`}
+            title={`${index + 1}. ${l.exercise(exercise)}`}
             kicker={`${entry.sets.length} SETS`}
           >
             <Text style={s.muted}>
@@ -83,7 +84,7 @@ export function WorkoutBuilder({
             </Text>
             <Counter
               displayLabel="Sets"
-              label={`${exercise.name} sets`}
+              label={`${l.exercise(exercise)} sets`}
               value={entry.sets.length}
               max={c.maxSets}
               onChange={(count) =>
@@ -105,18 +106,16 @@ export function WorkoutBuilder({
                 })
               }
             />
-            <Text style={s.eyebrow}>TARGET FOR ALL SETS</Text>
+            <Text style={s.eyebrow}>{tr("train.allTargets")}</Text>
             {entry.sets.some(
               (set) => targetLabel(set) !== targetLabel(first),
             ) && (
               <Text style={s.fine}>
-                Targets vary by set. Changing these controls applies the shown
-                target to every set.
-              </Text>
+                {tr("train.varyTargets")}</Text>
             )}
             <TargetControls
               target={first}
-              label={exercise.name}
+              label={l.exercise(exercise)}
               onChange={(target) =>
                 update({
                   ...entry,
@@ -127,23 +126,23 @@ export function WorkoutBuilder({
             <Action
               displayLabel={
                 expanded === entry.id
-                  ? "HIDE DETAILS"
-                  : "EDIT SETS, REST & ORDER"
+                  ? tr("train.hideDetails")
+                  : tr("train.editDetails")
               }
-              label={`${expanded === entry.id ? "HIDE" : "EDIT"} DETAILS · ${exercise.name}`}
+              label={`${expanded === entry.id ? tr("common.hide") : tr("common.edit")} DETAILS · ${l.exercise(exercise)}`}
               onPress={() =>
                 setExpanded(expanded === entry.id ? null : entry.id)
               }
             />
             {expanded === entry.id && (
               <>
-                <Text style={s.eyebrow}>INDIVIDUAL SET TARGETS</Text>
+                <Text style={s.eyebrow}>{tr("train.individualTargets")}</Text>
                 {entry.sets.map((set, i) => (
                   <View key={set.id} style={{ gap: 6 }}>
-                    <Text style={s.muted}>SET {i + 1}</Text>
+                    <Text style={s.muted}>{tr("train.set")} {i + 1}</Text>
                     <TargetControls
                       target={set}
-                      label={`${exercise.name} set ${i + 1}`}
+                      label={`${l.exercise(exercise)} set ${i + 1}`}
                       onChange={(target) =>
                         update({
                           ...entry,
@@ -157,7 +156,7 @@ export function WorkoutBuilder({
                 ))}
                 <Counter
                   displayLabel="Rest · sec"
-                  label={`${exercise.name} rest seconds`}
+                  label={`${l.exercise(exercise)} rest seconds`}
                   value={entry.restSeconds}
                   min={0}
                   max={c.maxRestSeconds}
@@ -166,8 +165,8 @@ export function WorkoutBuilder({
                 />
                 <View style={t.row}>
                   <Action
-                    displayLabel="MOVE UP"
-                    label={`MOVE UP · ${exercise.name}`}
+                    displayLabel={tr("train.moveUp")}
+                    label={`MOVE UP · ${l.exercise(exercise)}`}
                     disabled={index === 0}
                     onPress={() =>
                       onChange({
@@ -177,8 +176,8 @@ export function WorkoutBuilder({
                     }
                   />
                   <Action
-                    displayLabel="MOVE DOWN"
-                    label={`MOVE DOWN · ${exercise.name}`}
+                    displayLabel={tr("train.moveDown")}
+                    label={`MOVE DOWN · ${l.exercise(exercise)}`}
                     disabled={index === plan.exercises.length - 1}
                     onPress={() =>
                       onChange({
@@ -188,8 +187,8 @@ export function WorkoutBuilder({
                     }
                   />
                   <Action
-                    displayLabel="REMOVE"
-                    label={`REMOVE · ${exercise.name}`}
+                    displayLabel={tr("train.remove")}
+                    label={`REMOVE · ${l.exercise(exercise)}`}
                     onPress={() =>
                       onChange({
                         ...plan,
@@ -206,17 +205,17 @@ export function WorkoutBuilder({
         );
       })}
       <Action
-        label="+ ADD EXERCISE"
+        label={tr("train.addExercisePlus")}
         disabled={plan.exercises.length >= c.maxExercises}
         onPress={() => setPicker(true)}
       />
       <ErrorText message={error} />
       {busy ? (
-        <Text style={s.muted}>Saving…</Text>
+        <Text style={s.muted}>{tr("common.saving")}</Text>
       ) : (
-        <Button label="SAVE WORKOUT" onPress={() => void save()} />
+        <Button label={tr("train.save")} onPress={() => void save()} />
       )}
-      <Text style={s.fine}>Save your workout to start training.</Text>
+      <Text style={s.fine}>{tr("train.saveToStart")}</Text>
       {picker && (
         <ExercisePicker
           onClose={() => setPicker(false)}
@@ -241,11 +240,12 @@ function TargetControls({
   onChange: (t: SetTarget) => void;
   label: string;
 }) {
+  const { tr } = useLocalization();
   return (
     <View style={{ gap: 6 }}>
       {target.type === "time" ? (
         <Counter
-          displayLabel="Seconds"
+          displayLabel={tr("units.seconds")}
           label={`${label} seconds`}
           value={target.seconds}
           max={c.maxSeconds}
@@ -255,7 +255,7 @@ function TargetControls({
       ) : (
         <>
           <Counter
-            displayLabel="Reps"
+            displayLabel={tr("units.reps")}
             label={`${label} reps`}
             value={target.reps}
             max={c.maxReps}

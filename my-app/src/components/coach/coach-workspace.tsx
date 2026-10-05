@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { Panel, Choice, s } from "@/components/ui/primitives";
@@ -31,6 +32,8 @@ export function CoachWorkspace({
   onDraft: (plan: WorkoutPlan) => void;
   onSaved: (plan: WorkoutPlan) => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const coach = useCoach();
   const training = useTraining();
   const sessions = useSessions();
@@ -115,60 +118,56 @@ export function CoachWorkspace({
     <>
       <ErrorText message={error} />
       {!coach.data ? (
-        <Panel title="TRAINING PROFILE">
+        <Panel title={tr("coach.profile")}>
           <ErrorText message={coach.error} />
           {coach.error ? (
             <>
               <Action
-                label="RETRY PROFILE"
+                label={tr("coach.retry")}
                 onPress={() => void coach.retry()}
               />
               <Action
-                label="RESET COACH PROFILE"
+                label={tr("coach.reset")}
                 onPress={() => setResetting(true)}
               />
             </>
           ) : (
-            <Text style={s.muted}>Loading preferences…</Text>
+            <Text style={s.muted}>{tr("coach.loading")}</Text>
           )}
         </Panel>
       ) : !coach.data.profile && !recommendation ? (
-        <Panel title="MAKE IT YOUR TRAINING">
+        <Panel title={tr("coach.setupTitle")}>
           <Text style={s.muted}>
-            Set up a few preferences and an optional starting reference. Manual
-            workouts are always available.
-          </Text>
+            {tr("coach.setupNote")}</Text>
           <Action
-            label="SET UP YOUR PROFILE"
+            label={tr("coach.setup")}
             onPress={() => setEditing(true)}
           />
-          <Action label="TRY WITH DEFAULTS" onPress={generate} />
-          <Action label="SKIP FOR NOW" onPress={onManual} />
+          <Action label={tr("coach.defaults")} onPress={generate} />
+          <Action label={tr("coach.skip")} onPress={onManual} />
         </Panel>
       ) : recommendation?.status !== "ready" ? (
         <>
-          <Panel title="TODAY'S TRAINING">
+          <Panel title={tr("coach.today")}>
             <Text style={s.muted}>
-              A short proposal from your preferences and confirmed training.
-            </Text>
+              {tr("coach.todayNote")}</Text>
             <Action
-              label="GENERATE WORKOUT"
+              label={tr("coach.generate")}
               disabled={busy}
               onPress={generate}
             />
-            <Action label="CUSTOMIZE TODAY" onPress={customizeToday} />
+            <Action label={tr("coach.customizeToday")} onPress={customizeToday} />
             <Action
-              label="EDIT TRAINING PROFILE"
+              label={tr("coach.editProfile")}
               onPress={() => setEditing(true)}
             />
           </Panel>
         </>
       ) : null}
       {customizing && preferences && (
-        <Panel title="JUST FOR TODAY">
+        <Panel title={tr("coach.justToday")}>
           <Text style={s.fine}>
-            These choices do not change your saved profile.
-          </Text>
+            {tr("coach.temporaryNote")}</Text>
           <CoachPreferencesForm
             focus
             value={preferences}
@@ -176,18 +175,16 @@ export function CoachWorkspace({
           />
           {training.library.some((e) => e.isCustom) && (
             <>
-              <Text style={s.eyebrow}>ALLOW FAMILIAR CUSTOM EXERCISES</Text>
+              <Text style={s.eyebrow}>{tr("coach.allowCustom")}</Text>
               <Text style={s.fine}>
-                Difficulty is unknown. Select only movements you know and want
-                to consider.
-              </Text>
+                {tr("coach.customNote")}</Text>
               <View style={s.choices}>
                 {training.library
                   .filter((e) => e.isCustom)
                   .map((exercise) => (
                     <Choice
                       key={exercise.id}
-                      label={exercise.name}
+                      label={l.exercise(exercise)}
                       selected={preferences.customExerciseIds.includes(
                         exercise.id,
                       )}
@@ -207,9 +204,9 @@ export function CoachWorkspace({
               </View>
             </>
           )}
-          <Action label="GENERATE WITH THESE CHOICES" onPress={generate} />
+          <Action label={tr("coach.generateChoices")} onPress={generate} />
           <Action
-            label="USE PROFILE DEFAULTS"
+            label={tr("coach.useDefaults")}
             onPress={() => {
               setPreferences(null);
               setCustomizing(false);
@@ -219,42 +216,39 @@ export function CoachWorkspace({
         </Panel>
       )}
       {recommendation?.status === "blocked" && (
-        <Panel title="ADJUST YOUR PLAN">
+        <Panel title={tr("coach.adjust")}>
           <Text style={s.muted}>{recommendation.reason}</Text>
-          <Action label="CREATE MANUAL WORKOUT" onPress={onManual} />
+          <Action label={tr("coach.manual")} onPress={onManual} />
         </Panel>
       )}
       {recommendation?.status === "ready" && (
         <>
-          <Panel title="REVIEW YOUR WORKOUT">
+          <Panel title={tr("coach.review")}>
             <Text style={s.muted}>
               {recommendation.exercises.length}{" "}
-              {recommendation.exercises.length === 1 ? "exercise" : "exercises"}{" "}
+              {recommendation.exercises.length === 1 ? tr("units.exercise") : tr("units.exercisePlural")}{" "}
               · approximately {Math.ceil(recommendation.estimatedSeconds / 60)}{" "}
-              min
-            </Text>
+              {tr("units.min")}</Text>
             {recommendation.explanations.map((explanation) => (
               <Text key={explanation} style={s.fine}>
                 {explanation}
               </Text>
             ))}
             <Text style={s.fine}>
-              Nothing is saved until you choose SAVE RECOMMENDATION or save in
-              the workout builder.
-            </Text>
+              {tr("coach.saveNote")}</Text>
           </Panel>
           {recommendation.exercises.map((entry) => (
             <Panel
               key={entry.exercise.id}
-              title={entry.exercise.name}
+              title={l.exercise(entry.exercise)}
               kicker={
                 entry.evidence === "session"
-                  ? "FROM COMPLETED TRAINING"
+                  ? tr("coach.fromSession")
                   : entry.evidence === "baseline"
-                    ? "FROM YOUR BASELINE"
+                    ? tr("coach.fromBaseline")
                     : entry.evidence === "confirmation"
-                      ? "CHOOSE STARTING LOAD"
-                      : "INITIAL SUGGESTION"
+                      ? tr("coach.chooseLoad")
+                      : tr("coach.initial")
               }
             >
               <Text style={s.muted}>
@@ -267,20 +261,19 @@ export function CoachWorkspace({
                   .join(" / ")}
               </Text>
               <Text style={s.fine}>
-                {entry.exercise.primaryBodyParts.join(", ")} ·{" "}
-                {entry.exercise.equipment.join(", ")} · Rest {entry.restSeconds}{" "}
-                sec
-              </Text>
+                {entry.exercise.primaryBodyParts.map(l.display).join(", ")} ·{" "}
+                {entry.exercise.equipment.map(l.display).join(", ")} · Rest {entry.restSeconds}{" "}
+                {tr("units.sec")}</Text>
               <Text style={s.fine}>{entry.explanation}</Text>
               {unknownLoads.some(
                 (e) => e.exercise.id === entry.exercise.id,
               ) && (
                 <>
                   <Field
-                    label={`STARTING KG · ${entry.exercise.name}`}
+                    label={`STARTING KG · ${l.exercise(entry.exercise)}`}
                     value={loadText[entry.exercise.id] ?? ""}
                     maxLength={12}
-                    placeholder="Choose a comfortable load"
+                    placeholder={tr("coach.comfortableLoad")}
                     onChange={(value) => {
                       setLoadText({ ...loadText, [entry.exercise.id]: value });
                       const next = { ...confirmedLoads };
@@ -289,7 +282,7 @@ export function CoachWorkspace({
                     }}
                   />
                   <Action
-                    label={`CONFIRM LOAD · ${entry.exercise.name}`}
+                    label={`CONFIRM LOAD · ${l.exercise(entry.exercise)}`}
                     onPress={() => {
                       const text = loadText[entry.exercise.id] ?? "";
                       const value = Number(text.replace(",", "."));
@@ -313,7 +306,7 @@ export function CoachWorkspace({
                   />
                   {Object.hasOwn(confirmedLoads, entry.exercise.id) && (
                     <Text style={s.fine}>
-                      Load confirmed · {confirmedLoads[entry.exercise.id]} kg
+                      {tr("coach.loadConfirmed")}{confirmedLoads[entry.exercise.id]} kg
                     </Text>
                   )}
                 </>
@@ -321,28 +314,26 @@ export function CoachWorkspace({
             </Panel>
           ))}
           <Action
-            label="SAVE RECOMMENDATION"
+            label={tr("coach.save")}
             disabled={busy || needsLoad || !training.data}
             onPress={() => void accept(false)}
           />
           <Action
-            label="CUSTOMIZE WORKOUT"
+            label={tr("coach.customize")}
             disabled={busy || needsLoad || !training.data}
             onPress={() => void accept(true)}
           />
-          <Action label="CUSTOMIZE TODAY" onPress={customizeToday} />
+          <Action label={tr("coach.customizeToday")} onPress={customizeToday} />
           <Action
-            label="EDIT TRAINING PROFILE"
+            label={tr("coach.editProfile")}
             onPress={() => setEditing(true)}
           />
           <Text style={s.fine}>
-            You can change the focus or equipment to get a different proposal.
-            Resting today is also a valid choice.
-          </Text>
+            {tr("coach.restNote")}</Text>
         </>
       )}
       {editing && (
-        <Sheet title="TRAINING PROFILE" onClose={() => setEditing(false)}>
+        <Sheet title={tr("coach.profile")} onClose={() => setEditing(false)}>
           <ProfileEditor
             onDone={() => {
               setEditing(false);
@@ -356,8 +347,8 @@ export function CoachWorkspace({
       )}
       {resetting && (
         <Confirm
-          title="RESET COACH PROFILE?"
-          message="Reset preferences and baseline entries only. A raw backup is saved first. Workouts and session history remain unchanged."
+          title={tr("coach.resetQuestion")}
+          message={tr("coach.resetDetail")}
           onCancel={() => setResetting(false)}
           onConfirm={() => {
             setResetting(false);

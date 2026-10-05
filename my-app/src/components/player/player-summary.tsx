@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -17,11 +18,13 @@ export function PlayerSummary({
   club?: ClubIdentityData;
   form: string;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const palette = cardTiers[cardAppearance(player.ovr).tier];
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${player.name}, OVR ${player.ovr}, form ${form}${club ? `, ${club.name}` : ""}. Open Player`}
+      accessibilityLabel={tr("player.summaryAccessibility",{name:player.name,ovr:player.ovr,form:l.display(form),club:club ? `, ${club.name}` : ""})}
       onPress={() => router.push("/player")}
       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
     >
@@ -40,10 +43,10 @@ export function PlayerSummary({
         <View style={styles.identity}>
           <Text style={styles.name}>{player.name}</Text>
           <Text testID="home-card-tier" style={styles.archetype}>
-            {palette.label.toUpperCase()}
+            {l.display(palette.label).toUpperCase()}
           </Text>
           {club && <ClubIdentity club={club} compact />}
-          <Text style={styles.form}>● FORM {form}</Text>
+          <Text style={styles.form}>{tr("home.form")} {l.display(form)}</Text>
         </View>
         <Icon name="arrow" size={16} color={palette.accent} />
       </LinearGradient>

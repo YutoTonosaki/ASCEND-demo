@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { SeasonPanel } from "@/components/career/seasons";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -13,6 +14,8 @@ import { cardAppearance } from "@/cards/domain";
 import { cardTiers } from "@/config/visuals";
 import type { Club } from "@/types/club";
 function ClubProfile({ club }: { club: Club }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   return (
     <View style={{ gap: 10 }}>
       <View style={s.row}>
@@ -20,26 +23,25 @@ function ClubProfile({ club }: { club: Club }) {
         <View style={s.flex}>
           <Text style={s.sectionTitle}>{club.name}</Text>
           <Text style={s.fine}>
-            {club.shortName} · {club.country}
+            {club.shortName} · {l.display(club.country)}
           </Text>
         </View>
       </View>
       <Text style={s.muted}>
-        Reputation {club.reputation} / 5 ·{" "}
+        {tr("career.reputation")} {club.reputation} / 5 ·{" "}
         {clubReputationLevels[club.reputation]}
       </Text>
       <Text style={s.muted}>
-        Recommended OVR {club.recommendedOVR} · Informational only
-      </Text>
+        {tr("career.recommended")} {club.recommendedOVR} {tr("career.infoOnly")}</Text>
       <Text style={s.muted}>{club.description}</Text>
       <Text style={s.fine}>
-        Profile interests · {club.preferredAttributes.join(" / ")}. No effect on
-        your ratings.
-      </Text>
+        {tr("career.interests")}{club.preferredAttributes.map(l.display).join(" / ")}{tr("career.noEffect")}</Text>
     </View>
   );
 }
 export default function CareerScreen() {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const career = useCareer(),
     growth = useGrowth();
   const [selecting, setSelecting] = useState(false),
@@ -50,41 +52,41 @@ export default function CareerScreen() {
   const canChoose =
     !!player && !growth.error && !record && !!career.data && !career.error;
   return (
-    <Screen kicker="CAREER / YOUR CLUB" title="WRITE YOUR STORY">
+    <Screen kicker={tr("career.kicker")} title={tr("career.title")}>
       {career.error ? (
-        <Panel title="CAREER UNAVAILABLE">
-          <Text style={s.muted}>{career.error}</Text>
+        <Panel title={tr("career.unavailable")}>
+          <Text style={s.muted}>{l.errorText(career.error)}</Text>
           <Action
-            label="RETRY CAREER"
+            label={tr("career.retry")}
             disabled={career.busy}
             onPress={() => void career.retry()}
           />
         </Panel>
       ) : !career.data ? (
-        <Text style={s.muted}>Loading career…</Text>
+        <Text style={s.muted}>{tr("career.loading")}</Text>
       ) : record && career.club ? (
         <>
-          <Panel title="CURRENT CLUB">
+          <Panel title={tr("career.currentClub")}>
             <ClubCrest club={career.club} size={52} />
             <Text testID="current-club" style={s.sectionTitle}>
               {career.club.name}
             </Text>
             <Text style={s.muted}>
-              {career.club.country} · Reputation {career.club.reputation} / 5
+              {l.display(career.club.country)} · {tr("career.reputation")} {career.club.reputation} / 5
             </Text>
-            <Action label="CLUB DETAILS" onPress={() => setDetails(!details)} />
+            <Action label={tr("career.details")} onPress={() => setDetails(!details)} />
             {details && <ClubProfile club={career.club} />}
           </Panel>
           <SeasonPanel />
-          <Panel title="PLAYER STATUS">
+          <Panel title={tr("career.playerStatus")}>
             <Text style={s.sectionTitle}>
               {player
-                ? `OVR ${overall(player.ratings)} · ${cardTiers[cardAppearance(overall(player.ratings)).tier].label.toUpperCase()}`
-                : "Player data unavailable"}
+                ? `OVR ${overall(player.ratings)} · ${l.display(cardTiers[cardAppearance(overall(player.ratings)).tier].label).toUpperCase()}`
+                : tr("career.playerUnavailable")}
             </Text>
-            <Text style={s.muted}>Club Member</Text>
+            <Text style={s.muted}>{tr("career.member")}</Text>
           </Panel>
-          <Panel title="CAREER RECORD">
+          <Panel title={tr("career.history")}>
             {record.clubHistory.map((entry, i) => (
               <View
                 key={`${entry.clubId}:${entry.joinedAt}:${i}`}
@@ -94,30 +96,29 @@ export default function CareerScreen() {
                   {clubById(entry.clubId)!.name}
                 </Text>
                 <Text style={s.muted}>
-                  Joined {new Date(entry.joinedAt).toLocaleDateString()}
+                  {tr("career.joined")}{l.date(entry.joinedAt)}
                 </Text>
                 <Text style={s.fine}>
                   {entry.leftAt
-                    ? `Left ${new Date(entry.leftAt).toLocaleDateString()}`
-                    : "Current club"}
+                    ? tr("career.leftDate",{date:l.date(entry.leftAt)})
+                    : tr("career.current")}
                 </Text>
               </View>
             ))}
           </Panel>
-          <Panel title="YOUR NEXT CHAPTER">
-            <Placeholder title="MATCH" description="Coming soon" />
-            <Placeholder title="TRANSFER CENTER" description="Coming soon" />
+          <Panel title={tr("career.next")}>
+            <Placeholder title={tr("career.match")} description={tr("common.comingSoonSentence")} />
+            <Placeholder title={tr("career.transfer")} description={tr("common.comingSoonSentence")} />
           </Panel>
         </>
       ) : (
-        <Panel title="CAREER NOT STARTED">
-          <Text style={s.sectionTitle}>BEGIN YOUR JOURNEY</Text>
+        <Panel title={tr("career.notStarted")}>
+          <Text style={s.sectionTitle}>{tr("career.begin")}</Text>
           <Text style={s.muted}>
-            Choose your first Japanese club and begin your ASCEND career.
-          </Text>
+            {tr("career.chooseNote")}</Text>
           {player && !growth.error ? (
             <Action
-              label="START CAREER"
+              label={tr("career.start")}
               onPress={() => {
                 setSelected(null);
                 setSelecting(true);
@@ -126,11 +127,9 @@ export default function CareerScreen() {
           ) : (
             <>
               <Text style={s.fine}>
-                Initialize your Player before choosing a club. Your existing
-                training and Coins stay intact.
-              </Text>
+                {tr("career.initializeNote")}</Text>
               <Action
-                label="OPEN PLAYER"
+                label={tr("home.openPlayer")}
                 onPress={() => router.push("/player")}
               />
             </>
@@ -141,8 +140,8 @@ export default function CareerScreen() {
         <Sheet
           title={
             selected
-              ? `JOIN ${selected.name.toUpperCase()}?`
-              : "CHOOSE YOUR FIRST CLUB"
+              ? tr("career.joinQuestion", {club:selected.name.toUpperCase()})
+              : tr("career.choose")
           }
           onClose={() => setSelecting(false)}
         >
@@ -150,16 +149,14 @@ export default function CareerScreen() {
             <>
               <ClubProfile club={selected} />
               <Text style={s.muted}>
-                This will become your first club. Club changes will be available
-                through future transfers.
-              </Text>
+                {tr("career.joinNote")}</Text>
               <Action
-                label="BACK TO CLUBS"
+                label={tr("career.backToClubs")}
                 disabled={career.busy}
                 onPress={() => setSelected(null)}
               />
               <Action
-                label={career.busy ? "JOINING…" : "JOIN CLUB"}
+                label={career.busy ? tr("career.joining") : tr("career.join")}
                 disabled={career.busy}
                 onPress={() => void career.join(selected.id)}
               />
@@ -170,7 +167,7 @@ export default function CareerScreen() {
                 <Panel key={club.id}>
                   <ClubProfile club={club} />
                   <Action
-                    label={`INSPECT ${club.name.toUpperCase()}`}
+                    label={tr("career.inspect", {club:club.name.toUpperCase()})}
                     onPress={() => setSelected(club)}
                   />
                 </Panel>

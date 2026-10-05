@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { HomeSeason } from "@/components/career/seasons";
 import { useGrowth } from "@/growth/provider";
 import { overall } from "@/growth/domain";
@@ -10,43 +11,44 @@ import { weekly, recovery } from "@/data/mock";
 import { colors } from "@/config/theme";
 import { CoinBalance, WeeklyTraining } from "@/components/rewards/rewards";
 export default function Home() {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { club: currentClub } = useCareer();
   const { data } = useGrowth();
   const player = data?.player;
   return (
-    <Screen home kicker="THE FACILITY" title="YOUR NEXT LEVEL">
+    <Screen home kicker={tr("home.kicker")} title={tr("home.title")}>
       {player ? (
         <PlayerSummary
           club={currentClub}
           player={{
-            name: "PLAYER",
+            name: tr("nav.player"),
             ovr: overall(player.ratings),
-            archetype: "TRAINING PROFILE",
+            archetype: tr("coach.profile"),
           }}
           form={weekly.form}
         />
       ) : (
         <Panel>
           <Text style={s.muted}>
-            Your player rating starts with your training evidence.
-          </Text>
-          <Button label="OPEN PLAYER" onPress={() => router.push("/player")} />
+            {tr("home.evidence")}</Text>
+          <Button label={tr("home.openPlayer")} onPress={() => router.push("/player")} />
         </Panel>
       )}
       <CoinBalance />
       <Panel>
         <WeeklyTraining />
         <Button
-          label="START TODAY'S TRAINING"
+          label={tr("home.start")}
           onPress={() => router.push("/train")}
         />
       </Panel>
       <HomeSeason />
-      <Panel title="RECOVERY" kicker="REST IS PART OF THE PLAN">
+      <Panel title={tr("home.recovery")} kicker={tr("home.rest")}>
         <View style={h.recovery}>
           {recovery.map((item) => (
-            <View key={item.area} style={h.recoveryItem}>
-              <Text style={h.body}>{item.area}</Text>
+            <View key={l.display(item.area)} style={h.recoveryItem}>
+              <Text style={h.body}>{l.display(item.area)}</Text>
               <Text
                 style={[
                   h.state,

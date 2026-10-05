@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useState, type PropsWithChildren } from "react";
 import {
   Pressable,
@@ -84,6 +85,7 @@ export function Counter({
   step?: number;
   displayLabel?: string;
 }) {
+ const { tr } = useLocalization();
   const [editing, setEditing] = useState<string | null>(null);
   const update = (n: number) => {
     setEditing(null);
@@ -101,7 +103,7 @@ export function Counter({
       <Text style={[s.muted, s.flex]}>{displayLabel ?? label}</Text>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Decrease ${label}`}
+        accessibilityLabel={tr("common.decrease",{label})}
         disabled={value <= min}
         accessibilityState={{ disabled: value <= min }}
         onPress={() => update(value - step)}
@@ -142,7 +144,7 @@ export function Counter({
       />
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Increase ${label}`}
+        accessibilityLabel={tr("common.increase",{label})}
         disabled={value >= max}
         accessibilityState={{ disabled: value >= max }}
         onPress={() => update(value + step)}
@@ -158,6 +160,7 @@ export function Sheet({
   onClose,
   children,
 }: PropsWithChildren<{ title: string; onClose: () => void }>) {
+  const { tr } = useLocalization();
   return (
     <SafeAreaModal
       visible
@@ -172,7 +175,7 @@ export function Sheet({
               <Text accessibilityRole="header" style={s.sectionTitle}>
                 {title}
               </Text>
-              <Action label="CLOSE" onPress={onClose} />
+              <Action label={tr("common.close")} onPress={onClose} />
             </View>
             <ScrollView
               keyboardShouldPersistTaps="handled"
@@ -198,6 +201,7 @@ export function Confirm({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const { tr } = useLocalization();
   return (
     <SafeAreaModal visible transparent animationType="none" onRequestClose={onCancel}>
       <SafeAreaView
@@ -221,20 +225,21 @@ export function Confirm({
             {title}
           </Text>
           <Text style={s.muted}>{message}</Text>
-          <Action label="CONFIRM" onPress={onConfirm} />
-          <Action label="CANCEL" onPress={onCancel} />
+          <Action label={tr("common.confirm")} onPress={onConfirm} />
+          <Action label={tr("common.cancel")} onPress={onCancel} />
         </View>
       </SafeAreaView>
     </SafeAreaModal>
   );
 }
 export function ErrorText({ message }: { message: string | null }) {
+ const l = useLocalization();
   return message ? (
     <Text
       accessibilityRole="alert"
       style={{ color: colors.recovering, lineHeight: 20 }}
     >
-      {message}
+      {l.errorText(message)}
     </Text>
   ) : null;
 }

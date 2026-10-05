@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Choice, s } from "@/components/ui/primitives";
@@ -14,6 +15,8 @@ export function ExercisePicker({
   onSelect: (exercise: Exercise) => void;
   onClose: () => void;
 }) {
+ const l = useLocalization();
+  const { tr } = useLocalization();
   const { data, library, commit } = useTraining();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState(false);
@@ -25,7 +28,7 @@ export function ExercisePicker({
   const [busy, setBusy] = useState(false);
   const matches = library.filter(
     (e) =>
-      e.name.toLowerCase().includes(query.trim().toLowerCase()) &&
+      (e.name.toLowerCase().includes(query.trim().toLowerCase()) || l.exercise(e).includes(query.trim())) &&
       (!body ||
         e.primaryBodyParts.includes(body) ||
         e.secondaryBodyParts.includes(body)) &&
@@ -49,7 +52,7 @@ export function ExercisePicker({
   );
   return (
     <Sheet
-      title={creating ? "CREATE EXERCISE" : "ADD EXERCISE"}
+      title={creating ? tr("train.createExercise") : tr("exercise.add")}
       onClose={creating ? () => setCreating(false) : onClose}
     >
       {creating ? (
@@ -68,56 +71,56 @@ export function ExercisePicker({
       ) : (
         <>
           <Field
-            label="SEARCH EXERCISES"
+            label={tr("exercise.search")}
             value={query}
             onChange={setQuery}
-            placeholder="Search by name"
+            placeholder={tr("exercise.searchPlaceholder")}
           />
           <Action
             label={
               filters
-                ? "HIDE FILTERS"
-                : `FILTERS${body || equipment || tracking ? " · ACTIVE" : ""}`
+                ? tr("exercise.hideFilters")
+                : tr("exercise.filters") + (body || equipment || tracking ? " · " + tr("season.active") : "")
             }
             onPress={() => setFilters(!filters)}
           />
           {filters && (
             <View style={{ gap: 10 }}>
-              <Text style={s.eyebrow}>BODY PART</Text>
+              <Text style={s.eyebrow}>{tr("exercise.bodyPart")}</Text>
               <View style={s.choices}>
                 {bodyParts.map((x) => (
                   <Choice
                     key={x}
-                    label={x}
+                    label={l.display(x)}
                     selected={body === x}
                     onPress={() => setBody(body === x ? null : x)}
                   />
                 ))}
               </View>
-              <Text style={s.eyebrow}>EQUIPMENT</Text>
+              <Text style={s.eyebrow}>{tr("exercise.equipment")}</Text>
               <View style={s.choices}>
                 {equipmentOptions.map((x) => (
                   <Choice
                     key={x}
-                    label={x}
+                    label={l.display(x)}
                     selected={equipment === x}
                     onPress={() => setEquipment(equipment === x ? null : x)}
                   />
                 ))}
               </View>
-              <Text style={s.eyebrow}>TRACKING</Text>
+              <Text style={s.eyebrow}>{tr("exercise.tracking")}</Text>
               <View style={s.choices}>
                 {(Object.keys(trackingLabels) as TrackingType[]).map((x) => (
                   <Choice
                     key={x}
-                    label={trackingLabels[x]}
+                    label={l.display(trackingLabels[x])}
                     selected={tracking === x}
                     onPress={() => setTracking(tracking === x ? null : x)}
                   />
                 ))}
               </View>
               <Action
-                label="CLEAR FILTERS"
+                label={tr("exercise.clearFilters")}
                 onPress={() => {
                   setBody(null);
                   setEquipment(null);
@@ -128,10 +131,10 @@ export function ExercisePicker({
           )}
           <ErrorText message={error} />
           {matches.length === 0 && (
-            <Text style={s.muted}>No exercise found</Text>
+            <Text style={s.muted}>{tr("exercise.none")}</Text>
           )}
           <Action
-            label="+ CREATE CUSTOM EXERCISE"
+            label={tr("train.createExercisePlus")}
             onPress={() => setCreating(true)}
           />
           {[
@@ -142,31 +145,31 @@ export function ExercisePicker({
               items: matches.filter((e) => !e.isCustom),
             },
           ].map((section) => (
-            <View key={section.title} style={{ gap: 4 }}>
+            <View key={l.display(section.title)} style={{ gap: 4 }}>
               <Text accessibilityRole="header" style={s.eyebrow}>
-                {section.title}
+                {l.display(section.title)}
               </Text>
               {section.items.length === 0 ? (
                 <Text style={s.fine}>
                   {section.title === "RECENT"
-                    ? "Your recent selections appear here."
-                    : "No matching exercises."}
+                    ? tr("exercise.recentEmpty")
+                    : tr("exercise.matchEmpty")}
                 </Text>
               ) : (
                 section.items.map((exercise) => (
                   <Pressable
                     key={exercise.id}
                     accessibilityRole="button"
-                    accessibilityLabel={`Add ${exercise.name}`}
+                    accessibilityLabel={`Add ${l.exercise(exercise)}`}
                     disabled={busy}
                     onPress={() => void select(exercise)}
                     style={t.item}
                   >
-                    <Text style={t.name}>{exercise.name}</Text>
+                    <Text style={t.name}>{l.exercise(exercise)}</Text>
                     <Text style={s.fine}>
-                      {exercise.primaryBodyParts.join(", ")} ·{" "}
-                      {exercise.equipment.join(" / ")} ·{" "}
-                      {trackingLabels[exercise.trackingType]}
+                      {exercise.primaryBodyParts.map(l.display).join(", ")} ·{" "}
+                      {exercise.equipment.map(l.display).join(" / ")} ·{" "}
+                      {l.display(trackingLabels[exercise.trackingType])}
                     </Text>
                   </Pressable>
                 ))
