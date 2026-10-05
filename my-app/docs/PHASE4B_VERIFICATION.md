@@ -115,6 +115,12 @@ Debug remains unchanged and read-only.
   visually inspected. Native Dynamic Type is not simulated by browser font scaling.
 - Development `browser-growth-debug`: passed, including zero writes on open/refresh,
   unchanged data, error/retry, 320/390px and production debug-entry absence.
+- Full production browser regression passed: `browser-growth`, `browser-records`,
+  `browser-input`, `browser-audit`, `browser-overlays`, `browser-sessions`,
+  `browser-coach`, `browser-presentation`, `browser-cards`, `browser-rewards`
+  and `browser-career`. All eleven scripts completed with exit code 0, retaining
+  existing assertions. The overlay suite checks simulated safe areas; physical
+  iPhone safe areas and native accessibility still require the checks below.
 - `git diff --check`: passed. Relative to the pre-Season commit, production PR,
   Growth, Rewards, presentation, card-domain, Coach and Career modules and the
   Player/session/Career repositories are unchanged. LiveWorkout only adds the
