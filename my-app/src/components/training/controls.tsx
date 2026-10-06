@@ -85,7 +85,7 @@ export function Counter({
   step?: number;
   displayLabel?: string;
 }) {
- const { tr } = useLocalization();
+  const { tr } = useLocalization();
   const [editing, setEditing] = useState<string | null>(null);
   const update = (n: number) => {
     setEditing(null);
@@ -103,7 +103,7 @@ export function Counter({
       <Text style={[s.muted, s.flex]}>{displayLabel ?? label}</Text>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={tr("common.decrease",{label})}
+        accessibilityLabel={tr("common.decrease", { label })}
         disabled={value <= min}
         accessibilityState={{ disabled: value <= min }}
         onPress={() => update(value - step)}
@@ -144,7 +144,7 @@ export function Counter({
       />
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={tr("common.increase",{label})}
+        accessibilityLabel={tr("common.increase", { label })}
         disabled={value >= max}
         accessibilityState={{ disabled: value >= max }}
         onPress={() => update(value + step)}
@@ -203,7 +203,12 @@ export function Confirm({
 }) {
   const { tr } = useLocalization();
   return (
-    <SafeAreaModal visible transparent animationType="none" onRequestClose={onCancel}>
+    <SafeAreaModal
+      visible
+      transparent
+      animationType="none"
+      onRequestClose={onCancel}
+    >
       <SafeAreaView
         style={{
           flex: 1,
@@ -233,7 +238,7 @@ export function Confirm({
   );
 }
 export function ErrorText({ message }: { message: string | null }) {
- const l = useLocalization();
+  const l = useLocalization();
   return message ? (
     <Text
       accessibilityRole="alert"

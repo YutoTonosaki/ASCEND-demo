@@ -15,19 +15,21 @@ const icons: IconName[] = [
   "bolt",
 ];
 export default function Shop() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   return (
     <Screen kicker={tr("shop.kicker")} title={tr("shop.title")}>
       <CoinBalance />
-      <Text style={s.fine}>
-        {tr("shop.note")}</Text>
+      <Text style={s.fine}>{tr("shop.note")}</Text>
       <Panel title={tr("shop.cosmetics")} kicker={tr("common.comingSoon")}>
         {cosmeticCategories.map((category, index) => (
           <View
             key={l.display(category)}
             accessible
-            accessibilityLabel={`${l.display(category)}. Coming soon.`}
+            accessibilityLabel={tr("common.unavailableLabel", {
+              title: l.display(category),
+              description: "",
+            })}
             accessibilityState={{ disabled: true }}
             style={t.category}
           >

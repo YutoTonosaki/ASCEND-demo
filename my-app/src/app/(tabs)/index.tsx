@@ -11,7 +11,7 @@ import { weekly, recovery } from "@/data/mock";
 import { colors } from "@/config/theme";
 import { CoinBalance, WeeklyTraining } from "@/components/rewards/rewards";
 export default function Home() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { club: currentClub } = useCareer();
   const { data } = useGrowth();
@@ -30,9 +30,11 @@ export default function Home() {
         />
       ) : (
         <Panel>
-          <Text style={s.muted}>
-            {tr("home.evidence")}</Text>
-          <Button label={tr("home.openPlayer")} onPress={() => router.push("/player")} />
+          <Text style={s.muted}>{tr("home.evidence")}</Text>
+          <Button
+            label={tr("home.openPlayer")}
+            onPress={() => router.push("/player")}
+          />
         </Panel>
       )}
       <CoinBalance />

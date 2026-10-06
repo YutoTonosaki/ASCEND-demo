@@ -17,7 +17,7 @@ export function WorkoutBuilder({
   onChange: (p: WorkoutPlan) => void;
   onSaved: () => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { library, commit } = useTraining();
   const [picker, setPicker] = useState(false);
@@ -61,12 +61,10 @@ export function WorkoutBuilder({
         onChange={(name) => onChange({ ...plan, name })}
         placeholder={tr("train.workoutPlaceholder")}
       />
-      <Text style={s.fine}>
-        {tr("train.targetsNote")}</Text>
+      <Text style={s.fine}>{tr("train.targetsNote")}</Text>
       {plan.exercises.length === 0 && (
         <Panel title={tr("train.build")}>
-          <Text style={s.muted}>
-            {tr("train.firstExercise")}</Text>
+          <Text style={s.muted}>{tr("train.firstExercise")}</Text>
         </Panel>
       )}
       {plan.exercises.map((entry, index) => {
@@ -77,14 +75,14 @@ export function WorkoutBuilder({
           <Panel
             key={entry.id}
             title={`${index + 1}. ${l.exercise(exercise)}`}
-            kicker={`${entry.sets.length} SETS`}
+            kicker={tr("train.setCount", { count: entry.sets.length })}
           >
             <Text style={s.muted}>
               {entry.sets.map(targetLabel).join(" / ")}
             </Text>
             <Counter
               displayLabel="Sets"
-              label={`${l.exercise(exercise)} sets`}
+              label={tr("train.exerciseSets", { name: l.exercise(exercise) })}
               value={entry.sets.length}
               max={c.maxSets}
               onChange={(count) =>
@@ -109,10 +107,7 @@ export function WorkoutBuilder({
             <Text style={s.eyebrow}>{tr("train.allTargets")}</Text>
             {entry.sets.some(
               (set) => targetLabel(set) !== targetLabel(first),
-            ) && (
-              <Text style={s.fine}>
-                {tr("train.varyTargets")}</Text>
-            )}
+            ) && <Text style={s.fine}>{tr("train.varyTargets")}</Text>}
             <TargetControls
               target={first}
               label={l.exercise(exercise)}
@@ -129,7 +124,11 @@ export function WorkoutBuilder({
                   ? tr("train.hideDetails")
                   : tr("train.editDetails")
               }
-              label={`${expanded === entry.id ? tr("common.hide") : tr("common.edit")} DETAILS · ${l.exercise(exercise)}`}
+              label={tr("train.detailsName", {
+                action:
+                  expanded === entry.id ? tr("common.hide") : tr("common.edit"),
+                name: l.exercise(exercise),
+              })}
               onPress={() =>
                 setExpanded(expanded === entry.id ? null : entry.id)
               }
@@ -139,10 +138,15 @@ export function WorkoutBuilder({
                 <Text style={s.eyebrow}>{tr("train.individualTargets")}</Text>
                 {entry.sets.map((set, i) => (
                   <View key={set.id} style={{ gap: 6 }}>
-                    <Text style={s.muted}>{tr("train.set")} {i + 1}</Text>
+                    <Text style={s.muted}>
+                      {tr("train.set")} {i + 1}
+                    </Text>
                     <TargetControls
                       target={set}
-                      label={`${l.exercise(exercise)} set ${i + 1}`}
+                      label={tr("train.exerciseSet", {
+                        name: l.exercise(exercise),
+                        number: i + 1,
+                      })}
                       onChange={(target) =>
                         update({
                           ...entry,
@@ -156,7 +160,9 @@ export function WorkoutBuilder({
                 ))}
                 <Counter
                   displayLabel="Rest · sec"
-                  label={`${l.exercise(exercise)} rest seconds`}
+                  label={tr("train.exerciseRest", {
+                    name: l.exercise(exercise),
+                  })}
                   value={entry.restSeconds}
                   min={0}
                   max={c.maxRestSeconds}
@@ -166,7 +172,9 @@ export function WorkoutBuilder({
                 <View style={t.row}>
                   <Action
                     displayLabel={tr("train.moveUp")}
-                    label={`MOVE UP · ${l.exercise(exercise)}`}
+                    label={tr("train.moveUpName", {
+                      name: l.exercise(exercise),
+                    })}
                     disabled={index === 0}
                     onPress={() =>
                       onChange({
@@ -177,7 +185,9 @@ export function WorkoutBuilder({
                   />
                   <Action
                     displayLabel={tr("train.moveDown")}
-                    label={`MOVE DOWN · ${l.exercise(exercise)}`}
+                    label={tr("train.moveDownName", {
+                      name: l.exercise(exercise),
+                    })}
                     disabled={index === plan.exercises.length - 1}
                     onPress={() =>
                       onChange({
@@ -188,7 +198,9 @@ export function WorkoutBuilder({
                   />
                   <Action
                     displayLabel={tr("train.remove")}
-                    label={`REMOVE · ${l.exercise(exercise)}`}
+                    label={tr("train.removeName", {
+                      name: l.exercise(exercise),
+                    })}
                     onPress={() =>
                       onChange({
                         ...plan,
@@ -246,7 +258,7 @@ function TargetControls({
       {target.type === "time" ? (
         <Counter
           displayLabel={tr("units.seconds")}
-          label={`${label} seconds`}
+          label={tr("train.secondsLabel", { label })}
           value={target.seconds}
           max={c.maxSeconds}
           step={5}
@@ -256,14 +268,14 @@ function TargetControls({
         <>
           <Counter
             displayLabel={tr("units.reps")}
-            label={`${label} reps`}
+            label={tr("train.repsLabel", { label })}
             value={target.reps}
             max={c.maxReps}
             onChange={(reps) => onChange({ ...target, reps })}
           />
           {target.type === "weight_reps" && (
             <Counter
-              displayLabel="Weight · kg"
+              displayLabel={tr("train.weightLabel")}
               label={`${label} kg`}
               value={target.weightKg}
               min={0}

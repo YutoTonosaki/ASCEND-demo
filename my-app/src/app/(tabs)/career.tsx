@@ -14,7 +14,7 @@ import { cardAppearance } from "@/cards/domain";
 import { cardTiers } from "@/config/visuals";
 import type { Club } from "@/types/club";
 function ClubProfile({ club }: { club: Club }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   return (
     <View style={{ gap: 10 }}>
@@ -32,15 +32,19 @@ function ClubProfile({ club }: { club: Club }) {
         {clubReputationLevels[club.reputation]}
       </Text>
       <Text style={s.muted}>
-        {tr("career.recommended")} {club.recommendedOVR} {tr("career.infoOnly")}</Text>
+        {tr("career.recommended")} {club.recommendedOVR} {tr("career.infoOnly")}
+      </Text>
       <Text style={s.muted}>{club.description}</Text>
       <Text style={s.fine}>
-        {tr("career.interests")}{club.preferredAttributes.map(l.display).join(" / ")}{tr("career.noEffect")}</Text>
+        {tr("career.interests")}{" "}
+        {club.preferredAttributes.map(l.display).join(" / ")}
+        {tr("career.noEffect")}
+      </Text>
     </View>
   );
 }
 export default function CareerScreen() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const career = useCareer(),
     growth = useGrowth();
@@ -72,9 +76,13 @@ export default function CareerScreen() {
               {career.club.name}
             </Text>
             <Text style={s.muted}>
-              {l.display(career.club.country)} · {tr("career.reputation")} {career.club.reputation} / 5
+              {l.display(career.club.country)} · {tr("career.reputation")}{" "}
+              {career.club.reputation} / 5
             </Text>
-            <Action label={tr("career.details")} onPress={() => setDetails(!details)} />
+            <Action
+              label={tr("career.details")}
+              onPress={() => setDetails(!details)}
+            />
             {details && <ClubProfile club={career.club} />}
           </Panel>
           <SeasonPanel />
@@ -96,26 +104,31 @@ export default function CareerScreen() {
                   {clubById(entry.clubId)!.name}
                 </Text>
                 <Text style={s.muted}>
-                  {tr("career.joined")}{l.date(entry.joinedAt)}
+                  {tr("career.joined")} {l.date(entry.joinedAt)}
                 </Text>
                 <Text style={s.fine}>
                   {entry.leftAt
-                    ? tr("career.leftDate",{date:l.date(entry.leftAt)})
+                    ? tr("career.leftDate", { date: l.date(entry.leftAt) })
                     : tr("career.current")}
                 </Text>
               </View>
             ))}
           </Panel>
           <Panel title={tr("career.next")}>
-            <Placeholder title={tr("career.match")} description={tr("common.comingSoonSentence")} />
-            <Placeholder title={tr("career.transfer")} description={tr("common.comingSoonSentence")} />
+            <Placeholder
+              title={tr("career.match")}
+              description={tr("common.comingSoonSentence")}
+            />
+            <Placeholder
+              title={tr("career.transfer")}
+              description={tr("common.comingSoonSentence")}
+            />
           </Panel>
         </>
       ) : (
         <Panel title={tr("career.notStarted")}>
           <Text style={s.sectionTitle}>{tr("career.begin")}</Text>
-          <Text style={s.muted}>
-            {tr("career.chooseNote")}</Text>
+          <Text style={s.muted}>{tr("career.chooseNote")}</Text>
           {player && !growth.error ? (
             <Action
               label={tr("career.start")}
@@ -126,8 +139,7 @@ export default function CareerScreen() {
             />
           ) : (
             <>
-              <Text style={s.fine}>
-                {tr("career.initializeNote")}</Text>
+              <Text style={s.fine}>{tr("career.initializeNote")}</Text>
               <Action
                 label={tr("home.openPlayer")}
                 onPress={() => router.push("/player")}
@@ -140,7 +152,7 @@ export default function CareerScreen() {
         <Sheet
           title={
             selected
-              ? tr("career.joinQuestion", {club:selected.name.toUpperCase()})
+              ? tr("career.joinQuestion", { club: selected.name.toUpperCase() })
               : tr("career.choose")
           }
           onClose={() => setSelecting(false)}
@@ -148,8 +160,7 @@ export default function CareerScreen() {
           {selected ? (
             <>
               <ClubProfile club={selected} />
-              <Text style={s.muted}>
-                {tr("career.joinNote")}</Text>
+              <Text style={s.muted}>{tr("career.joinNote")}</Text>
               <Action
                 label={tr("career.backToClubs")}
                 disabled={career.busy}
@@ -167,7 +178,9 @@ export default function CareerScreen() {
                 <Panel key={club.id}>
                   <ClubProfile club={club} />
                   <Action
-                    label={tr("career.inspect", {club:club.name.toUpperCase()})}
+                    label={tr("career.inspect", {
+                      club: club.name.toUpperCase(),
+                    })}
                     onPress={() => setSelected(club)}
                   />
                 </Panel>

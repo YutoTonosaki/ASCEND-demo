@@ -29,14 +29,12 @@ export function PersonalRecordsSection() {
         <Text style={s.muted}>{tr("records.loading")}</Text>
       ) : (
         <>
-          <Text style={s.fine}>
-            {tr("records.confirmedOnly")}</Text>
+          <Text style={s.fine}>{tr("records.confirmedOnly")}</Text>
           {result.rejectedSessions > 0 && (
             <ErrorText message={tr("records.partialError")} />
           )}
           {result.records.length === 0 ? (
-            <Text style={s.muted}>
-              {tr("records.empty")}</Text>
+            <Text style={s.muted}>{tr("records.empty")}</Text>
           ) : (
             result.records.map((record) => (
               <RecordRow
@@ -51,7 +49,7 @@ export function PersonalRecordsSection() {
   );
 }
 function RecordRow({ record }: { record: ExerciseRecord }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const [expanded, setExpanded] = useState(false);
   const weighted = record.trackingType === "weight_reps";
@@ -68,7 +66,9 @@ function RecordRow({ record }: { record: ExerciseRecord }) {
       style={r.record}
       testID={`pr-${record.exerciseId}-${record.trackingType}`}
     >
-      <Text style={r.name}>{l.exercise({id:record.exerciseId,name:record.name})}</Text>
+      <Text style={r.name}>
+        {l.exercise({ id: record.exerciseId, name: record.name })}
+      </Text>
       <Text style={s.eyebrow}>
         {weighted ? tr("records.maxWeight") : tr("records.bestSet")}
       </Text>
@@ -77,16 +77,20 @@ function RecordRow({ record }: { record: ExerciseRecord }) {
       </Text>
       {atMax && (
         <Text style={s.muted}>
-          {tr("records.bestAtWeight")}{atMax.best.value} {tr("units.repsShort")}</Text>
+          {tr("records.bestAtWeight")} {atMax.best.value}{" "}
+          {tr("units.repsShort")}
+        </Text>
       )}
       <Text style={s.fine}>
-        {tr("records.first")}{" "}
-        {l.date(record.best.source.confirmedAt)}
+        {tr("records.first")} {l.date(record.best.source.confirmedAt)}
       </Text>
       {weighted && (
         <>
           <Action
-            label={`${expanded ? tr("common.hide") : tr("common.view")} RECORDS BY WEIGHT · ${l.exercise({id:record.exerciseId,name:record.name})}`}
+            label={tr("records.byWeightName", {
+              action: expanded ? tr("common.hide") : tr("common.view"),
+              name: l.exercise({ id: record.exerciseId, name: record.name }),
+            })}
             displayLabel={
               expanded ? tr("records.hideWeights") : tr("records.viewWeights")
             }
@@ -96,7 +100,9 @@ function RecordRow({ record }: { record: ExerciseRecord }) {
             record.byWeight.map((load) => (
               <View key={load.weightKg} style={r.load}>
                 <Text style={s.muted}>{load.weightKg} kg</Text>
-                <Text style={r.reps}>{load.best.value}  {tr("units.repsShort")}</Text>
+                <Text style={r.reps}>
+                  {load.best.value} {tr("units.repsShort")}
+                </Text>
               </View>
             ))}
         </>

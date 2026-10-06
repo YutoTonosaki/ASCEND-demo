@@ -23,7 +23,7 @@ export function ExerciseEditor({
   onDone: (exercise: CustomExercise) => void;
   onCancel: () => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { commit } = useTraining();
   const [exercise, setExercise] = useState<CustomExercise>(() =>

@@ -33,7 +33,8 @@ export const en = {
   "settings.language": "Language",
   "settings.selected": "Selected",
   "settings.retry": "RETRY SETTINGS",
-  "settings.failure": "Settings could not be loaded or saved. Your training data is unchanged.",
+  "settings.failure":
+    "Settings could not be loaded or saved. Your training data is unchanged.",
   "settings.profile": "Training profile",
   "home.kicker": "THE FACILITY",
   "home.title": "YOUR NEXT LEVEL",
@@ -60,21 +61,26 @@ export const en = {
   "player.development": "PLAYER DEVELOPMENT",
   "player.skillTree": "SKILL TREE",
   "player.archetype": "ARCHETYPE",
-  "player.assessments": "Direct assessments: Push-up → Chest; Pull-up → Back; Overhead Press (5+ reps) → Shoulders; Diamond Push-up → Arms; Plank → Core; Bodyweight Squat → Legs. Other movements can improve assessed areas but cannot establish an initial rating.",
-  "player.assessmentNote": "A first assessment replaces the provisional estimate and may move it up or down. It is not a growth reward.",
+  "player.assessments":
+    "Direct assessments: Push-up → Chest; Pull-up → Back; Overhead Press (5+ reps) → Shoulders; Diamond Push-up → Arms; Plank → Core; Bodyweight Squat → Legs. Other movements can improve assessed areas but cannot establish an initial rating.",
+  "player.assessmentNote":
+    "A first assessment replaces the provisional estimate and may move it up or down. It is not a growth reward.",
   "player.rating": "PLAYER RATING",
   "player.startingPoint": "YOUR STARTING POINT",
   "player.retry": "RETRY PLAYER DATA",
   "player.paused": "Growth is paused until workout history can be read.",
   "player.loading": "Loading player ratings…",
-  "player.gameNote": "Game ratings, not a fitness ranking. Provisional areas await a supported assessment. Lower workout results do not reduce assessed ratings.",
-  "player.initializeNote": "Start from your existing Push-up, Bodyweight Squat and Plank baselines. Missing areas begin provisional. Earlier workouts remain PR evidence; growth starts here.",
+  "player.gameNote":
+    "Game ratings, not a fitness ranking. Provisional areas await a supported assessment. Lower workout results do not reduce assessed ratings.",
+  "player.initializeNote":
+    "Start from your existing Push-up, Bodyweight Squat and Plank baselines. Missing areas begin provisional. Earlier workouts remain PR evidence; growth starts here.",
   "player.profileError": "Your training profile could not be read.",
   "player.loadingEvidence": "Loading your profile and workout history…",
   "player.starting": "STARTING…",
   "player.initialize": "INITIALIZE PLAYER",
   "player.reviewBaselines": "REVIEW BASELINES",
-  "player.baselinesOptional": "Baselines are optional. Later profile edits will not rewrite your starting ratings.",
+  "player.baselinesOptional":
+    "Baselines are optional. Later profile edits will not rewrite your starting ratings.",
   "body.Chest": "Chest",
   "body.Back": "Back",
   "body.Shoulders": "Shoulders",
@@ -112,10 +118,13 @@ export const en = {
   "records.subtitle": "YOUR BEST SETS",
   "records.retry": "RETRY RECORDS",
   "records.loading": "Loading records…",
-  "records.confirmedOnly": "Confirmed sets only, including your current workout.",
-  "records.loadError": "Workout records could not be loaded. Your saved data has been kept.",
+  "records.confirmedOnly":
+    "Confirmed sets only, including your current workout.",
+  "records.loadError":
+    "Workout records could not be loaded. Your saved data has been kept.",
   "records.partialError": "Some workout records could not be read.",
-  "records.empty": "Your records start here. Confirm a workout set to see your best reps, time or weight. Weighted records need at least one completed rep.",
+  "records.empty":
+    "Your records start here. Confirm a workout set to see your best reps, time or weight. Weighted records need at least one completed rep.",
   "records.maxWeight": "MAX COMPLETED WEIGHT",
   "records.bestSet": "BEST SINGLE SET",
   "records.bestAtWeight": "Best at this weight ·",
@@ -140,11 +149,14 @@ export const en = {
   "career.transfer": "TRANSFER CENTER",
   "career.notStarted": "CAREER NOT STARTED",
   "career.begin": "BEGIN YOUR JOURNEY",
-  "career.chooseNote": "Choose your first Japanese club and begin your ASCEND career.",
+  "career.chooseNote":
+    "Choose your first Japanese club and begin your ASCEND career.",
   "career.start": "START CAREER",
-  "career.initializeNote": "Initialize your Player before choosing a club. Your existing training and Coins stay intact.",
+  "career.initializeNote":
+    "Initialize your Player before choosing a club. Your existing training and Coins stay intact.",
   "career.choose": "CHOOSE YOUR FIRST CLUB",
-  "career.joinNote": "This will become your first club. Club changes will be available through future transfers.",
+  "career.joinNote":
+    "This will become your first club. Club changes will be available through future transfers.",
   "career.backToClubs": "BACK TO CLUBS",
   "career.joining": "JOINING…",
   "career.join": "JOIN CLUB",
@@ -168,7 +180,8 @@ export const en = {
   "season.loading": "Loading Seasons…",
   "season.monthEnded": "MONTH ENDED",
   "season.active": "ACTIVE",
-  "season.closeNote": "Final ratings will be captured when you complete this Season.",
+  "season.closeNote":
+    "Final ratings will be captured when you complete this Season.",
   "season.complete": "COMPLETE SEASON",
   "season.recorded": "SEASON RECORDED",
   "season.available": "NEW SEASON AVAILABLE",
@@ -228,14 +241,16 @@ export const en = {
   "train.retryHistory": "RETRY WORKOUT HISTORY",
   "train.resetSessions": "RESET SESSION DATA",
   "train.resetSessionsQuestion": "RESET SESSION DATA?",
-  "train.resetSessionsNote": "Clear active and completed sessions only. A raw backup will be kept on this device first. Saved workouts and exercises are unchanged.",
+  "train.resetSessionsNote":
+    "Clear active and completed sessions only. A raw backup will be kept on this device first. Saved workouts and exercises are unchanged.",
   "train.historyEmpty": "Your completed workouts will appear here.",
   "train.yourSessions": "YOUR SESSIONS",
   "train.resume": "RESUME WORKOUT",
   "train.data": "TRAINING DATA",
   "train.resetData": "RESET TRAINING DATA",
   "train.resetDataQuestion": "RESET TRAINING DATA?",
-  "train.resetDataNote": "Start with an empty training library. A copy of the existing saved data will be kept on this device before resetting.",
+  "train.resetDataNote":
+    "Start with an empty training library. A copy of the existing saved data will be kept on this device before resetting.",
   "train.inProgress": "WORKOUT IN PROGRESS",
   "train.choose": "Choose your way to train.",
   "train.coachNote": "A short workout from your preferences and training.",
@@ -257,9 +272,11 @@ export const en = {
   "train.deleted": "Workout deleted.",
   "train.start": "START WORKOUT",
   "train.createExercisePlus": "+ CREATE CUSTOM EXERCISE",
-  "train.exerciseNote": "Add your own movements once, then select them whenever you train.",
+  "train.exerciseNote":
+    "Add your own movements once, then select them whenever you train.",
   "train.deleteExerciseQuestion": "DELETE EXERCISE?",
-  "train.deleteExerciseNote": "Delete {name}? Exercises used in saved workouts must be removed from those workouts first.",
+  "train.deleteExerciseNote":
+    "Delete {name}? Exercises used in saved workouts must be removed from those workouts first.",
   "train.exerciseDeleted": "Exercise deleted.",
   "train.createExercise": "CREATE EXERCISE",
   "train.editExercise": "EDIT EXERCISE",
@@ -272,7 +289,8 @@ export const en = {
   "train.build": "BUILD YOUR SESSION",
   "train.firstExercise": "Choose your first exercise to get started.",
   "train.allTargets": "TARGET FOR ALL SETS",
-  "train.varyTargets": "Targets vary by set. Changing these controls applies the shown target to every set.",
+  "train.varyTargets":
+    "Targets vary by set. Changing these controls applies the shown target to every set.",
   "train.hideDetails": "HIDE DETAILS",
   "train.editDetails": "EDIT SETS, REST & ORDER",
   "train.individualTargets": "INDIVIDUAL SET TARGETS",
@@ -290,7 +308,8 @@ export const en = {
   "train.targetLabel": "Target ·",
   "train.actualLabel": "Actual ·",
   "train.confirmed": "CONFIRMED SETS",
-  "train.confirmedNote": "Confirmed sets are saved. You can leave this screen and resume from TRAIN.",
+  "train.confirmedNote":
+    "Confirmed sets are saved. You can leave this screen and resume from TRAIN.",
   "train.actual": "ACTUAL",
   "train.actualSeconds": "Actual seconds",
   "train.actualReps": "Actual reps",
@@ -336,29 +355,35 @@ export const en = {
   "coach.retryProfile": "RETRY TRAINING PROFILE",
   "coach.reset": "RESET COACH PROFILE",
   "coach.resetQuestion": "RESET COACH PROFILE?",
-  "coach.resetNote": "Back up and clear your profile only. Workouts and history are unchanged.",
-  "coach.resetDetail": "Reset preferences and baseline entries only. A raw backup is saved first. Workouts and session history remain unchanged.",
+  "coach.resetNote":
+    "Back up and clear your profile only. Workouts and history are unchanged.",
+  "coach.resetDetail":
+    "Reset preferences and baseline entries only. A raw backup is saved first. Workouts and session history remain unchanged.",
   "coach.loading": "Loading preferences…",
   "coach.setupTitle": "MAKE IT YOUR TRAINING",
-  "coach.setupNote": "Set up a few preferences and an optional starting reference. Manual workouts are always available.",
+  "coach.setupNote":
+    "Set up a few preferences and an optional starting reference. Manual workouts are always available.",
   "coach.setup": "SET UP YOUR PROFILE",
   "coach.defaults": "TRY WITH DEFAULTS",
   "coach.skip": "SKIP FOR NOW",
   "coach.today": "TODAY'S TRAINING",
-  "coach.todayNote": "A short proposal from your preferences and confirmed training.",
+  "coach.todayNote":
+    "A short proposal from your preferences and confirmed training.",
   "coach.generate": "GENERATE WORKOUT",
   "coach.customizeToday": "CUSTOMIZE TODAY",
   "coach.editProfile": "EDIT TRAINING PROFILE",
   "coach.justToday": "JUST FOR TODAY",
   "coach.temporaryNote": "These choices do not change your saved profile.",
   "coach.allowCustom": "ALLOW FAMILIAR CUSTOM EXERCISES",
-  "coach.customNote": "Difficulty is unknown. Select only movements you know and want to consider.",
+  "coach.customNote":
+    "Difficulty is unknown. Select only movements you know and want to consider.",
   "coach.generateChoices": "GENERATE WITH THESE CHOICES",
   "coach.useDefaults": "USE PROFILE DEFAULTS",
   "coach.adjust": "ADJUST YOUR PLAN",
   "coach.manual": "CREATE MANUAL WORKOUT",
   "coach.review": "REVIEW YOUR WORKOUT",
-  "coach.saveNote": "Nothing is saved until you choose SAVE RECOMMENDATION or save in the workout builder.",
+  "coach.saveNote":
+    "Nothing is saved until you choose SAVE RECOMMENDATION or save in the workout builder.",
   "coach.fromSession": "FROM COMPLETED TRAINING",
   "coach.fromBaseline": "FROM YOUR BASELINE",
   "coach.chooseLoad": "CHOOSE STARTING LOAD",
@@ -368,16 +393,20 @@ export const en = {
   "coach.loadConfirmed": "Load confirmed ·",
   "coach.save": "SAVE RECOMMENDATION",
   "coach.customize": "CUSTOMIZE WORKOUT",
-  "coach.restNote": "You can change the focus or equipment to get a different proposal. Resting today is also a valid choice.",
+  "coach.restNote":
+    "You can change the focus or equipment to get a different proposal. Resting today is also a valid choice.",
   "coach.focus": "TARGET BODY PARTS · EMPTY = AUTOMATIC",
   "coach.location": "TRAINING LOCATION",
   "coach.equipment": "AVAILABLE EQUIPMENT",
-  "coach.equipmentNote": "Select only what you can use at this location. Bodyweight is always available.",
+  "coach.equipmentNote":
+    "Select only what you can use at this location. Bodyweight is always available.",
   "coach.minutes": "Available minutes",
   "coach.exerciseCount": "Preferred exercise count",
-  "coach.countNote": "Exercise count is a maximum; a shorter plan may fit your time better.",
+  "coach.countNote":
+    "Exercise count is a maximum; a shorter plan may fit your time better.",
   "profile.step": "TRAINING PROFILE ·",
-  "profile.note": "A few preferences to make training easier. Measurements are optional and never used to guess your strength.",
+  "profile.note":
+    "A few preferences to make training easier. Measurements are optional and never used to guess your strength.",
   "profile.height": "HEIGHT CM · OPTIONAL",
   "profile.notProvided": "Not provided",
   "profile.weight": "WEIGHT KG · OPTIONAL",
@@ -388,8 +417,10 @@ export const en = {
   "profile.noPreference": "No preference",
   "profile.nextBaseline": "NEXT · OPTIONAL BASELINE",
   "profile.previous": "PREVIOUS STEP",
-  "profile.baselineNote": "Optional starting reference. Choose a familiar movement, or enter a result you already know. No maximum effort needed.",
-  "profile.safety": "Stop if you feel pain, dizziness or unusual discomfort. Skip any movement you are not comfortable with. These entries do not create workout history or fitness scores.",
+  "profile.baselineNote":
+    "Optional starting reference. Choose a familiar movement, or enter a result you already know. No maximum effort needed.",
+  "profile.safety":
+    "Stop if you feel pain, dizziness or unusual discomfort. Skip any movement you are not comfortable with. These entries do not create workout history or fitness scores.",
   "profile.save": "SAVE TRAINING PROFILE",
   "profile.skipSave": "SKIP ALL BASELINES & SAVE",
   "profile.cancel": "CANCEL PROFILE EDIT",
@@ -427,17 +458,119 @@ export const en = {
   "country.spain": "Spain",
   "country.italy": "Italy",
   "country.france": "France",
-  "error.generic": "Something went wrong. Please check your entries or retry. Saved training data has not been reset.",
+  "error.generic":
+    "Something went wrong. Please check your entries or retry. Saved training data has not been reset.",
   "error.save": "Could not save. Please retry.",
   "error.selection": "Could not save your selection. Please retry.",
   "error.workout": "Could not save workout. Please retry.",
   "error.prepare": "Could not prepare workout. Please retry.",
   "error.profile": "Could not save profile. Please retry.",
-  "error.measurements": "Enter height from 50–300 cm and weight from 10–500 kg, or leave them blank.",
-  "error.load": "Enter a nonnegative starting load within the workout editor's range.",
+  "error.measurements":
+    "Enter height from 50–300 cm and weight from 10–500 kg, or leave them blank.",
+  "error.load":
+    "Enter a nonnegative starting load within the workout editor's range.",
   "career.joinedDate": "Joined {date}",
   "career.leftDate": "Left {date}",
-  "player.summaryAccessibility": "{name}, OVR {ovr}, form {form}{club}. Open Player",
+  "player.summaryAccessibility":
+    "{name}, OVR {ovr}, form {form}{club}. Open Player",
   "player.ratingAccessibility": "{area}: {rating} out of 99, {status}",
-  "common.unavailableLabel": "{title}. Coming soon.{description}"
+  "common.unavailableLabel": "{title}. Coming soon.{description}",
+  "train.viewSession": "VIEW SESSION · {name}",
+  "train.savedCount": "SAVED WORKOUTS · {count}",
+  "train.exerciseCount": "MY EXERCISES · {count}",
+  "train.viewName": "VIEW · {name}",
+  "train.editName": "EDIT · {name}",
+  "train.deleteName": "DELETE · {name}",
+  "train.setCount": "{count} SETS",
+  "train.exerciseSets": "{name} sets",
+  "train.exerciseSet": "{name} set {number}",
+  "train.exerciseRest": "{name} rest seconds",
+  "train.detailsName": "{action} DETAILS · {name}",
+  "train.moveUpName": "MOVE UP · {name}",
+  "train.moveDownName": "MOVE DOWN · {name}",
+  "train.removeName": "REMOVE · {name}",
+  "train.secondsLabel": "{label} seconds",
+  "train.repsLabel": "{label} reps",
+  "train.weightLabel": "Weight · kg",
+  "train.exercisePosition": "EXERCISE {current} / {total}",
+  "train.setNumber": "· Set",
+  "train.exercisesSeparator": "exercises ·",
+  "train.completedSeparator": "· COMPLETE",
+  "train.historySeparator": "sets · Completed",
+  "exercise.addName": "Add {name}",
+  "profile.baselineName": "{name} baseline",
+  "profile.confirmBaseline": "CONFIRM BASELINE · {name}",
+  "profile.skipBaseline": "SKIP · {name}",
+  "profile.editBaseline": "{action} BASELINE · {name}",
+  "profile.removeBaseline": "REMOVE BASELINE · {name}",
+  "profile.recorded": "Recorded · {value}",
+  "records.byWeightName": "{action} RECORDS BY WEIGHT · {name}",
+  "coach.startKg": "STARTING KG · {name}",
+  "coach.confirmLoad": "CONFIRM LOAD · {name}",
+  "coach.approximately": "· approximately",
+  "coach.rest": "· Rest",
+  "units.secondsShort": "seconds",
+  "coach.evidence.session":
+    "Targets repeat a conservative result from your latest matching session; no automatic increase.",
+  "coach.evidence.baseline":
+    "Target uses your optional baseline, not workout history.",
+  "coach.evidence.load":
+    "No recent working load is known. Choose and confirm a comfortable starting load.",
+  "coach.evidence.custom":
+    "You selected this custom movement. Its difficulty is unknown; review this initial target.",
+  "coach.evidence.initial":
+    "Initial suggestion without performance evidence. Adjust to a comfortable effort.",
+  "coach.reason.date": "Choose a valid date before generating a workout.",
+  "coach.reason.profile":
+    "Check your training profile before generating a workout.",
+  "coach.reason.preferences":
+    "Check your time, exercise count and training preferences.",
+  "coach.reason.history":
+    "Workout history is unavailable. Retry session storage or create a manual workout.",
+  "coach.reason.custom":
+    "A selected custom exercise is no longer available. Update your choices.",
+  "coach.reason.noPlan":
+    "No compatible starting recommendation is available for this focus, equipment and performance evidence. Change your choices or create a manual workout.",
+  "coach.reason.coverage":
+    "The library cannot cover every selected body part within this exercise count and equipment. Adjust the focus/count or create a manual workout.",
+  "coach.reason.time":
+    "These targets and rest do not fit the available time. Allow more time, narrow your focus or make a manual workout.",
+  "coach.explanation.duration":
+    "Duration is approximate; rests are retained. Adjust targets to a comfortable effort.",
+  "coach.explanation.defaults":
+    "Using beginner, strength and bodyweight defaults until you save a profile.",
+  "coach.explanation.recent":
+    "Recent confirmed training influences exercise selection; this is not a recovery estimate. Rest is also an option.",
+  "coach.explanation.oneSet":
+    "Recently involved areas use one set in this proposal.",
+  "coach.explanation.location":
+    "Uses only your selected equipment for {location}.",
+  "coach.explanation.recentAreas":
+    "{areas} was involved recently. You can keep this focus, choose another, or rest.",
+  "coach.explanation.count":
+    "Using {count} exercises to fit the available library and time.",
+  "coach.explanation.secondary":
+    "{area} is included as a secondary area, not a primary focus, in this library selection.",
+  "error.exerciseInUseTracking":
+    "This exercise is used in a saved workout. Remove it from those workouts before changing its tracking type.",
+  "error.exerciseInUseDelete":
+    "This exercise is used in a saved workout. Remove it from those workouts before deleting it.",
+  "error.invalidWorkout":
+    "Please check the name, exercises and targets before saving.",
+  "error.trainingRead":
+    "Saved training data could not be read. Your data has been kept unchanged.",
+  "error.trainingInvalid":
+    "Saved training data is incompatible or damaged. Your data has been kept unchanged.",
+  "error.trainingLoading": "Training data has not loaded. Please retry.",
+  "error.actual": "Check the actual result before completing this set.",
+  "error.seasonData":
+    "Season data is unavailable or incompatible. Saved history is preserved. Please retry.",
+  "error.seasonOwner": "A valid Career and Player are required.",
+  "error.seasonIdentity":
+    "Season Career identity mismatch. Saved data is preserved.",
+  "error.seasonClub": "Active Season Club does not match Career.",
+  "error.seasonPrevious": "Complete your previous Season first.",
+  "error.seasonClock": "Device calendar is earlier than saved Season history.",
+  "error.seasonClose": "Complete this Season after its calendar month ends.",
+  "error.seasonPR": "Workout history could not be validated for Season PRs.",
 } as const;

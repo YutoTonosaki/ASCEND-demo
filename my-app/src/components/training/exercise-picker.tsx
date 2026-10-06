@@ -15,7 +15,7 @@ export function ExercisePicker({
   onSelect: (exercise: Exercise) => void;
   onClose: () => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { data, library, commit } = useTraining();
   const [query, setQuery] = useState("");
@@ -28,7 +28,8 @@ export function ExercisePicker({
   const [busy, setBusy] = useState(false);
   const matches = library.filter(
     (e) =>
-      (e.name.toLowerCase().includes(query.trim().toLowerCase()) || l.exercise(e).includes(query.trim())) &&
+      (e.name.toLowerCase().includes(query.trim().toLowerCase()) ||
+        l.exercise(e).includes(query.trim())) &&
       (!body ||
         e.primaryBodyParts.includes(body) ||
         e.secondaryBodyParts.includes(body)) &&
@@ -80,7 +81,10 @@ export function ExercisePicker({
             label={
               filters
                 ? tr("exercise.hideFilters")
-                : tr("exercise.filters") + (body || equipment || tracking ? " · " + tr("season.active") : "")
+                : tr("exercise.filters") +
+                  (body || equipment || tracking
+                    ? " · " + tr("season.active")
+                    : "")
             }
             onPress={() => setFilters(!filters)}
           />
@@ -160,7 +164,9 @@ export function ExercisePicker({
                   <Pressable
                     key={exercise.id}
                     accessibilityRole="button"
-                    accessibilityLabel={`Add ${l.exercise(exercise)}`}
+                    accessibilityLabel={tr("exercise.addName", {
+                      name: l.exercise(exercise),
+                    })}
                     disabled={busy}
                     onPress={() => void select(exercise)}
                     style={t.item}

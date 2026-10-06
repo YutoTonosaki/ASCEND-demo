@@ -1,3 +1,4 @@
+import { useLocalization } from "@/localization";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import type { ClubIdentity as Identity } from "@/types/club";
@@ -33,10 +34,11 @@ export function ClubIdentity({
   club: Identity;
   compact?: boolean;
 }) {
+  const l = useLocalization();
   return (
     <View
       accessible
-      accessibilityLabel={`${club.name}, ${club.country}`}
+      accessibilityLabel={`${club.name}, ${l.display(club.country)}`}
       style={styles.row}
     >
       <ClubCrest club={club} size={compact ? 16 : 22} />

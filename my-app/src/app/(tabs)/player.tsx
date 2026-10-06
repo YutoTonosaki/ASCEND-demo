@@ -15,7 +15,7 @@ import { useGrowth } from "@/growth/provider";
 import { displayRating, overall } from "@/growth/domain";
 import { cardAppearance } from "@/cards/domain";
 export default function PlayerScreen() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { club: currentClub } = useCareer();
   const [debugOpen, setDebugOpen] = useState(false);
@@ -48,11 +48,17 @@ export default function PlayerScreen() {
               kicker={l.display(cardTiers[appearance.tier].label).toUpperCase()}
             >
               <Text style={s.fine}>
-                {tr("player.finish")}{l.display(appearance.finish.toUpperCase())}
+                {tr("player.finish")}{" "}
+                {l.display(appearance.finish.toUpperCase())}
               </Text>
               <Text style={s.muted}>
                 {appearance.next
-                  ? tr("player.nextEvolution",{tier:l.display(cardTiers[appearance.next.tier].label).toUpperCase(),ovr:appearance.next.minimum})
+                  ? tr("player.nextEvolution", {
+                      tier: l
+                        .display(cardTiers[appearance.next.tier].label)
+                        .toUpperCase(),
+                      ovr: appearance.next.minimum,
+                    })
                   : tr("player.maximum")}
               </Text>
             </Panel>
@@ -67,7 +73,11 @@ export default function PlayerScreen() {
               key={area}
               testID={`rating-${area}`}
               accessible
-              accessibilityLabel={tr("player.ratingAccessibility",{area:l.display(area),rating:displayRating(player.ratings[area]),status:l.display(player.status[area].toUpperCase())})}
+              accessibilityLabel={tr("player.ratingAccessibility", {
+                area: l.display(area),
+                rating: displayRating(player.ratings[area]),
+                status: l.display(player.status[area].toUpperCase()),
+              })}
               style={r.rating}
             >
               <View style={r.labels}>
@@ -93,10 +103,8 @@ export default function PlayerScreen() {
               </View>
             </View>
           ))}
-          <Text style={s.fine}>
-            {tr("player.assessments")}</Text>
-          <Text style={s.fine}>
-            {tr("player.assessmentNote")}</Text>
+          <Text style={s.fine}>{tr("player.assessments")}</Text>
+          <Text style={s.fine}>{tr("player.assessmentNote")}</Text>
         </Panel>
       )}
       <Panel title={tr("player.development")} kicker={tr("common.comingSoon")}>

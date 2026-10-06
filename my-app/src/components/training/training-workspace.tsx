@@ -11,7 +11,6 @@ import {
   copyWorkoutPlan,
   duplicateWorkout,
   newWorkout,
-  targetLabel,
 } from "@/training/plans";
 import type { CustomExercise, WorkoutPlan } from "@/types/training";
 import { trackingLabels } from "@/config/training";
@@ -29,7 +28,7 @@ type Page =
   | "summary"
   | "coach";
 export function TrainingWorkspace() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const {
     data,
@@ -132,11 +131,15 @@ export function TrainingWorkspace() {
       <ErrorText message={error} />
       {notice && (
         <Text accessibilityLiveRegion="polite" style={s.muted}>
-          {notice}
+          {l.display(notice)}
         </Text>
       )}
       {!sessions.data && (
-        <Panel title={sessions.error ? tr("train.sessions") : tr("train.loadingSessions")}>
+        <Panel
+          title={
+            sessions.error ? tr("train.sessions") : tr("train.loadingSessions")
+          }
+        >
           <ErrorText message={sessions.error} />
           {sessions.error && (
             <>
@@ -177,8 +180,7 @@ export function TrainingWorkspace() {
       {page === "history" && sessions.data && (
         <>
           {sessions.data.completed.length === 0 && (
-            <Text style={s.muted}>
-              {tr("train.historyEmpty")}</Text>
+            <Text style={s.muted}>{tr("train.historyEmpty")}</Text>
           )}
           {sessions.data.completed.map((session) => (
             <Panel
@@ -192,7 +194,7 @@ export function TrainingWorkspace() {
                 · Completed
               </Text>
               <Action
-                label={`VIEW SESSION · ${session.name}`}
+                label={tr("train.viewSession", { name: session.name })}
                 onPress={() => {
                   setSummaryId(session.id);
                   navigate("summary");
@@ -205,9 +207,15 @@ export function TrainingWorkspace() {
       {page === "home" && !data && sessions.data && (
         <Panel title={tr("train.yourSessions")}>
           {sessions.data.active && (
-            <Button label={tr("train.resume")} onPress={() => navigate("live")} />
+            <Button
+              label={tr("train.resume")}
+              onPress={() => navigate("live")}
+            />
           )}
-          <Action label={tr("train.history")} onPress={() => navigate("history")} />
+          <Action
+            label={tr("train.history")}
+            onPress={() => navigate("history")}
+          />
         </Panel>
       )}
       {!data ? (
@@ -247,8 +255,7 @@ export function TrainingWorkspace() {
               )}
               <Text style={s.muted}>{tr("train.choose")}</Text>
               <Panel title={tr("train.coach")}>
-                <Text style={s.muted}>
-                  {tr("train.coachNote")}</Text>
+                <Text style={s.muted}>{tr("train.coachNote")}</Text>
                 <Action
                   label={tr("train.openCoach")}
                   onPress={() => navigate("coach")}
@@ -260,11 +267,15 @@ export function TrainingWorkspace() {
               </Panel>
               <Panel title={tr("train.yourTraining")}>
                 <Action
-                  label={`SAVED WORKOUTS · ${data.workouts.length}`}
+                  label={tr("train.savedCount", {
+                    count: data.workouts.length,
+                  })}
                   onPress={() => navigate("saved")}
                 />
                 <Action
-                  label={`MY EXERCISES · ${data.customExercises.length}`}
+                  label={tr("train.exerciseCount", {
+                    count: data.customExercises.length,
+                  })}
                   onPress={() => navigate("exercises")}
                 />
                 <Action
@@ -306,9 +317,10 @@ export function TrainingWorkspace() {
                       (sum, e) => sum + e.sets.length,
                       0,
                     )}{" "}
-                    {tr("units.sets")}</Text>
+                    {tr("units.sets")}
+                  </Text>
                   <Action
-                    label={`VIEW · ${workout.name}`}
+                    label={tr("train.viewName", { name: workout.name })}
                     onPress={() => {
                       setPlan(workout);
                       navigate("detail");
@@ -343,10 +355,12 @@ export function TrainingWorkspace() {
                       {library.find((e) => e.id === entry.exerciseId)?.name}
                     </Text>
                     <Text style={s.muted}>
-                      {entry.sets.map(targetLabel).join(" / ")}
+                      {entry.sets.map(l.target).join(" / ")}
                     </Text>
                     <Text style={s.fine}>
-                      {tr("train.restTarget")}{entry.restSeconds} {tr("units.sec")}</Text>
+                      {tr("train.restTarget")} {entry.restSeconds}{" "}
+                      {tr("units.sec")}
+                    </Text>
                   </View>
                 ))}
               </Panel>
@@ -376,7 +390,7 @@ export function TrainingWorkspace() {
                   onPress={() =>
                     setConfirmation({
                       title: "DELETE WORKOUT?",
-                      message: `Delete ${selected.name}? This cannot be undone.`,
+                      message: tr("train.deleteNote", { name: selected.name }),
                       action: () =>
                         void perform(async () => {
                           await commit({
@@ -415,8 +429,7 @@ export function TrainingWorkspace() {
                 onPress={() => setEditor("new")}
               />
               {data.customExercises.length === 0 && (
-                <Text style={s.muted}>
-                  {tr("train.exerciseNote")}</Text>
+                <Text style={s.muted}>{tr("train.exerciseNote")}</Text>
               )}
               {data.customExercises.map((exercise) => (
                 <Panel key={exercise.id} title={l.exercise(exercise)}>
@@ -426,16 +439,22 @@ export function TrainingWorkspace() {
                   </Text>
                   <View style={t.row}>
                     <Action
-                      label={`EDIT · ${l.exercise(exercise)}`}
+                      label={tr("train.editName", {
+                        name: l.exercise(exercise),
+                      })}
                       onPress={() => setEditor(exercise)}
                     />
                     <Action
-                      label={`DELETE · ${l.exercise(exercise)}`}
+                      label={tr("train.deleteName", {
+                        name: l.exercise(exercise),
+                      })}
                       disabled={busy}
                       onPress={() =>
                         setConfirmation({
                           title: "DELETE EXERCISE?",
-                          message: `Delete ${l.exercise(exercise)}? Exercises used in saved workouts must be removed from those workouts first.`,
+                          message: tr("train.deleteExerciseNote", {
+                            name: l.exercise(exercise),
+                          }),
                           action: () =>
                             void perform(
                               () =>
@@ -457,7 +476,11 @@ export function TrainingWorkspace() {
       )}
       {editor && (
         <Sheet
-          title={editor === "new" ? tr("train.createExercise") : tr("train.editExercise")}
+          title={
+            editor === "new"
+              ? tr("train.createExercise")
+              : tr("train.editExercise")
+          }
           onClose={() => setEditor(null)}
         >
           <ExerciseEditor
@@ -472,8 +495,8 @@ export function TrainingWorkspace() {
       )}
       {confirmation && (
         <Confirm
-          title={confirmation.title}
-          message={confirmation.message}
+          title={l.display(confirmation.title)}
+          message={l.display(confirmation.message)}
           onCancel={() => setConfirmation(null)}
           onConfirm={() => {
             const action = confirmation.action;

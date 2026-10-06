@@ -17,7 +17,6 @@ import {
   recommendationToPlan,
 } from "@/coach/engine";
 import { defaultProfile, profilePreferences } from "@/coach/profile";
-import { targetLabel } from "@/training/plans";
 import { trainingConfig } from "@/config/training";
 import type { CoachPreferences, WorkoutRecommendation } from "@/types/coach";
 import type { WorkoutPlan } from "@/types/training";
@@ -32,7 +31,7 @@ export function CoachWorkspace({
   onDraft: (plan: WorkoutPlan) => void;
   onSaved: (plan: WorkoutPlan) => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const coach = useCoach();
   const training = useTraining();
@@ -137,26 +136,24 @@ export function CoachWorkspace({
         </Panel>
       ) : !coach.data.profile && !recommendation ? (
         <Panel title={tr("coach.setupTitle")}>
-          <Text style={s.muted}>
-            {tr("coach.setupNote")}</Text>
-          <Action
-            label={tr("coach.setup")}
-            onPress={() => setEditing(true)}
-          />
+          <Text style={s.muted}>{tr("coach.setupNote")}</Text>
+          <Action label={tr("coach.setup")} onPress={() => setEditing(true)} />
           <Action label={tr("coach.defaults")} onPress={generate} />
           <Action label={tr("coach.skip")} onPress={onManual} />
         </Panel>
       ) : recommendation?.status !== "ready" ? (
         <>
           <Panel title={tr("coach.today")}>
-            <Text style={s.muted}>
-              {tr("coach.todayNote")}</Text>
+            <Text style={s.muted}>{tr("coach.todayNote")}</Text>
             <Action
               label={tr("coach.generate")}
               disabled={busy}
               onPress={generate}
             />
-            <Action label={tr("coach.customizeToday")} onPress={customizeToday} />
+            <Action
+              label={tr("coach.customizeToday")}
+              onPress={customizeToday}
+            />
             <Action
               label={tr("coach.editProfile")}
               onPress={() => setEditing(true)}
@@ -166,8 +163,7 @@ export function CoachWorkspace({
       ) : null}
       {customizing && preferences && (
         <Panel title={tr("coach.justToday")}>
-          <Text style={s.fine}>
-            {tr("coach.temporaryNote")}</Text>
+          <Text style={s.fine}>{tr("coach.temporaryNote")}</Text>
           <CoachPreferencesForm
             focus
             value={preferences}
@@ -176,8 +172,7 @@ export function CoachWorkspace({
           {training.library.some((e) => e.isCustom) && (
             <>
               <Text style={s.eyebrow}>{tr("coach.allowCustom")}</Text>
-              <Text style={s.fine}>
-                {tr("coach.customNote")}</Text>
+              <Text style={s.fine}>{tr("coach.customNote")}</Text>
               <View style={s.choices}>
                 {training.library
                   .filter((e) => e.isCustom)
@@ -217,7 +212,7 @@ export function CoachWorkspace({
       )}
       {recommendation?.status === "blocked" && (
         <Panel title={tr("coach.adjust")}>
-          <Text style={s.muted}>{recommendation.reason}</Text>
+          <Text style={s.muted}>{l.display(recommendation.reason)}</Text>
           <Action label={tr("coach.manual")} onPress={onManual} />
         </Panel>
       )}
@@ -226,16 +221,19 @@ export function CoachWorkspace({
           <Panel title={tr("coach.review")}>
             <Text style={s.muted}>
               {recommendation.exercises.length}{" "}
-              {recommendation.exercises.length === 1 ? tr("units.exercise") : tr("units.exercisePlural")}{" "}
-              · approximately {Math.ceil(recommendation.estimatedSeconds / 60)}{" "}
-              {tr("units.min")}</Text>
+              {recommendation.exercises.length === 1
+                ? tr("units.exercise")
+                : tr("units.exercisePlural")}{" "}
+              {tr("coach.approximately")}{" "}
+              {Math.ceil(recommendation.estimatedSeconds / 60)}{" "}
+              {tr("units.min")}
+            </Text>
             {recommendation.explanations.map((explanation) => (
-              <Text key={explanation} style={s.fine}>
-                {explanation}
+              <Text key={l.display(explanation)} style={s.fine}>
+                {l.display(explanation)}
               </Text>
             ))}
-            <Text style={s.fine}>
-              {tr("coach.saveNote")}</Text>
+            <Text style={s.fine}>{tr("coach.saveNote")}</Text>
           </Panel>
           {recommendation.exercises.map((entry) => (
             <Panel
@@ -255,22 +253,25 @@ export function CoachWorkspace({
                 {entry.targets
                   .map((target) =>
                     target.type === "weight_reps"
-                      ? `${target.weightKg === null ? "Choose load" : `${target.weightKg} kg`} × ${target.reps}`
-                      : targetLabel({ ...target, id: "display" }),
+                      ? `${target.weightKg === null ? tr("coach.load") : `${target.weightKg} kg`} × ${target.reps}`
+                      : l.target(target),
                   )
                   .join(" / ")}
               </Text>
               <Text style={s.fine}>
                 {entry.exercise.primaryBodyParts.map(l.display).join(", ")} ·{" "}
-                {entry.exercise.equipment.map(l.display).join(", ")} · Rest {entry.restSeconds}{" "}
-                {tr("units.sec")}</Text>
-              <Text style={s.fine}>{entry.explanation}</Text>
+                {entry.exercise.equipment.map(l.display).join(", ")}{" "}
+                {tr("coach.rest")} {entry.restSeconds} {tr("units.sec")}
+              </Text>
+              <Text style={s.fine}>{l.display(entry.explanation)}</Text>
               {unknownLoads.some(
                 (e) => e.exercise.id === entry.exercise.id,
               ) && (
                 <>
                   <Field
-                    label={`STARTING KG · ${l.exercise(entry.exercise)}`}
+                    label={tr("coach.startKg", {
+                      name: l.exercise(entry.exercise),
+                    })}
                     value={loadText[entry.exercise.id] ?? ""}
                     maxLength={12}
                     placeholder={tr("coach.comfortableLoad")}
@@ -282,7 +283,9 @@ export function CoachWorkspace({
                     }}
                   />
                   <Action
-                    label={`CONFIRM LOAD · ${l.exercise(entry.exercise)}`}
+                    label={tr("coach.confirmLoad", {
+                      name: l.exercise(entry.exercise),
+                    })}
                     onPress={() => {
                       const text = loadText[entry.exercise.id] ?? "";
                       const value = Number(text.replace(",", "."));
@@ -306,7 +309,8 @@ export function CoachWorkspace({
                   />
                   {Object.hasOwn(confirmedLoads, entry.exercise.id) && (
                     <Text style={s.fine}>
-                      {tr("coach.loadConfirmed")}{confirmedLoads[entry.exercise.id]} kg
+                      {tr("coach.loadConfirmed")}{" "}
+                      {confirmedLoads[entry.exercise.id]} kg
                     </Text>
                   )}
                 </>
@@ -328,8 +332,7 @@ export function CoachWorkspace({
             label={tr("coach.editProfile")}
             onPress={() => setEditing(true)}
           />
-          <Text style={s.fine}>
-            {tr("coach.restNote")}</Text>
+          <Text style={s.fine}>{tr("coach.restNote")}</Text>
         </>
       )}
       {editing && (

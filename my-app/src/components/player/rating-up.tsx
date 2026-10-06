@@ -29,12 +29,16 @@ export function RatingUpScreen({
   result: RatingUp;
   onContinue: () => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { club } = useCareer();
   return (
     <Sheet
-      title={result.areas.length ? tr("presentation.ratingUp") : tr("presentation.ovrUp")}
+      title={
+        result.areas.length
+          ? tr("presentation.ratingUp")
+          : tr("presentation.ovrUp")
+      }
       onClose={onContinue}
     >
       <Text style={s.eyebrow}>{tr("train.complete")}</Text>
@@ -42,23 +46,30 @@ export function RatingUpScreen({
         accessibilityRole="header"
         style={[s.sectionTitle, { fontSize: 28 }]}
       >
-        {tr("presentation.kicker")}</Text>
+        {tr("presentation.kicker")}
+      </Text>
       <Text style={s.muted}>{tr("presentation.description")}</Text>
       {result.areas.map((change) => (
         <Panel
-          key={l.display(change.area)}
-          title={change.area.toUpperCase()}
-          kicker={change.assessed ? tr("presentation.assessed") : tr("presentation.ratingUp")}
+          key={change.area}
+          title={l.display(change.area).toUpperCase()}
+          kicker={
+            change.assessed
+              ? tr("presentation.assessed")
+              : tr("presentation.ratingUp")
+          }
         >
           <Increase before={change.before} after={change.after} />
           {change.assessed && (
-            <Text style={s.fine}>
-              {tr("presentation.assessmentNote")}</Text>
+            <Text style={s.fine}>{tr("presentation.assessmentNote")}</Text>
           )}
         </Panel>
       ))}
       {result.ovr && (
-        <Panel title={tr("presentation.ovrUp")} kicker={tr("presentation.overall")}>
+        <Panel
+          title={tr("presentation.ovrUp")}
+          kicker={tr("presentation.overall")}
+        >
           <Increase {...result.ovr} />
         </Panel>
       )}
@@ -73,8 +84,8 @@ export function RatingUpScreen({
               : tr("presentation.evolution")}
           </Text>
           <Text style={s.eyebrow}>
-            {cardTiers[result.evolution.from].label.toUpperCase()} →{" "}
-            {cardTiers[result.evolution.to].label.toUpperCase()}
+            {l.display(cardTiers[result.evolution.from].label).toUpperCase()} →{" "}
+            {l.display(cardTiers[result.evolution.to].label).toUpperCase()}
           </Text>
           <PlayerCard
             club={club}
@@ -95,11 +106,15 @@ export function RatingUpScreen({
   );
 }
 function Increase({ before, after }: { before: number; after: number }) {
- const { tr } = useLocalization();
+  const { tr } = useLocalization();
   return (
     <View
       accessible
-      accessibilityLabel={tr("presentation.increase",{before,after,delta:after-before})}
+      accessibilityLabel={tr("presentation.increase", {
+        before,
+        after,
+        delta: after - before,
+      })}
       style={{ gap: 8 }}
     >
       <Text

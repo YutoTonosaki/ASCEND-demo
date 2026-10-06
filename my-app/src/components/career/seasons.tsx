@@ -20,19 +20,24 @@ function Details({
   season: Season;
   current: number | null;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const end = season.end,
     ovr = end?.player.ovr ?? current,
     stats = end?.stats ?? statistics(season);
   return (
     <>
-      <Text style={s.sectionTitle}>{tr("season.label", {number: String(season.number).padStart(2,"0")})}</Text>
+      <Text style={s.sectionTitle}>
+        {tr("season.label", { number: String(season.number).padStart(2, "0") })}
+      </Text>
       <Text style={s.muted}>{l.month(season.monthId)}</Text>
       <ClubIdentity club={season.club} />
-      <Text style={s.muted}>{tr("season.startingOVR")} {season.startingPlayer.ovr}</Text>
       <Text style={s.muted}>
-        {end ? tr("season.final") : tr("season.current")} OVR · {ovr ?? "Unavailable"}
+        {tr("season.startingOVR")} {season.startingPlayer.ovr}
+      </Text>
+      <Text style={s.muted}>
+        {end ? tr("season.final") : tr("season.current")} OVR ·{" "}
+        {ovr ?? "Unavailable"}
       </Text>
       <Text style={s.sectionTitle}>
         {tr("season.change")}{" "}
@@ -41,18 +46,19 @@ function Details({
           : `${ovr - season.startingPlayer.ovr >= 0 ? "+" : ""}${ovr - season.startingPlayer.ovr}`}
       </Text>
       <Text testID="season-workouts" style={s.muted}>
-        {tr("season.workouts")}{stats.workouts}
+        {tr("season.workouts")} {stats.workouts}
       </Text>
       <Text testID="season-days" style={s.muted}>
-        {tr("season.days")}{stats.trainingDays}
+        {tr("season.days")} {stats.trainingDays}
       </Text>
       <Text testID="season-prs" style={s.muted}>
-        {tr("season.prs")}{stats.prImprovements}
+        {tr("season.prs")} {stats.prImprovements}
       </Text>
       {end && (
         <Text style={s.fine}>
           {l.display(cardTiers[season.startingPlayer.tier].label)} /{" "}
-          {l.display(season.startingPlayer.finish.toUpperCase())} → {l.display(cardTiers[end.player.tier].label)} /{" "}
+          {l.display(season.startingPlayer.finish.toUpperCase())} →{" "}
+          {l.display(cardTiers[end.player.tier].label)} /{" "}
           {l.display(end.player.finish.toUpperCase())}
         </Text>
       )}
@@ -60,7 +66,7 @@ function Details({
   );
 }
 export function SeasonPanel() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const state = useSeasons(),
     growth = useGrowth(),
@@ -88,12 +94,13 @@ export function SeasonPanel() {
           <>
             <Details season={active} current={current} />
             <Text style={s.eyebrow}>
-              {state.month > active.monthId ? tr("season.monthEnded") : tr("season.active")}
+              {state.month > active.monthId
+                ? tr("season.monthEnded")
+                : tr("season.active")}
             </Text>
             {state.month > active.monthId && (
               <>
-                <Text style={s.fine}>
-                  {tr("season.closeNote")}</Text>
+                <Text style={s.fine}>{tr("season.closeNote")}</Text>
                 <Action
                   label={tr("season.complete")}
                   disabled={state.busy || current === null || !!career.error}
@@ -127,7 +134,7 @@ export function SeasonPanel() {
             .map((season) => (
               <Action
                 key={season.id}
-                label={`${tr("season.label", {number: String(season.number).padStart(2,"0")})} · ${l.month(season.monthId)} · ${season.club.name} · ${season.startingPlayer.ovr} → ${season.end!.player.ovr}`}
+                label={`${tr("season.label", { number: String(season.number).padStart(2, "0") })} · ${l.month(season.monthId)} · ${season.club.name} · ${season.startingPlayer.ovr} → ${season.end!.player.ovr}`}
                 onPress={() => setDetail(season)}
               />
             ))}
@@ -137,7 +144,7 @@ export function SeasonPanel() {
         <Sheet title={tr("season.completed")} onClose={() => setDetail(null)}>
           <Details season={detail} current={null} />
           <Text style={s.fine}>
-            {tr("season.completedOn")}{l.date(detail.end!.calendar.at)}
+            {tr("season.completedOn")} {l.date(detail.end!.calendar.at)}
           </Text>
         </Sheet>
       )}
@@ -145,7 +152,7 @@ export function SeasonPanel() {
   );
 }
 export function HomeSeason() {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const state = useSeasons(),
     career = useCareer();
@@ -158,18 +165,25 @@ export function HomeSeason() {
       ) : active ? (
         <>
           <Text testID="home-season" style={s.sectionTitle}>
-            {tr("season.label", {number: String(active.number).padStart(2,"0")})} · {l.month(active.monthId)}
+            {tr("season.label", {
+              number: String(active.number).padStart(2, "0"),
+            })}{" "}
+            · {l.month(active.monthId)}
           </Text>
           <Text style={s.fine}>
-            {statistics(active).workouts}  {tr("season.workouts")}{" "}
-            {statistics(active).trainingDays} {tr("season.trainingDays")}</Text>
+            {statistics(active).workouts} {tr("season.workouts")}{" "}
+            {statistics(active).trainingDays} {tr("season.trainingDays")}
+          </Text>
         </>
       ) : (
         <Text style={s.fine}>
           {state.data ? tr("season.none") : tr("season.loadingOne")}
         </Text>
       )}
-      <Action label={tr("season.viewCareer")} onPress={() => router.push("/career")} />
+      <Action
+        label={tr("season.viewCareer")}
+        onPress={() => router.push("/career")}
+      />
     </Panel>
   );
 }

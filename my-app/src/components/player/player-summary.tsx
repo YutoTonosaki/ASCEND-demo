@@ -18,13 +18,18 @@ export function PlayerSummary({
   club?: ClubIdentityData;
   form: string;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const palette = cardTiers[cardAppearance(player.ovr).tier];
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={tr("player.summaryAccessibility",{name:player.name,ovr:player.ovr,form:l.display(form),club:club ? `, ${club.name}` : ""})}
+      accessibilityLabel={tr("player.summaryAccessibility", {
+        name: player.name,
+        ovr: player.ovr,
+        form: l.display(form),
+        club: club ? `, ${club.name}` : "",
+      })}
       onPress={() => router.push("/player")}
       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
     >
@@ -46,7 +51,9 @@ export function PlayerSummary({
             {l.display(palette.label).toUpperCase()}
           </Text>
           {club && <ClubIdentity club={club} compact />}
-          <Text style={styles.form}>{tr("home.form")} {l.display(form)}</Text>
+          <Text style={styles.form}>
+            {tr("home.form")} {l.display(form)}
+          </Text>
         </View>
         <Icon name="arrow" size={16} color={palette.accent} />
       </LinearGradient>

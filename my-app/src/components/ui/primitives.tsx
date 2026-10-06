@@ -113,11 +113,14 @@ export function Placeholder({
   description?: string;
   icon?: IconName;
 }) {
- const { tr } = useLocalization();
+  const { tr } = useLocalization();
   return (
     <View
       accessible
-      accessibilityLabel={tr("common.unavailableLabel",{title,description:description ? ` ${description}` : ""})}
+      accessibilityLabel={tr("common.unavailableLabel", {
+        title,
+        description: description ? ` ${description}` : "",
+      })}
       accessibilityState={{ disabled: true }}
       style={s.utilityRow}
     >

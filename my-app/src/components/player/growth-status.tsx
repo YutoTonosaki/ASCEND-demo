@@ -41,14 +41,12 @@ export function GrowthStatus() {
         <Text style={s.muted}>{tr("player.loading")}</Text>
       )}
       {player ? (
-        <Text style={s.fine}>
-          {tr("player.gameNote")}</Text>
+        <Text style={s.fine}>{tr("player.gameNote")}</Text>
       ) : (
         growth.data &&
         !growth.error && (
           <>
-            <Text style={s.muted}>
-              {tr("player.initializeNote")}</Text>
+            <Text style={s.muted}>{tr("player.initializeNote")}</Text>
             {coach.error && (
               <>
                 <ErrorText message={tr("player.profileError")} />
@@ -61,11 +59,12 @@ export function GrowthStatus() {
             {(!coach.data || !sessions.data) &&
               !coach.error &&
               !sessions.error && (
-                <Text style={s.fine}>
-                  {tr("player.loadingEvidence")}</Text>
+                <Text style={s.fine}>{tr("player.loadingEvidence")}</Text>
               )}
             <Action
-              label={growth.busy ? tr("player.starting") : tr("player.initialize")}
+              label={
+                growth.busy ? tr("player.starting") : tr("player.initialize")
+              }
               disabled={growth.busy || !coach.data || !sessions.data}
               onPress={() => void growth.initialize()}
             />
@@ -73,8 +72,7 @@ export function GrowthStatus() {
               label={tr("player.reviewBaselines")}
               onPress={() => router.push("/training-profile")}
             />
-            <Text style={s.fine}>
-              {tr("player.baselinesOptional")}</Text>
+            <Text style={s.fine}>{tr("player.baselinesOptional")}</Text>
           </>
         )
       )}

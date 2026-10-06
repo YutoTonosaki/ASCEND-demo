@@ -27,26 +27,28 @@ export default function RootLayout() {
           },
         }}
       >
-        <LocalizationProvider><TrainingProvider>
-          <SessionProvider>
-            <CoachProvider>
-              <GrowthProvider>
-                <CareerProvider>
-                  <SeasonsProvider>
-                    <RewardsProvider>
-                      <GrowthPresentationProvider>
-                        <StatusBar style="light" />
-                        <Stack screenOptions={{ headerShown: false }}>
-                          <Stack.Screen name="(tabs)" />
-                        </Stack>
-                      </GrowthPresentationProvider>
-                    </RewardsProvider>
-                  </SeasonsProvider>
-                </CareerProvider>
-              </GrowthProvider>
-            </CoachProvider>
-          </SessionProvider>
-        </TrainingProvider></LocalizationProvider>
+        <LocalizationProvider>
+          <TrainingProvider>
+            <SessionProvider>
+              <CoachProvider>
+                <GrowthProvider>
+                  <CareerProvider>
+                    <SeasonsProvider>
+                      <RewardsProvider>
+                        <GrowthPresentationProvider>
+                          <StatusBar style="light" />
+                          <Stack screenOptions={{ headerShown: false }}>
+                            <Stack.Screen name="(tabs)" />
+                          </Stack>
+                        </GrowthPresentationProvider>
+                      </RewardsProvider>
+                    </SeasonsProvider>
+                  </CareerProvider>
+                </GrowthProvider>
+              </CoachProvider>
+            </SessionProvider>
+          </TrainingProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

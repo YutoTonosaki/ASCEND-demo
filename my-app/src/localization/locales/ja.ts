@@ -34,7 +34,8 @@ export const ja = {
   "settings.language": "言語",
   "settings.selected": "選択中",
   "settings.retry": "設定を再読み込み",
-  "settings.failure": "設定を読み込み・保存できませんでした。トレーニングデータは保持されています。",
+  "settings.failure":
+    "設定を読み込み・保存できませんでした。トレーニングデータは保持されています。",
   "settings.profile": "トレーニングプロフィール",
   "home.kicker": "トレーニング施設",
   "home.title": "次のレベルへ",
@@ -61,21 +62,26 @@ export const ja = {
   "player.development": "プレイヤー育成",
   "player.skillTree": "スキルツリー",
   "player.archetype": "プレイスタイル",
-  "player.assessments": "初回評価：腕立て伏せ → 胸、懸垂 → 背中、オーバーヘッドプレス（5回以上）→ 肩、ダイヤモンド腕立て伏せ → 腕、プランク → 体幹、自重スクワット → 脚。その他の種目は評価済みの部位を成長させますが、初回評価には使いません。",
-  "player.assessmentNote": "初回評価で暫定値を置き換えるため、数値が上下することがあります。成長報酬ではありません。",
+  "player.assessments":
+    "初回評価：腕立て伏せ → 胸、懸垂 → 背中、オーバーヘッドプレス（5回以上）→ 肩、ダイヤモンド腕立て伏せ → 腕、プランク → 体幹、自重スクワット → 脚。その他の種目は評価済みの部位を成長させますが、初回評価には使いません。",
+  "player.assessmentNote":
+    "初回評価で暫定値を置き換えるため、数値が上下することがあります。成長報酬ではありません。",
   "player.rating": "プレイヤーRating",
   "player.startingPoint": "あなたのスタート地点",
   "player.retry": "プレイヤーデータを再読み込み",
   "player.paused": "ワークアウト履歴を読み込めるまで成長処理は保留されます。",
   "player.loading": "Ratingを読み込み中…",
-  "player.gameNote": "Ratingはゲーム上の評価です。体力ランキングではありません。暫定の部位は対応種目で評価できます。以前より低い実績でも評価済みRatingは下がりません。",
-  "player.initializeNote": "腕立て伏せ・自重スクワット・プランクの登録済みベースラインから開始します。未測定の部位は暫定値です。過去のワークアウトはPRの根拠として残り、ここから成長が始まります。",
+  "player.gameNote":
+    "Ratingはゲーム上の評価です。体力ランキングではありません。暫定の部位は対応種目で評価できます。以前より低い実績でも評価済みRatingは下がりません。",
+  "player.initializeNote":
+    "腕立て伏せ・自重スクワット・プランクの登録済みベースラインから開始します。未測定の部位は暫定値です。過去のワークアウトはPRの根拠として残り、ここから成長が始まります。",
   "player.profileError": "トレーニングプロフィールを読み込めませんでした。",
   "player.loadingEvidence": "プロフィールと履歴を読み込み中…",
   "player.starting": "開始中…",
   "player.initialize": "プレイヤーを初期設定",
   "player.reviewBaselines": "ベースラインを確認",
-  "player.baselinesOptional": "ベースラインは任意です。後でプロフィールを編集しても開始時のRatingは変わりません。",
+  "player.baselinesOptional":
+    "ベースラインは任意です。後でプロフィールを編集しても開始時のRatingは変わりません。",
   "body.Chest": "胸",
   "body.Back": "背中",
   "body.Shoulders": "肩",
@@ -113,10 +119,13 @@ export const ja = {
   "records.subtitle": "あなたのベストセット",
   "records.retry": "記録を再読み込み",
   "records.loading": "記録を読み込み中…",
-  "records.confirmedOnly": "進行中のワークアウトを含む、確定済みセットの記録です。",
-  "records.loadError": "ワークアウト記録を読み込めませんでした。保存済みデータは保持されています。",
+  "records.confirmedOnly":
+    "進行中のワークアウトを含む、確定済みセットの記録です。",
+  "records.loadError":
+    "ワークアウト記録を読み込めませんでした。保存済みデータは保持されています。",
   "records.partialError": "一部のワークアウト記録を読み込めませんでした。",
-  "records.empty": "ここから記録が始まります。セットを確定すると、最高回数・時間・重量が表示されます。重量の記録には1回以上の完了が必要です。",
+  "records.empty":
+    "ここから記録が始まります。セットを確定すると、最高回数・時間・重量が表示されます。重量の記録には1回以上の完了が必要です。",
   "records.maxWeight": "最大完了重量",
   "records.bestSet": "シングルセット最高記録",
   "records.bestAtWeight": "この重量での最高 ·",
@@ -143,9 +152,11 @@ export const ja = {
   "career.begin": "旅を始めよう",
   "career.chooseNote": "最初の日本のクラブを選び、ASCENDのキャリアを始めよう。",
   "career.start": "キャリア開始",
-  "career.initializeNote": "クラブを選ぶ前にプレイヤーを初期設定してください。既存のトレーニングとコインは保持されます。",
+  "career.initializeNote":
+    "クラブを選ぶ前にプレイヤーを初期設定してください。既存のトレーニングとコインは保持されます。",
   "career.choose": "最初のクラブを選ぶ",
-  "career.joinNote": "最初の所属クラブになります。クラブの変更は今後の移籍機能で可能になります。",
+  "career.joinNote":
+    "最初の所属クラブになります。クラブの変更は今後の移籍機能で可能になります。",
   "career.backToClubs": "クラブ一覧に戻る",
   "career.joining": "加入中…",
   "career.join": "クラブに加入",
@@ -169,7 +180,8 @@ export const ja = {
   "season.loading": "シーズンを読み込み中…",
   "season.monthEnded": "対象月が終了",
   "season.active": "進行中",
-  "season.closeNote": "シーズン終了の操作時点のRatingを最終値として保存します。",
+  "season.closeNote":
+    "シーズン終了の操作時点のRatingを最終値として保存します。",
   "season.complete": "シーズン終了",
   "season.recorded": "記録済みのシーズン",
   "season.available": "新しいシーズンを開始できます",
@@ -178,7 +190,8 @@ export const ja = {
   "season.completed": "終了したシーズン",
   "season.completedOn": "終了日",
   "season.home": "キャリアシーズン",
-  "season.unavailable": "シーズンを利用できません。キャリア画面で再試行してください。",
+  "season.unavailable":
+    "シーズンを利用できません。キャリア画面で再試行してください。",
   "season.trainingDays": "トレーニング日数",
   "season.none": "進行中のシーズンはありません",
   "season.loadingOne": "シーズンを読み込み中…",
@@ -229,14 +242,16 @@ export const ja = {
   "train.retryHistory": "履歴を再読み込み",
   "train.resetSessions": "ワークアウト記録をリセット",
   "train.resetSessionsQuestion": "ワークアウト記録をリセットしますか？",
-  "train.resetSessionsNote": "進行中と完了済みの記録のみを消去します。先に元データを端末内にバックアップします。保存済みプランと種目は変更されません。",
+  "train.resetSessionsNote":
+    "進行中と完了済みの記録のみを消去します。先に元データを端末内にバックアップします。保存済みプランと種目は変更されません。",
   "train.historyEmpty": "完了したワークアウトがここに表示されます。",
   "train.yourSessions": "ワークアウト記録",
   "train.resume": "ワークアウト再開",
   "train.data": "トレーニングデータ",
   "train.resetData": "トレーニングデータをリセット",
   "train.resetDataQuestion": "トレーニングデータをリセットしますか？",
-  "train.resetDataNote": "空のトレーニングライブラリから始めます。リセット前に既存データを端末内にバックアップします。",
+  "train.resetDataNote":
+    "空のトレーニングライブラリから始めます。リセット前に既存データを端末内にバックアップします。",
   "train.inProgress": "ワークアウト進行中",
   "train.choose": "自分に合うトレーニングを選ぼう。",
   "train.coachNote": "設定と実績に合わせた短いワークアウト。",
@@ -260,7 +275,8 @@ export const ja = {
   "train.createExercisePlus": "+ カスタム種目作成",
   "train.exerciseNote": "自分の種目を登録すると、いつでも選べます。",
   "train.deleteExerciseQuestion": "種目を削除しますか？",
-  "train.deleteExerciseNote": "「{name}」を削除しますか？保存済みワークアウトで使用中の場合は、先にそのワークアウトから除いてください。",
+  "train.deleteExerciseNote":
+    "「{name}」を削除しますか？保存済みワークアウトで使用中の場合は、先にそのワークアウトから除いてください。",
   "train.exerciseDeleted": "種目を削除しました。",
   "train.createExercise": "種目作成",
   "train.editExercise": "種目編集",
@@ -273,7 +289,8 @@ export const ja = {
   "train.build": "メニューを組み立てる",
   "train.firstExercise": "最初の種目を選んで始めましょう。",
   "train.allTargets": "全セット共通の目標",
-  "train.varyTargets": "セットごとに目標が異なります。この設定を変更すると、表示中の目標を全セットに適用します。",
+  "train.varyTargets":
+    "セットごとに目標が異なります。この設定を変更すると、表示中の目標を全セットに適用します。",
   "train.hideDetails": "詳細を閉じる",
   "train.editDetails": "セット・休憩・順番を編集",
   "train.individualTargets": "セット別の目標",
@@ -291,7 +308,8 @@ export const ja = {
   "train.targetLabel": "目標 ·",
   "train.actualLabel": "実績 ·",
   "train.confirmed": "確定済みセット",
-  "train.confirmedNote": "確定したセットは保存済みです。この画面を離れてもトレーニングから再開できます。",
+  "train.confirmedNote":
+    "確定したセットは保存済みです。この画面を離れてもトレーニングから再開できます。",
   "train.actual": "実績",
   "train.actualSeconds": "実績の秒数",
   "train.actualReps": "実績の回数",
@@ -337,11 +355,14 @@ export const ja = {
   "coach.retryProfile": "プロフィールを再読み込み",
   "coach.reset": "コーチプロフィールをリセット",
   "coach.resetQuestion": "コーチプロフィールをリセットしますか？",
-  "coach.resetNote": "プロフィールのみをバックアップ後に消去します。ワークアウトと履歴は変更されません。",
-  "coach.resetDetail": "設定とベースラインのみをリセットします。先に元データをバックアップします。ワークアウトと履歴は変更されません。",
+  "coach.resetNote":
+    "プロフィールのみをバックアップ後に消去します。ワークアウトと履歴は変更されません。",
+  "coach.resetDetail":
+    "設定とベースラインのみをリセットします。先に元データをバックアップします。ワークアウトと履歴は変更されません。",
   "coach.loading": "設定を読み込み中…",
   "coach.setupTitle": "自分に合うトレーニングを",
-  "coach.setupNote": "設定と任意のベースラインを登録しましょう。手動のワークアウトはいつでも使えます。",
+  "coach.setupNote":
+    "設定と任意のベースラインを登録しましょう。手動のワークアウトはいつでも使えます。",
   "coach.setup": "プロフィールを設定",
   "coach.defaults": "標準設定で試す",
   "coach.skip": "今はスキップ",
@@ -353,13 +374,15 @@ export const ja = {
   "coach.justToday": "今日だけの設定",
   "coach.temporaryNote": "ここでの選択は保存済みプロフィールを変更しません。",
   "coach.allowCustom": "慣れたカスタム種目を使用",
-  "coach.customNote": "難易度は未設定です。慣れている種目だけを選んでください。",
+  "coach.customNote":
+    "難易度は未設定です。慣れている種目だけを選んでください。",
   "coach.generateChoices": "この設定で提案",
   "coach.useDefaults": "プロフィールの設定を使う",
   "coach.adjust": "メニューを調整",
   "coach.manual": "手動でワークアウト作成",
   "coach.review": "提案メニューを確認",
-  "coach.saveNote": "提案を保存するか、ワークアウト編集画面で保存するまでは記録されません。",
+  "coach.saveNote":
+    "提案を保存するか、ワークアウト編集画面で保存するまでは記録されません。",
   "coach.fromSession": "完了済みトレーニングを参照",
   "coach.fromBaseline": "ベースラインを参照",
   "coach.chooseLoad": "開始重量を選ぶ",
@@ -369,16 +392,20 @@ export const ja = {
   "coach.loadConfirmed": "重量を確認済み ·",
   "coach.save": "提案を保存",
   "coach.customize": "ワークアウトを編集",
-  "coach.restNote": "対象部位や器具を変えると別の提案になります。今日は休む、という選択も大切です。",
+  "coach.restNote":
+    "対象部位や器具を変えると別の提案になります。今日は休む、という選択も大切です。",
   "coach.focus": "対象部位 · 未選択なら自動",
   "coach.location": "トレーニング場所",
   "coach.equipment": "使える器具",
-  "coach.equipmentNote": "この場所で使える器具だけを選んでください。自重種目は常に使用できます。",
+  "coach.equipmentNote":
+    "この場所で使える器具だけを選んでください。自重種目は常に使用できます。",
   "coach.minutes": "使える時間（分）",
   "coach.exerciseCount": "希望する種目数",
-  "coach.countNote": "種目数は上限です。時間に合わせて少ない種目数になる場合があります。",
+  "coach.countNote":
+    "種目数は上限です。時間に合わせて少ない種目数になる場合があります。",
   "profile.step": "トレーニングプロフィール ·",
-  "profile.note": "トレーニングを続けやすくするための設定です。身体測定は任意で、筋力の推測には使いません。",
+  "profile.note":
+    "トレーニングを続けやすくするための設定です。身体測定は任意で、筋力の推測には使いません。",
   "profile.height": "身長 cm · 任意",
   "profile.notProvided": "未入力",
   "profile.weight": "体重 kg · 任意",
@@ -389,8 +416,10 @@ export const ja = {
   "profile.noPreference": "指定なし",
   "profile.nextBaseline": "次へ · 任意のベースライン",
   "profile.previous": "前のステップ",
-  "profile.baselineNote": "任意の開始時の参考値です。慣れた種目か、すでに分かっている実績を入力してください。限界まで行う必要はありません。",
-  "profile.safety": "痛み・めまい・普段と違う違和感があれば中止してください。不安な種目はスキップできます。この入力はワークアウト履歴や体力スコアにはなりません。",
+  "profile.baselineNote":
+    "任意の開始時の参考値です。慣れた種目か、すでに分かっている実績を入力してください。限界まで行う必要はありません。",
+  "profile.safety":
+    "痛み・めまい・普段と違う違和感があれば中止してください。不安な種目はスキップできます。この入力はワークアウト履歴や体力スコアにはなりません。",
   "profile.save": "プロフィール保存",
   "profile.skipSave": "ベースラインをスキップして保存",
   "profile.cancel": "プロフィール編集をキャンセル",
@@ -428,17 +457,119 @@ export const ja = {
   "country.spain": "スペイン",
   "country.italy": "イタリア",
   "country.france": "フランス",
-  "error.generic": "処理できませんでした。入力を確認するか再試行してください。保存済みのトレーニングデータはリセットされていません。",
+  "error.generic":
+    "処理できませんでした。入力を確認するか再試行してください。保存済みのトレーニングデータはリセットされていません。",
   "error.save": "保存できませんでした。再試行してください。",
   "error.selection": "選択を保存できませんでした。再試行してください。",
   "error.workout": "ワークアウトを保存できませんでした。再試行してください。",
   "error.prepare": "ワークアウトを準備できませんでした。再試行してください。",
   "error.profile": "プロフィールを保存できませんでした。再試行してください。",
-  "error.measurements": "身長は50〜300cm、体重は10〜500kgで入力するか、空欄にしてください。",
+  "error.measurements":
+    "身長は50〜300cm、体重は10〜500kgで入力するか、空欄にしてください。",
   "error.load": "編集画面の範囲内で、0以上の開始重量を入力してください。",
   "career.joinedDate": "{date}に加入",
   "career.leftDate": "{date}に退団",
-  "player.summaryAccessibility": "{name}、OVR {ovr}、コンディション {form}{club}。プレイヤーを開く",
+  "player.summaryAccessibility":
+    "{name}、OVR {ovr}、コンディション {form}{club}。プレイヤーを開く",
   "player.ratingAccessibility": "{area}：最大99中{rating}、{status}",
-  "common.unavailableLabel": "{title}。近日公開。{description}"
+  "common.unavailableLabel": "{title}。近日公開。{description}",
+  "train.viewSession": "記録を見る · {name}",
+  "train.savedCount": "保存済みワークアウト · {count}",
+  "train.exerciseCount": "マイ種目 · {count}",
+  "train.viewName": "表示 · {name}",
+  "train.editName": "編集 · {name}",
+  "train.deleteName": "削除 · {name}",
+  "train.setCount": "{count} セット",
+  "train.exerciseSets": "{name}のセット数",
+  "train.exerciseSet": "{name} セット{number}",
+  "train.exerciseRest": "{name}の休憩秒数",
+  "train.detailsName": "{name}の詳細を{action}",
+  "train.moveUpName": "上へ · {name}",
+  "train.moveDownName": "下へ · {name}",
+  "train.removeName": "削除 · {name}",
+  "train.secondsLabel": "{label} 秒数",
+  "train.repsLabel": "{label} 回数",
+  "train.weightLabel": "重量 · kg",
+  "train.exercisePosition": "種目 {current} / {total}",
+  "train.setNumber": "· セット",
+  "train.exercisesSeparator": "種目 ·",
+  "train.completedSeparator": "· 完了",
+  "train.historySeparator": "セット · 完了日時",
+  "exercise.addName": "{name}を追加",
+  "profile.baselineName": "{name}のベースライン",
+  "profile.confirmBaseline": "ベースライン確定 · {name}",
+  "profile.skipBaseline": "スキップ · {name}",
+  "profile.editBaseline": "ベースライン{action} · {name}",
+  "profile.removeBaseline": "ベースライン削除 · {name}",
+  "profile.recorded": "記録済み · {value}",
+  "records.byWeightName": "{name}の重量別記録を{action}",
+  "coach.startKg": "開始重量 kg · {name}",
+  "coach.confirmLoad": "重量を確定 · {name}",
+  "coach.approximately": "· 約",
+  "coach.rest": "· 休憩",
+  "units.secondsShort": "秒",
+  "coach.evidence.session":
+    "最新の対応する実績から無理のない目標を採用します。自動的には増やしません。",
+  "coach.evidence.baseline":
+    "ワークアウト履歴ではなく、任意のベースラインを目標に使います。",
+  "coach.evidence.load":
+    "最近の使用重量が不明です。無理のない開始重量を選び、確定してください。",
+  "coach.evidence.custom":
+    "選択したカスタム種目です。難易度が不明なため、初回の目標を確認してください。",
+  "coach.evidence.initial":
+    "実績がない状態での初回提案です。無理のない強度に調整してください。",
+  "coach.reason.date":
+    "ワークアウトを提案する前に端末の日時を確認してください。",
+  "coach.reason.profile":
+    "提案する前にトレーニングプロフィールを確認してください。",
+  "coach.reason.preferences":
+    "時間・種目数・トレーニング設定を確認してください。",
+  "coach.reason.history":
+    "履歴を利用できません。記録の読み込みを再試行するか、手動で作成してください。",
+  "coach.reason.custom":
+    "選んだカスタム種目を利用できません。選択を変更してください。",
+  "coach.reason.noPlan":
+    "対象部位・器具・実績に合う初回メニューがありません。条件を変えるか、手動で作成してください。",
+  "coach.reason.coverage":
+    "この器具と種目数では、選んだすべての部位に対応できません。部位・種目数を調整するか、手動で作成してください。",
+  "coach.reason.time":
+    "目標と休憩が設定時間に収まりません。時間を増やすか対象を絞る、または手動で作成してください。",
+  "coach.explanation.duration":
+    "所要時間は目安です。休憩を含みます。目標は無理のない範囲に調整してください。",
+  "coach.explanation.defaults":
+    "プロフィールを保存するまでは、初心者・筋力・自重の標準設定を使います。",
+  "coach.explanation.recent":
+    "最近の確定済みトレーニングを種目選びに反映します。回復度の推定ではありません。休息も選択肢です。",
+  "coach.explanation.oneSet":
+    "最近使った部位は、この提案では1セットにしています。",
+  "coach.explanation.location": "{location}で選択した器具のみを使用します。",
+  "coach.explanation.recentAreas":
+    "{areas}は最近トレーニング済みです。同じ部位を続ける・別の部位を選ぶ・休む、どれも選べます。",
+  "coach.explanation.count":
+    "利用できる種目と時間に合わせて{count}種目にしています。",
+  "coach.explanation.secondary":
+    "この種目構成では、{area}は主な対象ではなく補助部位として含まれます。",
+  "error.exerciseInUseTracking":
+    "保存済みワークアウトで使用中です。記録方法を変更する前に、そのワークアウトから種目を除いてください。",
+  "error.exerciseInUseDelete":
+    "保存済みワークアウトで使用中です。削除する前に、そのワークアウトから種目を除いてください。",
+  "error.invalidWorkout": "保存前に名前・種目・目標を確認してください。",
+  "error.trainingRead":
+    "トレーニングデータを読み込めません。保存データは変更されていません。",
+  "error.trainingInvalid":
+    "トレーニングデータの形式が未対応、または破損しています。保存データは変更されていません。",
+  "error.trainingLoading":
+    "トレーニングデータが未読込です。再試行してください。",
+  "error.actual": "セットを完了する前に実績の入力を確認してください。",
+  "error.seasonData":
+    "シーズンデータを利用できないか、未対応の形式です。履歴は保持されています。再試行してください。",
+  "error.seasonOwner": "有効なキャリアとプレイヤーが必要です。",
+  "error.seasonIdentity":
+    "シーズンとキャリアの識別情報が一致しません。保存データは保持されています。",
+  "error.seasonClub": "進行中のシーズンとキャリアの所属クラブが一致しません。",
+  "error.seasonPrevious": "先に前のシーズンを終了してください。",
+  "error.seasonClock": "端末の日時が保存済みシーズン履歴より前になっています。",
+  "error.seasonClose": "対象月が終わってからシーズンを終了してください。",
+  "error.seasonPR":
+    "シーズンのPR集計に必要なワークアウト履歴を確認できませんでした。",
 } satisfies Record<keyof typeof en, string>;

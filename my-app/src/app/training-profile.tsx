@@ -20,7 +20,10 @@ export default function TrainingProfileScreen() {
         ) : (
           <Panel title={tr("coach.profile")}>
             <ErrorText message={coach.error} />
-            <Action label={tr("coach.retry")} onPress={() => void coach.retry()} />
+            <Action
+              label={tr("coach.retry")}
+              onPress={() => void coach.retry()}
+            />
             {coach.error && (
               <Action
                 label={tr("coach.reset")}

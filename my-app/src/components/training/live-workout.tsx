@@ -29,7 +29,7 @@ export function LiveWorkout({
   session: WorkoutSession;
   onComplete: (id: string) => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { commit } = useSessions();
   const { record: recordSeason } = useSeasons();
@@ -147,7 +147,8 @@ export function LiveWorkout({
     <>
       <Text style={t.name}>{session.name}</Text>
       <Text style={s.fine}>
-        {completed} / {total} {tr("train.setsCompleted")}</Text>
+        {completed} / {total} {tr("train.setsCompleted")}
+      </Text>
       <ErrorText message={error} />
       {deadline ? (
         <Panel title={tr("train.rest")}>
@@ -166,7 +167,8 @@ export function LiveWorkout({
           </Text>
           <Text style={s.eyebrow}>{tr("common.next")}</Text>
           <Text style={t.name}>
-            {l.exercise(current.entry.exercise)} · Set {current.setIndex + 1}
+            {l.exercise(current.entry.exercise)} {tr("train.setNumber")}{" "}
+            {current.setIndex + 1}
           </Text>
           <Action
             label={tr("train.skipRest")}
@@ -177,16 +179,20 @@ export function LiveWorkout({
       ) : (
         <Panel
           title={l.exercise(current.entry.exercise)}
-          kicker={`EXERCISE ${current.exerciseIndex + 1} / ${session.exercises.length}`}
+          kicker={tr("train.exercisePosition", {
+            current: current.exerciseIndex + 1,
+            total: session.exercises.length,
+          })}
         >
           <Text style={s.eyebrow}>
-            {tr("train.set")}{current.setIndex + 1} / {current.entry.sets.length}
+            {tr("train.set")} {current.setIndex + 1} /{" "}
+            {current.entry.sets.length}
           </Text>
           <Text style={s.fine}>{tr("train.target")}</Text>
           <Text
             style={{ color: colors.bronze, fontSize: 28, fontWeight: "800" }}
           >
-            {targetLabel(current.set.target)}
+            {l.target(current.set.target)}
           </Text>
           <ActualInput
             key={current.set.id}
@@ -204,12 +210,14 @@ export function LiveWorkout({
                 set.result ? (
                   <View key={set.id} style={t.item}>
                     <Text style={t.name}>
-                      ✓ {l.exercise(entry.exercise)} · Set {i + 1} {tr("train.completeSuffix")}</Text>
+                      ✓ {l.exercise(entry.exercise)} {tr("train.setNumber")}{" "}
+                      {i + 1} {tr("train.completeSuffix")}
+                    </Text>
                     <Text style={s.fine}>
-                      {tr("train.targetLabel")}{targetLabel(set.target)}
+                      {tr("train.targetLabel")} {l.target(set.target)}
                     </Text>
                     <Text style={s.muted}>
-                      {tr("train.actualLabel")}{actualLabel(set.result.actual)}
+                      {tr("train.actualLabel")} {l.target(set.result.actual)}
                     </Text>
                   </View>
                 ) : null,
@@ -218,8 +226,7 @@ export function LiveWorkout({
           ))}
         </Panel>
       )}
-      <Text style={s.fine}>
-        {tr("train.confirmedNote")}</Text>
+      <Text style={s.fine}>{tr("train.confirmedNote")}</Text>
     </>
   );
 }
@@ -232,7 +239,6 @@ function ActualInput({
   busy: boolean;
   onConfirm: (actual: ActualResult) => Promise<void>;
 }) {
- const l = useLocalization();
   const { tr } = useLocalization();
   const [actual, setActual] = useState(() => prefill(target));
   const submitted = useRef(false);
@@ -293,15 +299,13 @@ export function SessionSummary({
   session: WorkoutSession;
   onFinish: () => void;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const total = session.exercises.reduce((n, e) => n + e.sets.length, 0);
   return (
     <>
       <Panel title={session.name} kicker={tr("common.completed")}>
-        <Text style={s.muted}>
-          {l.date(session.completedAt!, true)}
-        </Text>
+        <Text style={s.muted}>{l.date(session.completedAt!, true)}</Text>
         <Text style={s.sectionTitle}>
           {durationLabel(
             Math.max(
@@ -314,18 +318,26 @@ export function SessionSummary({
         </Text>
         <Text style={s.fine}>{tr("train.durationNote")}</Text>
         <Text style={s.muted}>
-          {session.exercises.length} exercises · {total} / {total} {tr("train.setsCompleted")}</Text>
+          {session.exercises.length} {tr("train.exercisesSeparator")} {total} /{" "}
+          {total} {tr("train.setsCompleted")}
+        </Text>
       </Panel>
       <WorkoutRewards sessionId={session.id} />
       {session.exercises.map((entry) => (
         <Panel key={entry.id} title={l.exercise(entry.exercise)}>
           {entry.sets.map((set, i) => (
             <View key={set.id} style={t.item}>
-              <Text style={s.eyebrow}>{tr("train.set")} {i + 1} · COMPLETE</Text>
-              <Text style={s.fine}>{tr("train.targetLabel")} {targetLabel(set.target)}</Text>
+              <Text style={s.eyebrow}>
+                {tr("train.set")} {i + 1} {tr("train.completedSeparator")}
+              </Text>
+              <Text style={s.fine}>
+                {tr("train.targetLabel")} {l.target(set.target)}
+              </Text>
               <Text style={t.name}>
                 {tr("train.actualLabel")}{" "}
-                {set.result ? actualLabel(set.result.actual) : tr("common.notRecorded")}
+                {set.result
+                  ? l.target(set.result.actual)
+                  : tr("common.notRecorded")}
               </Text>
             </View>
           ))}

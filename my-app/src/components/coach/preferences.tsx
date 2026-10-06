@@ -14,7 +14,7 @@ export function CoachPreferencesForm({
   onChange: (value: CoachPreferences) => void;
   focus?: boolean;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   return (
     <View style={{ gap: 12 }}>
@@ -54,8 +54,7 @@ export function CoachPreferencesForm({
         )}
       </View>
       <Text style={s.eyebrow}>{tr("coach.equipment")}</Text>
-      <Text style={s.fine}>
-        {tr("coach.equipmentNote")}</Text>
+      <Text style={s.fine}>{tr("coach.equipmentNote")}</Text>
       <View style={s.choices}>
         {equipmentOptions
           .filter((item) => item !== "Bodyweight")
@@ -89,8 +88,7 @@ export function CoachPreferencesForm({
         max={coachConfig.maxCount}
         onChange={(exerciseCount) => onChange({ ...value, exerciseCount })}
       />
-      <Text style={s.fine}>
-        {tr("coach.countNote")}</Text>
+      <Text style={s.fine}>{tr("coach.countNote")}</Text>
     </View>
   );
 }

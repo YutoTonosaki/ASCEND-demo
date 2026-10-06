@@ -15,7 +15,7 @@ export function PlayerCard({
   player: Omit<Player, "ratings" | "tier" | "intensity">;
   club?: ClubIdentityData;
 }) {
- const l = useLocalization();
+  const l = useLocalization();
   const { tr } = useLocalization();
   const { tier, finish, intensity } = cardAppearance(player.ovr);
   const palette = cardTiers[tier];
@@ -73,12 +73,15 @@ export function PlayerCard({
         <View style={c.top}>
           <Text style={[c.brand, { color: palette.accent }]}>ASCEND</Text>
           <Text style={[c.micro, { color: palette.accent }]}>
-            {tr("card.athlete")}</Text>
+            {tr("card.athlete")}
+          </Text>
         </View>
         <View style={c.hero}>
           <View>
             <Text style={[c.ovr, { color: palette.accent }]}>{player.ovr}</Text>
-            <Text style={[c.overall, { color: palette.accent }]}>{tr("card.overall")}</Text>
+            <Text style={[c.overall, { color: palette.accent }]}>
+              {tr("card.overall")}
+            </Text>
           </View>
           <Emblem size={104} color={palette.accent} />
         </View>
@@ -117,7 +120,7 @@ export function PlayerCard({
           <Text style={[c.micro, { color: palette.accent }]}>
             {tier === "ascend"
               ? tr("player.maximum")
-              : tr("card.finish",{finish:l.display(finish.toUpperCase())})}
+              : tr("card.finish", { finish: l.display(finish.toUpperCase()) })}
           </Text>
         </View>
       </LinearGradient>
