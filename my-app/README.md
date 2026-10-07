@@ -1,4 +1,4 @@
-# ASCEND — native Phase 4B
+# ASCEND — native Phase 4B.5
 
 The active mobile application lives here. Product requirements are in the parent
 `README.md` and `docs/` directory. The original Expo SDK 57, React Native 0.86,
@@ -257,3 +257,11 @@ Start/close require explicit actions, and fresh saved workout callbacks alone
 associate evidence. No historical scan, physical growth or Season reward.
 See [Phase 4B verification](docs/PHASE4B_VERIFICATION.md) for schema, limitations,
 automated results and physical iPhone steps. Phase 4C is not implemented.
+
+## Localization
+
+`src/localization` provides typed semantic translation keys, English/Japanese
+dictionaries, formatting and presentation adapters. Header Settings → Language
+uses an independent SettingsRepository. Default English; no device auto-detection.
+See [Phase 4B.5](docs/PHASE4B5_VERIFICATION.md) for contributor guidance, isolation,
+coverage and verification. Gameplay models/calculations remain language-neutral.

@@ -1385,3 +1385,13 @@ captures values at the explicit action, not a guessed month-end rating.
 
 No streak, penalties, Season Coins, trophies, Rival, Match or Transfer implementation.
 Storage and evidence rules are specified in Game System section 52.
+
+## Phase 4B.5 — Language settings
+
+Support English (`en`) and Japanese (`ja`) via existing header Settings → Language,
+without a sixth tab. Default English for new and existing users; no device-language
+auto-selection. A successful saved selection updates the UI immediately. Translate
+production navigation/training/Player/Career/Season/reward/Shop labels and dates at
+presentation time. ASCEND, OVR, PR and proper Club names retain their identity.
+Custom names and immutable history are never rewritten for translation. Settings
+errors retain a safe display language and preserve all game data.

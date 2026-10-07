@@ -49,7 +49,7 @@ export default function Home() {
       <Panel title={tr("home.recovery")} kicker={tr("home.rest")}>
         <View style={h.recovery}>
           {recovery.map((item) => (
-            <View key={l.display(item.area)} style={h.recoveryItem}>
+            <View key={item.area} style={h.recoveryItem}>
               <Text style={h.body}>{l.display(item.area)}</Text>
               <Text
                 style={[

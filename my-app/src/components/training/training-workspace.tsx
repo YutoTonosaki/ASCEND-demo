@@ -352,7 +352,12 @@ export function TrainingWorkspace() {
                   <View key={entry.id} style={t.item}>
                     <Text style={t.name}>
                       {index + 1}.{" "}
-                      {library.find((e) => e.id === entry.exerciseId)?.name}
+                      {(() => {
+                        const exercise = library.find(
+                          (e) => e.id === entry.exerciseId,
+                        );
+                        return exercise ? l.exercise(exercise) : "";
+                      })()}
                     </Text>
                     <Text style={s.muted}>
                       {entry.sets.map(l.target).join(" / ")}

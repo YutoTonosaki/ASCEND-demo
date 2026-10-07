@@ -1,5 +1,6 @@
 import { useLocalization, type TranslationKey } from "@/localization";
 import { Tabs } from "expo-router";
+import { Text, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/config/theme";
 import { Icon, type IconName } from "@/components/ui/icon";
@@ -13,6 +14,7 @@ const tabs: { name: string; title: TranslationKey; icon: IconName }[] = [
 export default function TabLayout() {
   const { tr } = useLocalization();
   const insets = useSafeAreaInsets();
+  const { fontScale } = useWindowDimensions();
   return (
     <Tabs
       screenOptions={{
@@ -22,7 +24,8 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
-          height: 64 + Math.max(insets.bottom, 8),
+          height:
+            64 + Math.max(insets.bottom, 8) + Math.max(0, fontScale - 1) * 28,
           paddingBottom: Math.max(insets.bottom, 8),
           paddingTop: 8,
         },
@@ -41,6 +44,19 @@ export default function TabLayout() {
           options={{
             title: tr(tab.title),
             tabBarAccessibilityLabel: tr(tab.title),
+            tabBarLabel: ({ color }) => (
+              <Text
+                style={{
+                  color,
+                  fontSize: 10,
+                  fontWeight: "700",
+                  textAlign: "center",
+                  flexShrink: 1,
+                }}
+              >
+                {tr(tab.title)}
+              </Text>
+            ),
             tabBarIcon: ({ color }) => <Icon name={tab.icon} color={color} />,
           }}
         />

@@ -229,7 +229,7 @@ export function CoachWorkspace({
               {tr("units.min")}
             </Text>
             {recommendation.explanations.map((explanation) => (
-              <Text key={l.display(explanation)} style={s.fine}>
+              <Text key={explanation} style={s.fine}>
                 {l.display(explanation)}
               </Text>
             ))}

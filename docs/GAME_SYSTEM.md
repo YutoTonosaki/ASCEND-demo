@@ -1371,3 +1371,20 @@ There is no multi-instance transaction lock, cloud recovery or clock-tamper defe
 Phase 4C can consume stable Season IDs and immutable snapshots/evidence. It must not
 rewrite old Club/Player snapshots or conflate monthly statistics with weekly Coins.
 Rivals, Matches, transfers, Season Cards, trophies and Season rewards remain deferred.
+
+## 53. Phase 4B.5 — Language-neutral game state
+
+Localization is presentation only. Independent `ascend.settings.v1` stores version 1
+and `settings.locale` (`en` or `ja`). Missing settings read English without a write.
+Only explicit supported selection writes; serialized read/validate/write publishes
+after success. Corrupt/newer settings are preserved and block writes. Initial read
+failure renders English; later failure retains the last valid in-memory locale.
+Retry rereads without reset. No other repository is called by language selection.
+
+Typed semantic dictionaries and interpolation render labels; locale-aware formatting
+changes dates/numbers without changing timestamps/month identities. Built-in exercise
+IDs have a display-name mapping that preserves custom/unknown/renamed snapshot names.
+Club proper names stay original; Season snapshots remain immutable. Game formulas,
+PR comparisons, Growth, reward eligibility, Career tenure, Season associations and
+presentation consumption are unchanged. No language switch produces game events.
+See `my-app/docs/PHASE4B5_VERIFICATION.md` for translation contribution instructions.

@@ -110,7 +110,7 @@ export function ExerciseEditor({
         {equipmentOptions.map((option) => (
           <Choice
             key={option}
-            label={option}
+            label={l.display(option)}
             selected={exercise.equipment.includes(option)}
             onPress={() =>
               setExercise({
@@ -128,7 +128,7 @@ export function ExerciseEditor({
         {(Object.keys(trackingLabels) as TrackingType[]).map((type) => (
           <Choice
             key={type}
-            label={trackingLabels[type]}
+            label={l.display(trackingLabels[type])}
             selected={exercise.trackingType === type}
             onPress={() => setExercise({ ...exercise, trackingType: type })}
           />
@@ -139,7 +139,7 @@ export function ExerciseEditor({
         {categories.map((category) => (
           <Choice
             key={category}
-            label={category}
+            label={l.display(category)}
             selected={exercise.category === category}
             onPress={() => setExercise({ ...exercise, category })}
           />

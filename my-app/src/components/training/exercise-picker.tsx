@@ -149,7 +149,7 @@ export function ExercisePicker({
               items: matches.filter((e) => !e.isCustom),
             },
           ].map((section) => (
-            <View key={l.display(section.title)} style={{ gap: 4 }}>
+            <View key={section.title} style={{ gap: 4 }}>
               <Text accessibilityRole="header" style={s.eyebrow}>
                 {l.display(section.title)}
               </Text>

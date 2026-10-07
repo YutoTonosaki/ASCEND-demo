@@ -621,3 +621,10 @@ and fractional Player snapshots, fresh completed-session/PR associations, factua
 CAREER/HOME statistics and completed Season details. No retrospective Seasons or
 automatic month-change writes. See `my-app/docs/PHASE4B_VERIFICATION.md` for checks
 and device verification instructions. Phase 4C is not implemented.
+
+## Phase 4B.5 — Localization & Language Settings
+
+English/Japanese foundation, header Language setting, separate settings persistence,
+typed translations and display-only dates/metadata. Existing game IDs, calculations,
+snapshots and storage remain intact. Verification and iPhone checklist:
+`my-app/docs/PHASE4B5_VERIFICATION.md`. Phase 4C remains outside this implementation.

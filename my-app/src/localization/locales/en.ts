@@ -573,4 +573,33 @@ export const en = {
   "error.seasonClock": "Device calendar is earlier than saved Season history.",
   "error.seasonClose": "Complete this Season after its calendar month ends.",
   "error.seasonPR": "Workout history could not be validated for Season PRs.",
+  "club.description.tokyo-zenith":
+    "A Tokyo club built on versatile athletes, patient development, and lasting commitment.",
+  "club.description.osaka-forge":
+    "Patient craft and steady commitment shape this Osaka training collective.",
+  "club.description.yokohama-nova":
+    "A coastal club built around adaptable athletes and a thoughtful training culture.",
+  "club.description.london-crown":
+    "An ambitious London institution that values composure and complete preparation.",
+  "club.description.northbridge-united":
+    "A community-rooted club where consistent effort builds lasting identity.",
+  "club.description.berlin-einheit":
+    "Connected purpose and balanced preparation define this Berlin collective.",
+  "club.description.munich-adler":
+    "A precise, ambitious club with a tradition of patient athletic development.",
+  "club.description.madrid-solaris":
+    "Bright ambition meets measured preparation at this Madrid club.",
+  "club.description.valencia-orbit":
+    "A welcoming development environment built around coordinated movement.",
+  "club.description.milano-veloce":
+    "Deliberate preparation and a clear sense of identity guide this Milano club.",
+  "club.description.paris-elan":
+    "An expressive Paris club that values versatility and sustained commitment.",
+  "club.description.lyon-apex":
+    "A grounded club focused on purposeful training and long-term development.",
+  "club.reputation.1": "Development",
+  "club.reputation.2": "Growing competitive",
+  "club.reputation.3": "Established",
+  "club.reputation.4": "High-level",
+  "club.reputation.5": "Elite",
 } as const;

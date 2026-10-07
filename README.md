@@ -247,7 +247,7 @@ When implementing a phase:
 7. verify TypeScript;
 8. report changes;
 9. stop before the next phase.
-## Current application — Phase 4B
+## Current application — Phase 4B.5
 
 The native Expo application is in [`my-app`](./my-app/README.md). Run it on your
 phone from this repository root:
@@ -336,3 +336,10 @@ snapshots, completed-workout/local-day/PR statistics and permanent Season histor
 Seasons use local calendar months and independent `ascend.seasons.v1` storage.
 Skipped months do not create invented Seasons. No Season rewards or Match systems.
 See [Phase 4B verification](my-app/docs/PHASE4B_VERIFICATION.md).
+
+## Phase 4B.5 — English / Japanese
+
+Header Settings → Language switches English/日本語 immediately and persists only
+`ascend.settings.v1`. Default is English; existing gameplay records and immutable
+Season snapshots stay unchanged. See [localization verification](my-app/docs/PHASE4B5_VERIFICATION.md).
+Phase 4C is not implemented.

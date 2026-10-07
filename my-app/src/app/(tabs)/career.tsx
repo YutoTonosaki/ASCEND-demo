@@ -29,12 +29,12 @@ function ClubProfile({ club }: { club: Club }) {
       </View>
       <Text style={s.muted}>
         {tr("career.reputation")} {club.reputation} / 5 ·{" "}
-        {clubReputationLevels[club.reputation]}
+        {l.display(clubReputationLevels[club.reputation])}
       </Text>
       <Text style={s.muted}>
         {tr("career.recommended")} {club.recommendedOVR} {tr("career.infoOnly")}
       </Text>
-      <Text style={s.muted}>{club.description}</Text>
+      <Text style={s.muted}>{l.display(club.description)}</Text>
       <Text style={s.fine}>
         {tr("career.interests")}{" "}
         {club.preferredAttributes.map(l.display).join(" / ")}

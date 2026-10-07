@@ -24,7 +24,7 @@ export default function Shop() {
       <Panel title={tr("shop.cosmetics")} kicker={tr("common.comingSoon")}>
         {cosmeticCategories.map((category, index) => (
           <View
-            key={l.display(category)}
+            key={category}
             accessible
             accessibilityLabel={tr("common.unavailableLabel", {
               title: l.display(category),

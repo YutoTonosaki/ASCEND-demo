@@ -572,4 +572,33 @@ export const ja = {
   "error.seasonClose": "対象月が終わってからシーズンを終了してください。",
   "error.seasonPR":
     "シーズンのPR集計に必要なワークアウト履歴を確認できませんでした。",
+  "club.description.tokyo-zenith":
+    "多才なアスリート、着実な育成、長く続く挑戦を大切にする東京のクラブ。",
+  "club.description.osaka-forge":
+    "丁寧な積み重ねと継続を大切にする大阪のトレーニングクラブ。",
+  "club.description.yokohama-nova":
+    "柔軟に対応できるアスリートと、考え抜かれたトレーニング文化を育む港町のクラブ。",
+  "club.description.london-crown":
+    "落ち着いた判断と入念な準備を重視する、意欲あふれるロンドンのクラブ。",
+  "club.description.northbridge-united":
+    "地域に根ざし、日々の努力で確かな個性を築くクラブ。",
+  "club.description.berlin-einheit":
+    "共通の目標とバランスのよい準備を大切にするベルリンのクラブ。",
+  "club.description.munich-adler":
+    "緻密さと向上心を備え、着実なアスリート育成の伝統を持つクラブ。",
+  "club.description.madrid-solaris":
+    "大きな目標と着実な準備が出会うマドリードのクラブ。",
+  "club.description.valencia-orbit":
+    "連動した動きを軸に、誰もが成長できる環境を育むクラブ。",
+  "club.description.milano-veloce":
+    "計画的な準備と明確な個性を大切にするミラノのクラブ。",
+  "club.description.paris-elan":
+    "多才さと継続する姿勢を重視する、表現力豊かなパリのクラブ。",
+  "club.description.lyon-apex":
+    "目的を持ったトレーニングと長期的な成長を大切にするクラブ。",
+  "club.reputation.1": "育成型",
+  "club.reputation.2": "成長中",
+  "club.reputation.3": "実績あるクラブ",
+  "club.reputation.4": "ハイレベル",
+  "club.reputation.5": "エリート",
 } satisfies Record<keyof typeof en, string>;
