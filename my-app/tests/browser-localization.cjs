@@ -140,7 +140,9 @@ const {
     await page.getByText("パーソナルレコード", { exact: true }).waitFor();
     await overflow();
     await tab("キャリア");
-    await page.getByText("現在のクラブ", { exact: true }).waitFor();
+    await page
+      .getByRole("heading", { name: "現在のクラブ", exact: true })
+      .waitFor();
     await page.getByText("シーズン 01", { exact: true }).first().waitFor();
     await page.getByText("ワークアウト · 0", { exact: true }).waitFor();
     await overflow();
@@ -232,9 +234,56 @@ const {
       ),
       baseline,
     );
+    // Separate synthetic workout execution after the read-only language/isolation checks.
+    const active = startSession(
+      plan,
+      standardExercises,
+      new Date().toISOString(),
+    );
+    await page.evaluate(
+      ({ active }) => {
+        const d = JSON.parse(localStorage.getItem("ascend.sessions.v1"));
+        d.active = active;
+        localStorage.setItem("ascend.sessions.v1", JSON.stringify(d));
+        localStorage.setItem(
+          "ascend.settings.v1",
+          JSON.stringify({ version: 1, settings: { locale: "ja" } }),
+        );
+      },
+      { active },
+    );
+    await page.setViewportSize({ width: 320, height: 844 });
+    await page.goto(url);
+    await page
+      .getByRole("tab", { name: "トレーニング", exact: true })
+      .waitFor();
+    await tab("トレーニング");
+    await button("ワークアウト再開").click();
+    await page
+      .getByRole("textbox", { name: "実績の回数", exact: true })
+      .fill("12");
+    await overflow();
+    await page.screenshot({ path: "/tmp/ascend-ja-workout-320.png" });
+    await button("セット完了").click();
+    await page.getByTestId("workout-coins").waitFor();
+    await page
+      .getByText("デイリーワークアウト · +10 コイン", { exact: true })
+      .waitFor();
+    await button("続ける").click(); // First direct assessment crosses an integer in this fixture.
+    await button("終了").click();
+    const completed = JSON.parse((await raw())["ascend.sessions.v1"]);
+    assert.equal(completed.active, null);
+    assert.equal(completed.completed.length, 2);
+    await button("AIコーチを開く").click();
+    await button("標準設定で試す").click();
+    await page
+      .getByRole("heading", { name: "提案メニューを確認", exact: true })
+      .waitFor();
+    await overflow();
+    await page.screenshot({ path: "/tmp/ascend-ja-coach-320.png" });
     assert.deepEqual(errors, []);
     console.log(
-      "PASS: EN/JA immediate switch, five tabs, Japanese exercise search, reload both directions, exact gameplay bytes preserved, settings-only writes, failure/corrupt/newer preservation, 320/390px/large text/reduced motion, no page exceptions.",
+      "PASS: EN/JA immediate switch, five tabs, Japanese exercise search, reload both directions, exact gameplay bytes preserved, settings-only writes, failure/corrupt/newer preservation, 320/390px/large text/reduced motion, Japanese actual-set completion/rewards/Coach preview, no page exceptions.",
     );
   } finally {
     await browser.close();
