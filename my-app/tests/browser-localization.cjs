@@ -165,6 +165,21 @@ const {
         n.style.fontSize = `${parseFloat(getComputedStyle(n).fontSize) * 1.5}px`;
     });
     await overflow();
+    assert.equal(
+      await page.getByRole("tab").evaluateAll((tabs) =>
+        tabs.every((tab) =>
+          Array.from(tab.querySelectorAll('[dir="auto"]')).every((label) => {
+            const rect = label.getBoundingClientRect();
+            return (
+              rect.bottom <= window.innerHeight &&
+              rect.top >= tab.getBoundingClientRect().top
+            );
+          }),
+        ),
+      ),
+      true,
+      "Enlarged navigation labels remain inside the visible bar",
+    );
     await page.screenshot({ path: "/tmp/ascend-ja-large-320.png" });
     await page.setViewportSize({ width: 390, height: 844 });
     await language("ja", "en");

@@ -25,7 +25,7 @@ export default function TabLayout() {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           height:
-            64 + Math.max(insets.bottom, 8) + Math.max(0, fontScale - 1) * 28,
+            80 + Math.max(insets.bottom, 8) + Math.max(0, fontScale - 1) * 28,
           paddingBottom: Math.max(insets.bottom, 8),
           paddingTop: 8,
         },

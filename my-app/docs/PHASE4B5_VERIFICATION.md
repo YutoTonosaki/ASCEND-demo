@@ -101,8 +101,32 @@ formatting is presentation-only. No displayed rounding is written back to rating
 
 ## Verification
 
-Final verification results are recorded below when complete. No physical iPhone
-verification is claimed for this phase.
+- Full unit suite: **287 passed, 0 failed** (267 existing + 20 localization tests).
+  Covers defaults, key/placeholder parity, interpolation, dates, exercise identity,
+  persistence, repeated selection, corruption/newer versions, failure and isolation.
+- `npm run typecheck` and `npm run lint`: passed.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1
+  --output-dir /tmp/ascend-i18n-final-export`: passed; iOS/Android Hermes bundles
+  and 13 static web routes generated.
+- `browser-localization`: passed EN → JA → reload → EN → reload, all five tabs,
+  Japanese exercise search, actual-set completion, reward summary and Coach review.
+  Existing gameplay storage bytes remain identical during language changes; only
+  Settings writes occur. Missing, failed, corrupt and newer Settings states passed.
+- 320px/390px, reduced motion and 1.5× browser text approximation passed with no
+  horizontal overflow or page exceptions. Enlarged tab labels are asserted inside
+  the viewport; the bar reserves space and additionally grows with native font scale.
+  Inspected Japanese HOME, picker, Career, workout and Coach screenshots.
+- Browser regression and development Debug results are recorded below after completion.
+- `git diff --check`: passed. QA uses external Playwright/Prettier in
+  `/tmp/ascend-i18n-qa`; no application dependency was added or upgraded.
+  Set `NODE_PATH=/tmp/ascend-i18n-qa/node_modules`,
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-i18n-qa/browsers` and `ASCEND_QA_URL`
+  to the served export. Debug also needs a development Metro URL and
+  `ASCEND_QA_PROD_URL` for its production check.
+- Protected PR, Growth, Sessions, Rewards, Career, Seasons, Coach, Cards and
+  presentation domain/provider modules remain unchanged from the pre-localization
+  commit. Localization changes rendering and adds only the Settings repository.
+- Physical iPhone verification has **not** been performed for this phase.
 
 ## Limitations
 
