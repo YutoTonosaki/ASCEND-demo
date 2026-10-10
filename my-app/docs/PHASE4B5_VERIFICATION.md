@@ -116,7 +116,19 @@ formatting is presentation-only. No displayed rounding is written back to rating
   horizontal overflow or page exceptions. Enlarged tab labels are asserted inside
   the viewport; the bar reserves space and additionally grows with native font scale.
   Inspected Japanese HOME, picker, Career, workout and Coach screenshots.
-- Browser regression and development Debug results are recorded below after completion.
+- All 12 existing production browser regressions passed: `browser-growth`,
+  `browser-records`, `browser-input`, `browser-audit`, `browser-overlays`,
+  `browser-sessions`, `browser-coach`, `browser-presentation`, `browser-cards`,
+  `browser-rewards`, `browser-career` and `browser-seasons`. Existing assertions
+  were retained. Final run used the completed export after the tab-spacing fix.
+- Development `browser-growth-debug` passed: zero writes on open/refresh,
+  precise saved values, missing/corrupt/retry states, 320/390px and production
+  entry absence. An earlier attempt reached its production check before export
+  finished and timed out; the complete rerun passed after export finished.
+- Development Metro reports the existing SVG `accessible={false}` warning,
+  a `props.pointerEvents` deprecation, NO_COLOR/FORCE_COLOR notices and Expo patch
+  advisories. These did not cause browser page exceptions. No new type/lint/export
+  warnings occurred; unrelated dependencies and debug rendering were not changed.
 - `git diff --check`: passed. QA uses external Playwright/Prettier in
   `/tmp/ascend-i18n-qa`; no application dependency was added or upgraded.
   Set `NODE_PATH=/tmp/ascend-i18n-qa/node_modules`,

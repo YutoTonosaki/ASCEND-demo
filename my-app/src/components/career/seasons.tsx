@@ -171,8 +171,10 @@ export function HomeSeason() {
             · {l.month(active.monthId)}
           </Text>
           <Text style={s.fine}>
-            {statistics(active).workouts} {tr("season.workouts")}{" "}
-            {statistics(active).trainingDays} {tr("season.trainingDays")}
+            {tr("season.activitySummary", {
+              workouts: statistics(active).workouts,
+              days: statistics(active).trainingDays,
+            })}
           </Text>
         </>
       ) : (

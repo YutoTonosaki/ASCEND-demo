@@ -119,6 +119,12 @@ const {
     assert.deepEqual(await page.evaluate(() => window.writes), [
       "ascend.settings.v1",
     ]);
+    await page.getByText("回復中", { exact: true }).waitFor();
+    await page.getByText("トレーニング可能", { exact: true }).first().waitFor();
+    await page.getByText("一部回復中", { exact: true }).waitFor();
+    await page
+      .getByText("0回のワークアウト・トレーニング0日", { exact: true })
+      .waitFor();
     await tab("トレーニング");
     await button("ワークアウト作成").waitFor();
     await button("保存済みワークアウト · 1").click();
@@ -136,7 +142,7 @@ const {
     await page.screenshot({ path: "/tmp/ascend-ja-picker-320.png" });
     await button("閉じる").click();
     await tab("プレイヤー");
-    await page.getByText("部位別Rating", { exact: true }).waitFor();
+    await page.getByText("部位別能力値", { exact: true }).waitFor();
     await page.getByText("パーソナルレコード", { exact: true }).waitFor();
     await overflow();
     await tab("キャリア");

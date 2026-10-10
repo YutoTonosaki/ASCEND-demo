@@ -9,7 +9,7 @@ export const exerciseNames: Record<string, { en: string; ja: string }> = {
   },
   "decline-push-up": {
     en: "Decline Push-up",
-    ja: "デクライン腕立て伏せ",
+    ja: "デクラインプッシュアップ",
   },
   "archer-push-up": {
     en: "Archer Push-up",
@@ -168,3 +168,11 @@ export const exerciseNames: Record<string, { en: string; ja: string }> = {
     ja: "バンドスクワット",
   },
 };
+
+/** Exact historical spelling aliases, scoped to authoritative built-in IDs.
+ * Never use name-only or fuzzy matching for unknown/custom identities.
+ */
+export const exerciseNameAliases: Readonly<Record<string, readonly string[]>> =
+  {
+    "decline-push-up": ["Decline Push-Up"],
+  };

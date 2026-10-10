@@ -63,7 +63,7 @@ export default function Home() {
                   },
                 ]}
               >
-                {item.state}
+                {l.display(item.state)}
               </Text>
             </View>
           ))}

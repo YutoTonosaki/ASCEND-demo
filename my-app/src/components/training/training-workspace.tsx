@@ -189,9 +189,13 @@ export function TrainingWorkspace() {
               kicker={l.date(session.completedAt!)}
             >
               <Text style={s.muted}>
-                {session.exercises.length} exercises ·{" "}
-                {session.exercises.reduce((n, e) => n + e.sets.length, 0)} sets
-                · Completed
+                {tr("train.historyCounts", {
+                  exercises: session.exercises.length,
+                  sets: session.exercises.reduce(
+                    (n, e) => n + e.sets.length,
+                    0,
+                  ),
+                })}
               </Text>
               <Action
                 label={tr("train.viewSession", { name: session.name })}

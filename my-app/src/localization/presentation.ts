@@ -1,7 +1,7 @@
 import { translate } from "./core";
 import type { Locale } from "./types";
 import { displayKeys } from "./display-keys";
-import { exerciseNames } from "./exercise-names";
+import { exerciseNames, exerciseNameAliases } from "./exercise-names";
 /** Existing canonical metadata/errors are adapted at the display boundary only. */
 export function displayValue(locale: Locale, value: string): string {
   if (locale === "ja") {
@@ -45,11 +45,16 @@ export function exerciseName(
   locale: Locale,
   value: { id: string; name: string; isCustom?: boolean },
 ): string {
-  const known = exerciseNames[value.id];
-  // Preserve custom names and snapshots whose original name differs from the catalog mapping.
-  return locale === "ja" && !value.isCustom && known?.en === value.name
-    ? known.ja
-    : value.name;
+  const known = Object.hasOwn(exerciseNames, value.id)
+    ? exerciseNames[value.id]
+    : undefined;
+  // Preserve user names; an alias is accepted only for its known built-in identity.
+  const matches =
+    known &&
+    (known.en === value.name ||
+      (Object.hasOwn(exerciseNameAliases, value.id) &&
+        exerciseNameAliases[value.id].includes(value.name)));
+  return locale === "ja" && !value.isCustom && matches ? known.ja : value.name;
 }
 
 export function targetText(
