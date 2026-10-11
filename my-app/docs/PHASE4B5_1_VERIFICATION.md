@@ -63,10 +63,45 @@ resemble built-ins. This is intentional data/identity protection, not fuzzy matc
 
 ## Integrity and verification
 
-Verification results will be recorded after all checks complete. No physical-device
-verification is claimed. Existing localization tests retain immediate switching,
-restart persistence and settings-only write assertions. Targeted tests render saved
-session snapshots and derived PR records without changing either source.
+- Full unit suite: **294 passed, 0 failed** (287 existing + 7 focused polish tests).
+  Covers every catalog mapping, exact ID-scoped aliases, custom/unknown names,
+  recovery display, terminology/counts, and unchanged completed-session/PR evidence.
+- `npm run typecheck`: passed. `npm run lint`: passed.
+- `env -u NO_COLOR CI=1 npx expo export --platform all --max-workers 1
+  --output-dir /tmp/ascend-polish-export`: passed; iOS/Android Hermes bundles and
+  13 static web routes generated. No application dependency was changed.
+- `browser-localization-polish`: passed recovery labels, legacy alias in PR/history,
+  Demo/Demo2/Demo4/Demo6 and unidentified Bicycle Crunch preservation, Japanese
+  history counts, exact unchanged storage, 320px and no page exceptions.
+- `browser-localization`: passed immediate switching, all five tabs, EN/JA reload,
+  settings-only writes, unchanged gameplay bytes, failure/corruption/newer versions,
+  Japanese actual-set completion/rewards/Coach, 320/390px, enlarged text and reduced
+  motion. Existing assertions remain, with stronger recovery/count/terminology checks.
+- Recovery and historical PR screenshots were visually inspected at 320px.
+- All 12 existing production browser regressions passed: growth, records, input,
+  audit, overlays, sessions, Coach, presentation, cards, rewards, Career and Seasons.
+  Existing assertions were not weakened. This includes immutable Season snapshots,
+  presentation consumption, rewards, Coach and safe-area regressions.
+- Development `browser-growth-debug` passed: zero writes on open/refresh,
+  exact saved decimal data, missing/corrupt/retry behavior, 320/390px and no debug
+  entry in production. An initial connection attempt ran before Metro was ready;
+  rerunning after startup passed without code changes.
+- Development Metro retains the existing SVG `accessible={false}` warning,
+  `props.pointerEvents` deprecation, NO_COLOR/FORCE_COLOR notices and Expo patch
+  advisory. No browser page exceptions occurred in the successful checks. Final
+  typecheck/lint/export reported no new warnings; no unrelated upgrade was made.
+- Compared with the pre-patch commit, PR/Growth/Session/Reward/Career/Season/Coach/
+  Card/presentation production modules, repositories, types and catalog are unchanged.
+  Only UI rendering/localization and tests/docs change. Existing settings schema,
+  canonical IDs, timestamps, formulas and consumption behavior are unchanged.
+- `git diff --check`: passed. Playwright/Prettier are isolated QA tools under
+  `/tmp/ascend-polish-qa`, not app dependencies. Browser commands use
+  `NODE_PATH=/tmp/ascend-polish-qa/node_modules`,
+  `PLAYWRIGHT_BROWSERS_PATH=/tmp/ascend-polish-qa/browsers`, `ASCEND_QA_URL` pointing
+  to the served export. Growth Debug additionally uses a development Metro URL
+  and `ASCEND_QA_PROD_URL`.
+- No physical iPhone verification is claimed. Browser text scaling and safe-area
+  simulations do not verify native Dynamic Type, VoiceOver or actual device insets.
 
 ## iPhone Expo Go checklist
 
