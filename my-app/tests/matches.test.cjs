@@ -74,7 +74,7 @@ test('unvisited weeks not generated; fixed timezone survives travel and missing 
   await r.refresh(o,null,history(),at,'UTC');
   const x=await r.refresh(o,null,history(),'2026-11-04T12:00:00.000Z','Asia/Tokyo');
   assert.deepEqual(x.data.matches.map(m=>m.week.weekId),['2026-10-05','2026-11-02']);
-  assert.equal(x.data.matches[0].week.timeZone,'UTC');assert.ok(x.data.matches[0].weekEnd);
+  assert.equal(x.data.matches[0].week.timeZone,'UTC');assert.equal(x.data.matches[0].weekEnd,null);assert.equal(D.matchStatus(x.data.matches[0],'2026-11-04T12:00:00.000Z'),'SKIPPED');assert.ok(x.data.matches[0].skippedAt);
 });
 test('historical OVR excludes next week events and stays immutable',async()=>{
   const o=owner(),w1=workout('2026-10-11T23:59:59.999Z',10),w2=workout(end,30);

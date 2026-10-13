@@ -8,6 +8,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { AppState } from "react-native";
+import { useCareer } from "../career/provider";
 import { useGrowth } from "../growth/provider";
 import { RewardsRepository } from "../storage/rewards-repository";
 import { localStorageAdapter } from "../storage/local";
@@ -21,10 +22,12 @@ interface Value {
   statuses: Record<string, RewardStatus>;
   retry: () => Promise<void>;
   request: (session: WorkoutSession, settled: () => void) => void;
+  reconcileMatchRewards: () => Promise<void>;
 }
 const Context = createContext<Value | null>(null);
 export function RewardsProvider({ children }: PropsWithChildren) {
-  const growth = useGrowth();
+  const growth = useGrowth(),
+    career = useCareer();
   const [repository] = useState(
     () => new RewardsRepository(localStorageAdapter),
   );
@@ -44,6 +47,28 @@ export function RewardsProvider({ children }: PropsWithChildren) {
       );
     }
   }, []);
+  const playerId = growth.data?.player?.id;
+  const careerStartedAt = career.data?.career?.clubHistory[0]?.joinedAt;
+  const eligible =
+    !!playerId &&
+    career.data?.career?.playerId === playerId &&
+    !growth.error &&
+    !career.error;
+  const reconcileMatchRewards = useCallback(async () => {
+    if (!eligible || !playerId || !careerStartedAt) return;
+    try {
+      const next = await repository.reconcileMatches({
+        playerId,
+        careerStartedAt,
+      });
+      if (alive.current) {
+        setData(next);
+        setError(null);
+      }
+    } catch (e) {
+      fail(e);
+    }
+  }, [repository, eligible, playerId, careerStartedAt, fail]);
   useEffect(() => {
     alive.current = true;
     void repository
@@ -63,6 +88,17 @@ export function RewardsProvider({ children }: PropsWithChildren) {
       sub.remove();
     };
   }, [repository, fail]);
+  // Only saved Match results are scanned. This never creates workout intents,
+  // Rivals or outcomes, and does not depend on Rewards data/error updates.
+  useEffect(() => {
+    // Schedule the storage synchronization asynchronously; state is published
+    // only after the repository operation, not during effect setup.
+    void Promise.resolve().then(reconcileMatchRewards);
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active") void reconcileMatchRewards();
+    });
+    return () => sub.remove();
+  }, [reconcileMatchRewards]);
   const request = useCallback(
     (session: WorkoutSession, settled: () => void) => {
       try {
@@ -109,13 +145,22 @@ export function RewardsProvider({ children }: PropsWithChildren) {
       setError(null);
       controller.retryFailed();
       setStatuses(controller.statuses());
+      await reconcileMatchRewards();
     } catch (e) {
       fail(e);
     }
-  }, [controller, repository, fail]);
+  }, [controller, repository, fail, reconcileMatchRewards]);
   return (
     <Context.Provider
-      value={{ data, error, currentWeek, statuses, retry, request }}
+      value={{
+        data,
+        error,
+        currentWeek,
+        statuses,
+        retry,
+        request,
+        reconcileMatchRewards,
+      }}
     >
       {children}
     </Context.Provider>

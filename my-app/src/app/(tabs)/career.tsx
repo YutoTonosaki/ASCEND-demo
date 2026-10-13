@@ -1,4 +1,5 @@
 import { useLocalization } from "@/localization";
+import { MatchPanel } from "@/components/career/matches";
 import { SeasonPanel } from "@/components/career/seasons";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -86,6 +87,7 @@ export default function CareerScreen() {
             {details && <ClubProfile club={career.club} />}
           </Panel>
           <SeasonPanel />
+          <MatchPanel />
           <Panel title={tr("career.playerStatus")}>
             <Text style={s.sectionTitle}>
               {player
@@ -115,10 +117,6 @@ export default function CareerScreen() {
             ))}
           </Panel>
           <Panel title={tr("career.next")}>
-            <Placeholder
-              title={tr("career.match")}
-              description={tr("common.comingSoonSentence")}
-            />
             <Placeholder
               title={tr("career.transfer")}
               description={tr("common.comingSoonSentence")}

@@ -219,7 +219,7 @@ test("failed reward write never touches saved workout or Player keys", async () 
 });
 for (const raw of [
   "broken",
-  '{"version":2,"receipts":[],"transactions":[]}',
+  '{"version":3,"receipts":[],"transactions":[]}',
   '{"version":1,"receipts":[],"transactions":[{"amount":10}]}',
 ])
   test("damaged/unsupported store stays unchanged: " + raw, async () => {

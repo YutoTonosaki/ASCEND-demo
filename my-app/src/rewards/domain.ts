@@ -1,3 +1,4 @@
+import { isMatchTransaction, type MatchRewardTransaction } from "./matches";
 import {
   DAILY_WORKOUT_COINS,
   WEEKLY_CONSISTENCY_COINS,
@@ -13,14 +14,20 @@ export interface RewardIntent {
   weekId: string;
   offsetMinutes: number;
 }
-export interface RewardTransaction extends RewardIntent {
+export interface WorkoutRewardTransaction extends RewardIntent {
   id: string;
   type: "daily-workout" | "weekly-consistency";
   amount: number;
   createdAt: string;
 }
+export type RewardTransaction =
+  WorkoutRewardTransaction | MatchRewardTransaction;
+export const isWorkoutTransaction = (
+  tx: RewardTransaction,
+): tx is WorkoutRewardTransaction =>
+  tx.type === "daily-workout" || tx.type === "weekly-consistency";
 export interface RewardData {
-  version: 1;
+  version: 1 | 2;
   receipts: RewardIntent[];
   transactions: RewardTransaction[];
 }
@@ -66,8 +73,10 @@ export function captureReward(
   };
 }
 // One local user; optional Player initialization must not create another daily allowance.
-export const rewardId = (type: RewardTransaction["type"], period: string) =>
-  JSON.stringify(["local-player", period, type]);
+export const rewardId = (
+  type: WorkoutRewardTransaction["type"],
+  period: string,
+) => JSON.stringify(["local-player", period, type]);
 export const balance = (data: RewardData) =>
   data.transactions.reduce((sum, tx) => sum + tx.amount, 0);
 export function weeklyDays(data: RewardData, week: string): number {
@@ -84,12 +93,12 @@ export function applyReward(
 ): RewardData {
   if (data.receipts.some((r) => r.sessionId === intent.sessionId)) return data;
   const next: RewardData = {
-    version: 1,
+    version: data.version,
     receipts: [...data.receipts, { ...intent }],
     transactions: data.transactions.map((t) => ({ ...t })),
   };
   function add(
-    type: RewardTransaction["type"],
+    type: WorkoutRewardTransaction["type"],
     period: string,
     amount: number,
   ) {
@@ -112,7 +121,9 @@ export function sessionRewards(data: RewardData, sessionId: string) {
   const index = data.receipts.findIndex((r) => r.sessionId === sessionId);
   if (index < 0) return null;
   const receipt = data.receipts[index],
-    transactions = data.transactions.filter((t) => t.sessionId === sessionId);
+    transactions = data.transactions
+      .filter(isWorkoutTransaction)
+      .filter((t) => t.sessionId === sessionId);
   return {
     receipt,
     transactions,
@@ -154,7 +165,7 @@ export function parseRewards(raw: string | null): RewardData {
   try {
     const d = JSON.parse(raw);
     if (
-      d?.version !== 1 ||
+      (d?.version !== 1 && d?.version !== 2) ||
       !Array.isArray(d.receipts) ||
       !Array.isArray(d.transactions)
     )
@@ -168,14 +179,31 @@ export function parseRewards(raw: string | null): RewardData {
         throw Error();
       expected = applyReward(expected, r);
     }
-    // Reject altered amounts, dangling transactions, duplicate IDs, inconsistent weekly awards.
+    // Keep the exact existing workout replay/order validation; Match records have
+    // a separate discriminant and never fabricate a workout receipt.
+    const work = [],
+      match = [],
+      ids = new Set<string>();
+    for (const tx of d.transactions) {
+      if (!tx || typeof tx !== "object" || ids.has(tx.id)) throw Error();
+      ids.add(tx.id);
+      if (tx.type === "daily-workout" || tx.type === "weekly-consistency")
+        work.push(tx);
+      else if (d.version === 2 && isMatchTransaction(tx)) match.push(tx);
+      else throw Error();
+    }
     if (
-      JSON.stringify(expected.transactions) !==
-        JSON.stringify(d.transactions) ||
-      !Number.isSafeInteger(balance(expected))
+      JSON.stringify(expected.transactions) !== JSON.stringify(work) ||
+      new Set(match.map((t) => t.matchId)).size !== match.length
     )
       throw Error();
-    return expected;
+    const parsed: RewardData = {
+      version: d.version,
+      receipts: expected.receipts,
+      transactions: d.transactions.map((t: RewardTransaction) => ({ ...t })),
+    };
+    if (!Number.isSafeInteger(balance(parsed))) throw Error();
+    return parsed;
   } catch {
     throw new Error(
       "Rewards could not be read. Saved data is preserved; retry without resetting.",

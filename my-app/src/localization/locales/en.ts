@@ -1,4 +1,26 @@
 export const en = {
+  "match.rewardPaid": "+{amount} Coins · Saved",
+  "match.rewardPending": "Match reward pending",
+  "match.rewardError": "Match reward unavailable. Your result is saved.",
+  "match.title": "WEEKLY RIVAL MATCH",
+  "match.error":
+    "Match unavailable. Saved data is preserved. Retry to check the saved result.",
+  "match.empty":
+    "Your Rival will appear when your Player and Career are ready.",
+  "match.week": "Training week · {day}",
+  "match.play": "PLAY MATCH",
+  "match.unlock": "Available from {date}",
+  "match.pending":
+    "Waiting for saved training evidence. Retry after Player data is ready.",
+  "match.power": "YOU {player} · RIVAL {rival}",
+  "match.status.UPCOMING": "UPCOMING",
+  "match.status.PENDING_EVIDENCE": "PENDING EVIDENCE",
+  "match.status.READY": "READY",
+  "match.status.COMPLETED": "COMPLETED",
+  "match.status.SKIPPED": "SKIPPED",
+  "match.outcome.WIN": "WIN",
+  "match.outcome.DRAW": "DRAW",
+  "match.outcome.LOSS": "LOSS",
   "nav.home": "HOME",
   "nav.train": "TRAIN",
   "nav.player": "PLAYER",

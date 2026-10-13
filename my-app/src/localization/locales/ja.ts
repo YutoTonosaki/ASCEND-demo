@@ -1,5 +1,26 @@
 import type { en } from "./en";
 export const ja = {
+  "match.rewardPaid": "+{amount} コイン · 保存済み",
+  "match.rewardPending": "マッチ報酬を処理中",
+  "match.rewardError": "報酬を確認できません。対戦結果は保存されています。",
+  "match.title": "週間ライバルマッチ",
+  "match.error":
+    "マッチを確認できません。保存データは保持されています。再試行して結果を確認してください。",
+  "match.empty": "プレイヤーとキャリアの準備ができるとライバルが登場します。",
+  "match.week": "トレーニング週 · {day}",
+  "match.play": "マッチ開始",
+  "match.unlock": "{date}からプレイ可能",
+  "match.pending":
+    "保存済みのトレーニング記録を確認中です。プレイヤーデータの準備後に再試行してください。",
+  "match.power": "あなた {player} · ライバル {rival}",
+  "match.status.UPCOMING": "開催前",
+  "match.status.PENDING_EVIDENCE": "記録の確認待ち",
+  "match.status.READY": "プレイ可能",
+  "match.status.COMPLETED": "対戦済み",
+  "match.status.SKIPPED": "見送り",
+  "match.outcome.WIN": "勝利",
+  "match.outcome.DRAW": "引き分け",
+  "match.outcome.LOSS": "敗北",
   "nav.home": "ホーム",
   "nav.train": "トレーニング",
   "nav.player": "プレイヤー",
