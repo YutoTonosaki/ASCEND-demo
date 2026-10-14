@@ -12,6 +12,8 @@ import {
   translate,
   formatDate,
   formatMonth,
+  formatCalendarDay,
+  formatZonedDate,
   localeTag,
   type TranslationKey,
 } from "./core";
@@ -54,6 +56,9 @@ function useValue() {
         translate(locale, key, values),
       date: (value: string, time = false) => formatDate(locale, value, time),
       month: (value: string) => formatMonth(locale, value),
+      calendarDay: (value: string) => formatCalendarDay(locale, value),
+      zonedDate: (value: string, timeZone: string) =>
+        formatZonedDate(locale, value, timeZone),
       number: (value: number) => value.toLocaleString(localeTag(locale)),
       target: (value: Parameters<typeof targetText>[1]) =>
         targetText(locale, value),

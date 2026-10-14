@@ -33,3 +33,41 @@ export function formatMonth(locale: Locale, month: string) {
     })
     .toUpperCase();
 }
+
+/** A saved calendar day must not shift to the previous day in the device timezone. */
+export function formatCalendarDay(locale: Locale, day: string) {
+  const date = new Date(`${day}T12:00:00.000Z`);
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(day) ||
+    !Number.isFinite(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== day
+  )
+    return "—";
+  return date.toLocaleDateString(localeTag(locale), {
+    timeZone: "UTC",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+export function formatZonedDate(
+  locale: Locale,
+  value: string,
+  timeZone: string,
+) {
+  try {
+    const date = new Date(value);
+    if (!Number.isFinite(date.getTime())) return "—";
+    return date.toLocaleString(localeTag(locale), {
+      timeZone,
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+  } catch {
+    return "—";
+  }
+}

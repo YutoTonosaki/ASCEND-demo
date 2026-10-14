@@ -14,6 +14,7 @@ const {
   emptyRewards,
   captureReward,
 } = require("../src/rewards/domain.ts");
+const { parseMatches, matchStatus } = require("../src/matches/domain.ts");
 const { clubs } = require("../src/config/clubs.ts");
 const at = (n) => new Date(Date.now() - 86400000 + n * 1000).toISOString();
 const ex = newEntry(standardExercises.find((x) => x.id === "push-up"));
@@ -117,13 +118,30 @@ const rewards = applyReward(
       await page.getByTestId("current-club").innerText(),
       "Tokyo Zenith",
     );
+    // Phase 4C-1 starts the current week's Rival after explicit Career joining.
+    // Wait for its durable creation before checking all subsequent reads are pure.
+    await page.waitForFunction(
+      () => localStorage.getItem("ascend.matches.v1") !== null,
+    );
     const after = await raw(),
       career = JSON.parse(after["ascend.career.v1"]);
     assert.equal(career.career.clubHistory.length, 1);
     assert.equal(career.career.playerId, player.player.id);
+    const matches = parseMatches(after["ascend.matches.v1"]);
+    assert.equal(matches.matches.length, 1);
+    const match = matches.matches[0];
+    assert.equal(match.playerId, player.player.id);
+    assert.equal(match.careerStartedAt, career.career.clubHistory[0].joinedAt);
+    assert.equal(match.club.id, "tokyo-zenith");
+    assert.equal(matchStatus(match, new Date().toISOString()), "UPCOMING");
+    assert.equal(match.weekEnd, null);
+    assert.equal(match.result, null);
+    assert.equal(match.rewardDelivery, null);
     assert.deepEqual(
       Object.fromEntries(
-        Object.entries(after).filter(([k]) => k !== "ascend.career.v1"),
+        Object.entries(after).filter(
+          ([k]) => k !== "ascend.career.v1" && k !== "ascend.matches.v1",
+        ),
       ),
       before,
     );

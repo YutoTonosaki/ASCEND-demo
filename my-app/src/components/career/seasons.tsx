@@ -1,4 +1,5 @@
 import { useLocalization } from "@/localization";
+import { SeasonMatchStats } from "./season-match-stats";
 import { useState } from "react";
 import { Text } from "react-native";
 import { router } from "expo-router";
@@ -54,6 +55,7 @@ function Details({
       <Text testID="season-prs" style={s.muted}>
         {tr("season.prs")} {stats.prImprovements}
       </Text>
+      <SeasonMatchStats season={season} />
       {end && (
         <Text style={s.fine}>
           {l.display(cardTiers[season.startingPlayer.tier].label)} /{" "}

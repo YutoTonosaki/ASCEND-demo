@@ -1,4 +1,5 @@
 import { useLocalization } from "@/localization";
+import { MatchHistoryPanel } from "@/components/career/match-history";
 import { MatchPanel } from "@/components/career/matches";
 import { SeasonPanel } from "@/components/career/seasons";
 import { useState } from "react";
@@ -86,8 +87,9 @@ export default function CareerScreen() {
             />
             {details && <ClubProfile club={career.club} />}
           </Panel>
-          <SeasonPanel />
           <MatchPanel />
+          <MatchHistoryPanel />
+          <SeasonPanel />
           <Panel title={tr("career.playerStatus")}>
             <Text style={s.sectionTitle}>
               {player
