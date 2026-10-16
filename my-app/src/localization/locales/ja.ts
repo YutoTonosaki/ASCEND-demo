@@ -1,5 +1,24 @@
 import type { en } from "./en";
 export const ja = {
+  "cinematic.pre": "マッチ前",
+  "cinematic.vs": "VS",
+  "cinematic.progress": "マッチ演出",
+  "cinematic.report": "マッチレポート",
+  "cinematic.skip": "スキップ",
+  "cinematic.done": "キャリアに戻る",
+  "cinematic.confirm": "マッチを開始する",
+  "cinematic.frozen": "週末の記録",
+  "cinematic.powers": "マッチパワー",
+  "cinematic.visualOnly": "保存済み結果のシネマティック演出",
+  "cinematic.intro": "今週のトレーニングでライバルに挑む。",
+  "cinematic.momentum": "積み重ねた力を発揮。結果は保存済みです。",
+  "cinematic.saved": "マッチ終了。次のトレーニングへ。",
+  "cinematic.error":
+    "マッチを開始できませんでした。保存データは保持されています。再試行で結果を確認してください。",
+  "cinematic.outcome.WIN": "勝利",
+  "cinematic.outcome.DRAW": "引き分け",
+  "cinematic.outcome.LOSS": "敗北",
+
   "history.title": "マッチ履歴",
   "history.details": "マッチ詳細",
   "history.open": "マッチ履歴を見る",

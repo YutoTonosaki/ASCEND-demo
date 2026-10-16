@@ -190,6 +190,12 @@ function fixtures(completed = true) {
         await page
           .getByRole("button", { name: "PLAY MATCH", exact: true })
           .click();
+        await page
+          .getByRole("button", { name: "CONFIRM PLAY MATCH", exact: true })
+          .click();
+        await page
+          .getByRole("button", { name: "RETURN TO CAREER", exact: true })
+          .click();
         await page.getByText("+10 Coins · Saved", { exact: true }).waitFor();
         await page.getByRole("tab", { name: "HOME", exact: true }).click();
       }

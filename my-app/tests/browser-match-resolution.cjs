@@ -90,8 +90,11 @@ const fixture = {
     });
     await page.getByRole("button", { name: "PLAY MATCH", exact: true }).click();
     await page
+      .getByRole("button", { name: "CONFIRM PLAY MATCH", exact: true })
+      .click();
+    await page
       .getByText(
-        "Match unavailable. Saved data is preserved. Retry to check the saved result.",
+        "Match could not start. Saved data is preserved. Retry to check the result.",
         { exact: true },
       )
       .waitFor();
@@ -99,8 +102,16 @@ const fixture = {
     await page.evaluate(() => {
       Storage.prototype.setItem = window.qaOriginalSet;
     });
-    await page.getByRole("button", { name: "RETRY", exact: true }).click();
-    await page.getByRole("button", { name: "PLAY MATCH", exact: true }).click();
+    await page
+      .getByTestId("match-experience")
+      .getByRole("button", { name: "RETRY", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "CONFIRM PLAY MATCH", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "RETURN TO CAREER", exact: true })
+      .click();
     await page.getByText("LOSS", { exact: true }).waitFor();
     await page.getByText("+10 Coins · Saved", { exact: true }).waitFor();
     const saved = await raw(),

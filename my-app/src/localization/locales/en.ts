@@ -1,4 +1,23 @@
 export const en = {
+  "cinematic.pre": "PRE-MATCH",
+  "cinematic.vs": "VS",
+  "cinematic.progress": "MATCH IN PROGRESS",
+  "cinematic.report": "MATCH REPORT",
+  "cinematic.skip": "SKIP",
+  "cinematic.done": "RETURN TO CAREER",
+  "cinematic.confirm": "CONFIRM PLAY MATCH",
+  "cinematic.frozen": "WEEK-END SNAPSHOT",
+  "cinematic.powers": "MATCH POWER",
+  "cinematic.visualOnly": "Cinematic visualization · saved result",
+  "cinematic.intro": "Your weekly training meets the challenge.",
+  "cinematic.momentum": "Power in motion. The result is already saved.",
+  "cinematic.saved": "Match complete. Your training continues.",
+  "cinematic.error":
+    "Match could not start. Saved data is preserved. Retry to check the result.",
+  "cinematic.outcome.WIN": "VICTORY",
+  "cinematic.outcome.DRAW": "DRAW",
+  "cinematic.outcome.LOSS": "DEFEAT",
+
   "history.title": "MATCH HISTORY",
   "history.details": "MATCH DETAILS",
   "history.open": "VIEW MATCH HISTORY",

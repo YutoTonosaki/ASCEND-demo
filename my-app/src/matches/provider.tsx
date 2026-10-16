@@ -7,6 +7,8 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
+import { matchesOwnedBy } from "./scope";
+import { playSaved } from "./presentation/play";
 import { AppState } from "react-native";
 import { useRewards } from "../rewards/provider";
 import { useCareer } from "../career/provider";
@@ -26,7 +28,7 @@ interface Value {
   error: string | null;
   pending: Record<string, string>;
   retry: () => Promise<void>;
-  play: (id: string) => Promise<void>;
+  play: (id: string) => Promise<Match | null>;
   playing: string | null;
   status: (match: Match) => MatchStatus;
 }
@@ -55,6 +57,11 @@ export function MatchProvider({ children }: PropsWithChildren) {
     !career.error &&
     !coach.error &&
     !sessions.error;
+  const scopeMismatch = !!(
+    ready &&
+    data &&
+    !matchesOwnedBy(data, player?.id, ownerCareer?.clubHistory[0]?.joinedAt)
+  );
   const retry = useCallback(async () => {
     if (playLock.current) return;
     setNow(new Date().toISOString());
@@ -135,19 +142,33 @@ export function MatchProvider({ children }: PropsWithChildren) {
     if (ready && completionIds !== "[]") void reconcileMatchRewards();
   }, [ready, completionIds, reconcileMatchRewards]);
   const play = async (id: string) => {
-    if (playLock.current || !ready || !player || !ownerCareer || error) return;
+    if (
+      playLock.current ||
+      !ready ||
+      !player ||
+      !ownerCareer ||
+      error ||
+      scopeMismatch
+    )
+      return null;
     playLock.current = true;
     setPlaying(id);
     try {
-      const next = await repository.play({ player, career: ownerCareer }, id);
-      setData(next);
+      const saved = await playSaved(
+        repository,
+        { player, career: ownerCareer },
+        id,
+      );
+      setData(saved.data);
       setError(null);
+      return saved.match;
     } catch (e) {
       setError(
         e instanceof Error
           ? e.message
           : "Match could not be saved. Please retry.",
       );
+      return null;
     } finally {
       // Also recover a durable result whose PLAY write acknowledgment was lost.
       // Rewards errors are independent; they never erase the saved Match result.
@@ -162,8 +183,14 @@ export function MatchProvider({ children }: PropsWithChildren) {
   return (
     <Context.Provider
       value={{
-        data: ready && !prerequisiteError && !error ? data : null,
-        error: prerequisiteError || error,
+        data:
+          ready && !prerequisiteError && !error && !scopeMismatch ? data : null,
+        error:
+          prerequisiteError ||
+          error ||
+          (scopeMismatch
+            ? "Match ownership mismatch. Saved data is preserved."
+            : null),
         pending,
         retry,
         play,

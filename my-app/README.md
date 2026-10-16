@@ -265,3 +265,12 @@ dictionaries, formatting and presentation adapters. Header Settings → Language
 uses an independent SettingsRepository. Default English; no device auto-detection.
 See [Phase 4B.5](docs/PHASE4B5_VERIFICATION.md) for contributor guidance, isolation,
 coverage and verification. Gameplay models/calculations remain language-neutral.
+
+## Weekly Match presentation (Phase 4C-3)
+
+READY → PLAY MATCH opens a frozen pre-match comparison. Confirming saves the Match
+through the existing engine and reads it back before a replaceable 2D cinematic
+(VS 2s, simulation 8s, reveal 2s). SKIP, Reduce Motion or backgrounding opens the
+factual report. Coins remain independently reconciled from saved results; playback
+has no storage API. Restart never requires replay. See
+[Phase 4C-3 verification](docs/PHASE4C_3_VERIFICATION.md) for checks and limitations.
