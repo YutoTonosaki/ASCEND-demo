@@ -1,3 +1,5 @@
+import { cosmeticAppearance, type Equipment } from "@/shop/catalog";
+import { useCosmetics } from "@/shop/provider";
 import { useLocalization } from "@/localization";
 import { displayRating } from "@/growth/domain";
 import { StyleSheet, Text, View } from "react-native";
@@ -11,28 +13,45 @@ import { Emblem } from "@/components/ui/icon";
 export function PlayerCard({
   player,
   club,
+  cosmetics,
 }: {
   player: Omit<Player, "ratings" | "tier" | "intensity">;
   club?: ClubIdentityData;
+  cosmetics?: Equipment;
 }) {
   const l = useLocalization();
   const { tr } = useLocalization();
   const { tier, finish, intensity } = cardAppearance(player.ovr);
   const palette = cardTiers[tier];
+  const equipped = useCosmetics();
+  const finishLayer = cosmeticAppearance(cosmetics ?? equipped);
   return (
     <View
       testID="player-card"
+      accessibilityLabel={tr("shop.cardAppearance")}
       style={[
         c.outer,
         {
           borderColor: palette.accent,
-          boxShadow:
-            intensity === "high" ? `0px 4px 24px ${palette.accent}30` : "none",
+          boxShadow: finishLayer.aura
+            ? `0px 3px 22px ${finishLayer.aura.color}70`
+            : intensity === "high"
+              ? `0px 4px 24px ${palette.accent}30`
+              : "none",
         },
       ]}
     >
       <LinearGradient
-        colors={[palette.deep, "#191b20", palette.deep]}
+        testID={
+          finishLayer.background
+            ? `cosmetic-${finishLayer.background.id}`
+            : "cosmetic-default-background"
+        }
+        colors={
+          finishLayer.background
+            ? [palette.deep, finishLayer.background.color, "#151a23"]
+            : [palette.deep, "#191b20", palette.deep]
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={c.card}
@@ -41,6 +60,38 @@ export function PlayerCard({
           pointerEvents="none"
           style={[c.inset, { borderColor: palette.accent + "45" }]}
         />
+        {finishLayer.border && (
+          <View
+            testID="cosmetic-border"
+            pointerEvents="none"
+            style={[
+              c.inset,
+              {
+                top: 11,
+                left: 11,
+                right: 11,
+                bottom: 11,
+                borderWidth: 2,
+                borderColor: finishLayer.border.color,
+              },
+            ]}
+          />
+        )}
+        {finishLayer.aura && (
+          <View
+            testID="cosmetic-aura"
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              width: 5,
+              backgroundColor: finishLayer.aura.color,
+              opacity: 0.75,
+            }}
+          />
+        )}
         {intensity !== "low" && (
           <View
             pointerEvents="none"
@@ -89,6 +140,17 @@ export function PlayerCard({
           {player.archetype}
         </Text>
         <Text style={c.name}>{player.name}</Text>
+        {finishLayer.title && (
+          <Text
+            testID="cosmetic-title"
+            style={[
+              c.archetype,
+              { color: finishLayer.title.color, marginTop: 8 },
+            ]}
+          >
+            {tr(`shop.item.${finishLayer.title.id}.name`)}
+          </Text>
+        )}
         {club && (
           <View style={{ marginTop: 6 }}>
             <ClubIdentity club={club} />

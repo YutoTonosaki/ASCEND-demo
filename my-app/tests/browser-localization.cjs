@@ -155,7 +155,8 @@ const {
     await page.screenshot({ path: "/tmp/ascend-ja-career-320.png" });
     await tab("ショップ");
     await page.getByText("カスタマイズ", { exact: true }).waitFor();
-    await page.getByText("カード背景", { exact: true }).waitFor();
+    await button("背景").waitFor();
+    await button("ミッドナイト背景を見る").waitFor();
     await overflow();
     assert.deepEqual(
       Object.fromEntries(

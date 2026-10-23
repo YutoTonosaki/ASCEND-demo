@@ -1,19 +1,22 @@
+import { useShop } from "../../shop/provider";
 import { useLocalization } from "@/localization";
 import { Text } from "react-native";
 import { Panel, s } from "../ui/primitives";
 import { Action } from "../training/controls";
 import { useRewards } from "../../rewards/provider";
-import { balance, sessionRewards, weeklyDays } from "../../rewards/domain";
+import { sessionRewards, weeklyDays } from "../../rewards/domain";
 import { WEEKLY_TARGET_DAYS } from "../../config/rewards";
 export function CoinBalance() {
   const l = useLocalization();
   const { tr } = useLocalization();
-  const { data, error, retry } = useRewards();
+  const { snapshot, error, reload: retry } = useShop();
   return (
-    <Panel title={tr("rewards.coins")}>
+    <Panel title={tr("shop.available")}>
       <Text testID="coin-balance" style={s.sectionTitle}>
-        {data
-          ? tr("rewards.balance", { amount: l.number(balance(data)) })
+        {snapshot
+          ? tr("rewards.balance", {
+              amount: l.number(snapshot.wallet.available),
+            })
           : error
             ? tr("rewards.unavailable")
             : tr("common.loading")}

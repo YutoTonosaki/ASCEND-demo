@@ -46,6 +46,9 @@ const rewards = applyReward(
   const browser = await chromium.launch();
   try {
     const page = await browser.newPage({
+        // Keep this ownership test independent of host/Chromium IANA database
+        // differences; dedicated Match calendar tests cover zoned boundaries.
+        timezoneId: "UTC",
         viewport: { width: 320, height: 844 },
         reducedMotion: "reduce",
       }),

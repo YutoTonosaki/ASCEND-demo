@@ -11,12 +11,3 @@ export const colors = {
   moderate: "#e1c38b",
   recovering: "#e4aa87",
 };
-export const cosmeticCategories = [
-  "Card Background",
-  "Border",
-  "Aura",
-  "Title",
-  "Badge",
-  "Rival Color",
-  "Victory Effect",
-] as const;

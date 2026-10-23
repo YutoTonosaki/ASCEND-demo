@@ -237,7 +237,8 @@ completion presentation with shared consumption. See [verification](docs/PHASE3C
 
 Fresh saved LiveWorkout completions award 10 Coins once per local calendar day,
 and 30 more upon the third distinct day of a Monday–Sunday week. HOME and SHOP
-show the real balance; HOME shows capped weekly days. Coins are not spendable.
+show the real balance; HOME shows capped weekly days. Phase 5A adds cosmetic spending
+through a separate purchase ledger while preserving these earning rules.
 The independent reward ledger never changes Ratings, PRs or Card Tier. See
 `docs/PHASE3C_3_VERIFICATION.md` for storage, failure policy and device checks.
 
@@ -274,3 +275,13 @@ through the existing engine and reads it back before a replaceable 2D cinematic
 factual report. Coins remain independently reconciled from saved results; playback
 has no storage API. Restart never requires replay. See
 [Phase 4C-3 verification](docs/PHASE4C_3_VERIFICATION.md) for checks and limitations.
+
+## SHOP foundation (Phase 5A)
+
+SHOP offers ten local cosmetics across backgrounds, borders, auras and titles.
+Initialize a Player explicitly, inspect an item, confirm BUY, then EQUIP it.
+Unequip restores the earned card appearance. Cosmetics never change ratings or tiers.
+HOME/SHOP show confirmed earned Coins minus confirmed purchase spending through one
+wallet. Rewards v1/v2 stay unchanged; `ascend.shop.v1` atomically records each debit
+and permanent entitlement, plus owner-scoped equipment. Browsing/preview writes
+nothing. See [Phase 5A verification](docs/PHASE5A_SHOP_FOUNDATION_VERIFICATION.md).
