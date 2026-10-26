@@ -17,6 +17,7 @@ async function main() {
     assert.match(await viewport.getAttribute('content'), /viewport-fit=cover/);
     for (const tab of ['HOME', 'TRAIN', 'PLAYER', 'CAREER', 'SHOP']) {
       await page.getByRole('tab', { name: tab, exact: true }).click();
+      await button('Settings').waitFor();
       assert.equal(await button('Settings').count(), 1);
       const box = await button('Settings').boundingBox();
       assert.ok(box.width >= 44 && box.height >= 44);

@@ -17,7 +17,7 @@ import { useCareer } from "../../career/provider";
 import { overall } from "../../growth/domain";
 import { colors } from "../../config/theme";
 import { Screen, Panel, s } from "../ui/primitives";
-import { Action, Sheet, Confirm } from "../training/controls";
+import { Action, Sheet } from "../training/controls";
 import { CoinBalance } from "../rewards/rewards";
 import { PlayerCard } from "../player/player-card";
 const rarityColor = {
@@ -93,6 +93,18 @@ export function Storefront() {
       setNotice("updated");
   }
   const error = shop.actionError ?? shop.error;
+  // Explain each existing purchase guard; repository validation remains authoritative.
+  const blockedReason = error
+    ? tr(`shop.error.${error}`)
+    : !player
+      ? tr(growth.data ? "shop.initialize" : "common.loading")
+      : !state
+        ? tr("common.loading")
+        : shop.busy
+          ? tr("common.saving")
+          : item && !owned(item.id) && state.wallet.available < item.price
+            ? tr("shop.insufficient")
+            : null;
   return (
     <Screen kicker={tr("shop.kicker")} title={tr("shop.title")}>
       <CoinBalance />
@@ -178,92 +190,115 @@ export function Storefront() {
       ))}
       {item && (
         <Sheet
-          title={tr(`shop.item.${item.id}.name`)}
+          title={
+            confirming ? tr("shop.confirm") : tr(`shop.item.${item.id}.name`)
+          }
           onClose={() => {
             setSelected(null);
             setConfirming(false);
           }}
+          footer={
+            <View
+              testID="shop-item-actions"
+              style={{ gap: 8, paddingBottom: 8 }}
+            >
+              {blockedReason && (
+                <Text accessibilityLiveRegion="polite" style={s.fine}>
+                  {blockedReason}
+                </Text>
+              )}
+              {confirming ? (
+                <>
+                  <Action
+                    label={tr("common.confirm")}
+                    disabled={!!blockedReason || owned(item.id)}
+                    onPress={() => {
+                      setConfirming(false);
+                      void shop.purchase(item.id).then((saved) => {
+                        if (saved) setNotice("purchased");
+                      });
+                    }}
+                  />
+                  <Action
+                    label={tr("common.cancel")}
+                    onPress={() => setConfirming(false)}
+                  />
+                </>
+              ) : (
+                <>
+                  {owned(item.id) ? (
+                    <Action
+                      label={tr(equipped(item) ? "shop.unequip" : "shop.equip")}
+                      disabled={!!blockedReason}
+                      onPress={() => void equipmentAction(item)}
+                    />
+                  ) : (
+                    <Action
+                      label={tr("shop.buy")}
+                      disabled={!!blockedReason}
+                      onPress={() => setConfirming(true)}
+                    />
+                  )}
+                </>
+              )}
+            </View>
+          }
         >
-          <Swatch item={item} />
-          <Text style={s.muted}>{tr(`shop.item.${item.id}.description`)}</Text>
-          <Text style={s.fine}>
-            {tr(`shop.category.${item.category}`)} · {tr("shop.rarityLabel")} ·{" "}
-            {tr(`shop.rarity.${item.rarity}`)}
-          </Text>
-          <Text style={s.sectionTitle}>
-            {tr("rewards.balance", { amount: l.number(item.price) })}
-          </Text>
-          <Text style={s.eyebrow}>{status(item)}</Text>
-          <Text style={s.fine}>{tr("shop.preview")}</Text>
-          {player && (
-            <PlayerCard
-              player={{
-                name: tr("history.player"),
-                ovr: overall(player.ratings),
-                bodyRatings: player.ratings,
-                archetype: tr("coach.profile"),
-              }}
-              club={career.club}
-              cosmetics={{ ...equipment, [item.category]: item.id }}
-            />
-          )}
-          <Text style={s.fine}>{tr("shop.defaults")}</Text>
-          {error && (
+          {confirming && state ? (
+            <Text style={s.muted} testID="shop-purchase-confirmation">
+              {tr("shop.confirmMessage", {
+                name: tr(`shop.item.${item.id}.name`),
+                price: l.number(item.price),
+                remaining: l.number(state.wallet.available - item.price),
+              })}
+            </Text>
+          ) : (
             <>
-              <Text accessibilityRole="alert" style={s.muted}>
-                {tr(`shop.error.${error}`)}
+              <Swatch item={item} />
+              <Text style={s.muted}>
+                {tr(`shop.item.${item.id}.description`)}
               </Text>
-              <Action
-                label={tr("common.retry")}
-                onPress={() => void shop.reload()}
-              />
+              <Text style={s.fine}>
+                {tr(`shop.category.${item.category}`)} ·{" "}
+                {tr("shop.rarityLabel")} · {tr(`shop.rarity.${item.rarity}`)}
+              </Text>
+              <Text style={s.sectionTitle}>
+                {tr("rewards.balance", { amount: l.number(item.price) })}
+              </Text>
+              {owned(item.id) && <Text style={s.eyebrow}>{status(item)}</Text>}
+              <Text style={s.fine}>{tr("shop.preview")}</Text>
+              {player && (
+                <PlayerCard
+                  player={{
+                    name: tr("history.player"),
+                    ovr: overall(player.ratings),
+                    bodyRatings: player.ratings,
+                    archetype: tr("coach.profile"),
+                  }}
+                  club={career.club}
+                  cosmetics={{ ...equipment, [item.category]: item.id }}
+                />
+              )}
+              <Text style={s.fine}>{tr("shop.defaults")}</Text>
+              {error && (
+                <>
+                  <Text accessibilityRole="alert" style={s.muted}>
+                    {tr(`shop.error.${error}`)}
+                  </Text>
+                  <Action
+                    label={tr("common.retry")}
+                    onPress={() => void shop.reload()}
+                  />
+                </>
+              )}
+              {notice && !error && (
+                <Text accessibilityLiveRegion="polite" style={s.muted}>
+                  {tr(`shop.${notice}`)}
+                </Text>
+              )}
             </>
           )}
-          {notice && !error && (
-            <Text accessibilityLiveRegion="polite" style={s.muted}>
-              {tr(`shop.${notice}`)}
-            </Text>
-          )}
-          {owned(item.id) ? (
-            <Action
-              label={tr(equipped(item) ? "shop.unequip" : "shop.equip")}
-              disabled={shop.busy || !!error}
-              onPress={() => void equipmentAction(item)}
-            />
-          ) : (
-            <Action
-              label={tr("shop.buy")}
-              disabled={
-                !player ||
-                !state ||
-                !!error ||
-                shop.busy ||
-                state.wallet.available < item.price
-              }
-              onPress={() => setConfirming(true)}
-            />
-          )}
-          {state && !owned(item.id) && state.wallet.available < item.price && (
-            <Text style={s.muted}>{tr("shop.insufficient")}</Text>
-          )}
         </Sheet>
-      )}
-      {confirming && item && state && (
-        <Confirm
-          title={tr("shop.confirm")}
-          message={tr("shop.confirmMessage", {
-            name: tr(`shop.item.${item.id}.name`),
-            price: l.number(item.price),
-            remaining: l.number(state.wallet.available - item.price),
-          })}
-          onCancel={() => setConfirming(false)}
-          onConfirm={() => {
-            setConfirming(false);
-            void shop.purchase(item.id).then((saved) => {
-              if (saved) setNotice("purchased");
-            });
-          }}
-        />
       )}
     </Screen>
   );

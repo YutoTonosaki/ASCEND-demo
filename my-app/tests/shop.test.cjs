@@ -452,3 +452,23 @@ test("unknown purchase IDs never charge", async () => {
   );
   assert.deepEqual(f.map, before);
 });
+
+test("reported 70 Coins wallet buys Midnight once, retains 30 and durable equipment", async () => {
+  const f = fixture(4),
+    r = f.repo();
+  assert.equal((await r.load("p")).wallet.available, 70);
+  const rewardsBefore = f.map.get(REWARDS_KEY);
+  const bought = await r.purchase("p", "bg-midnight");
+  assert.equal(bought.wallet.available, 30);
+  assert.equal(bought.data.purchases[0].price, 40);
+  await r.equip("p", "background", "bg-midnight");
+  await Promise.all([
+    f.repo().purchase("p", "bg-midnight"),
+    f.repo().purchase("p", "bg-midnight"),
+  ]);
+  const restored = await f.repo().load("p");
+  assert.equal(restored.wallet.available, 30);
+  assert.equal(restored.data.purchases.length, 1);
+  assert.equal(restored.data.equipment.background, "bg-midnight");
+  assert.equal(f.map.get(REWARDS_KEY), rewardsBefore);
+});

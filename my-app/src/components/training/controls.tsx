@@ -1,5 +1,5 @@
 import { useLocalization } from "@/localization";
-import { useState, type PropsWithChildren } from "react";
+import { useState, type PropsWithChildren, type ReactNode } from "react";
 import {
   Pressable,
   ScrollView,
@@ -159,7 +159,12 @@ export function Sheet({
   title,
   onClose,
   children,
-}: PropsWithChildren<{ title: string; onClose: () => void }>) {
+  footer,
+}: PropsWithChildren<{
+  title: string;
+  onClose: () => void;
+  footer?: ReactNode;
+}>) {
   const { tr } = useLocalization();
   return (
     <SafeAreaModal
@@ -178,12 +183,14 @@ export function Sheet({
               <Action label={tr("common.close")} onPress={onClose} />
             </View>
             <ScrollView
+              style={footer ? { flex: 1, minHeight: 0 } : undefined}
               keyboardShouldPersistTaps="handled"
               automaticallyAdjustKeyboardInsets
               contentContainerStyle={{ gap: 12, paddingBottom: 24 }}
             >
               {children}
             </ScrollView>
+            {footer}
           </View>
         </View>
       </SafeAreaView>
