@@ -1,3 +1,5 @@
+import { CosmeticArt } from "./cosmetic-art";
+import { treatmentBackground, titleTreatment } from "../../shop/visuals";
 import { memo } from "react";
 import { Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +22,40 @@ export function CosmeticSwatch({
   compact?: boolean;
 }) {
   const { tr } = useLocalization();
+  if (item.treatment)
+    return (
+      <LinearGradient
+        colors={
+          item.category === "background"
+            ? treatmentBackground(item)
+            : ["#171c23", "#202731"]
+        }
+        style={{
+          padding: compact ? 10 : 20,
+          minHeight: compact ? 54 : 82,
+          justifyContent: "center",
+          borderRadius: 8,
+          overflow: "hidden",
+        }}
+      >
+        <CosmeticArt item={item} />
+        <Text
+          style={[
+            {
+              color: colors.text,
+              fontSize: compact ? 10 : 14,
+              fontWeight: "800",
+              letterSpacing: 1,
+            },
+            item.category === "title" && titleTreatment(item),
+          ]}
+        >
+          {item.category === "title"
+            ? tr(`shop.item.${item.id}.name`)
+            : "ASCEND"}
+        </Text>
+      </LinearGradient>
+    );
   return (
     <LinearGradient
       colors={[

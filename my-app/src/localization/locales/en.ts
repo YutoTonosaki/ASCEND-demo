@@ -1,4 +1,42 @@
 export const en = {
+  "shop.item.bg-training-ground.name": "Training Ground",
+  "shop.item.bg-training-ground.description":
+    "Deep green training lanes. A static field pattern for your card.",
+  "shop.item.bg-night-arena.name": "Night Arena",
+  "shop.item.bg-night-arena.description":
+    "Cool blue arena beams on a dark background. No animation.",
+  "shop.item.bg-cyber-grid.name": "Cyber Grid",
+  "shop.item.bg-cyber-grid.description":
+    "A cyan perspective grid with a dark sports-tech finish.",
+  "shop.item.border-carbon.name": "Carbon Frame",
+  "shop.item.border-carbon.description":
+    "A segmented graphite frame. Your earned tier remains unchanged.",
+  "shop.item.border-platinum.name": "Platinum Frame",
+  "shop.item.border-platinum.description":
+    "A cool double-line frame with a clean metallic finish.",
+  "shop.item.border-champion.name": "Champion Frame",
+  "shop.item.border-champion.description":
+    "Gold corner brackets for a bold, premium frame.",
+  "shop.item.aura-electric.name": "Electric Pulse",
+  "shop.item.aura-electric.description":
+    "Static cyan edge bolts with a restrained glow. No flashing.",
+  "shop.item.aura-crimson.name": "Crimson Energy",
+  "shop.item.aura-crimson.description":
+    "Static crimson edge diamonds with a soft glow.",
+  "shop.item.title-challenger.name": "Challenger",
+  "shop.item.title-challenger.description":
+    "A cyan underlined title badge. Cosmetic only.",
+  "shop.item.title-legend.name": "Legend in Progress",
+  "shop.item.title-legend.description":
+    "A violet framed title badge for your long-term training journey.",
+  "shop.filter": "Ownership: {filter}",
+  "shop.filterTitle": "SHOW PRODUCTS",
+  "shop.filter.all": "All items",
+  "shop.filter.owned": "Owned",
+  "shop.filter.unowned": "Unowned",
+  "shop.filterSelected": "{filter} — selected",
+  "shop.emptyFiltered": "No products match these filters.",
+
   "shop.buyItem": "BUY {name}",
   "shop.equipItem": "EQUIP {name}",
   "shop.unequipItem": "UNEQUIP {name}",

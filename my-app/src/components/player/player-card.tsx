@@ -1,3 +1,5 @@
+import { CosmeticArt } from "../shop/cosmetic-art";
+import { treatmentBackground, titleTreatment } from "@/shop/visuals";
 import { cosmeticAppearance, type Equipment } from "@/shop/catalog";
 import { useCosmetics } from "@/shop/provider";
 import { useLocalization } from "@/localization";
@@ -49,18 +51,23 @@ export function PlayerCard({
         }
         colors={
           finishLayer.background
-            ? [palette.deep, finishLayer.background.color, "#151a23"]
+            ? finishLayer.background.treatment
+              ? treatmentBackground(finishLayer.background)
+              : [palette.deep, finishLayer.background.color, "#151a23"]
             : [palette.deep, "#191b20", palette.deep]
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={c.card}
       >
+        {finishLayer.background?.treatment && (
+          <CosmeticArt item={finishLayer.background} />
+        )}
         <View
           pointerEvents="none"
           style={[c.inset, { borderColor: palette.accent + "45" }]}
         />
-        {finishLayer.border && (
+        {finishLayer.border && !finishLayer.border.treatment && (
           <View
             testID="cosmetic-border"
             pointerEvents="none"
@@ -77,7 +84,11 @@ export function PlayerCard({
             ]}
           />
         )}
-        {finishLayer.aura && (
+        {finishLayer.border?.treatment && (
+          <CosmeticArt item={finishLayer.border} />
+        )}
+        {finishLayer.aura?.treatment && <CosmeticArt item={finishLayer.aura} />}
+        {finishLayer.aura && !finishLayer.aura.treatment && (
           <View
             testID="cosmetic-aura"
             pointerEvents="none"
@@ -146,6 +157,7 @@ export function PlayerCard({
             style={[
               c.archetype,
               { color: finishLayer.title.color, marginTop: 8 },
+              finishLayer.title.treatment && titleTreatment(finishLayer.title),
             ]}
           >
             {tr(`shop.item.${finishLayer.title.id}.name`)}

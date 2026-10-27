@@ -1,3 +1,8 @@
+import {
+  shopProducts,
+  ownershipFilters,
+  type OwnershipFilter,
+} from "../../shop/discovery";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   FlatList,
@@ -38,6 +43,8 @@ export function Storefront() {
     career = useCareer();
   const { fontScale } = useWindowDimensions();
   const [category, setCategory] = useState<CosmeticCategory | "all">("all"),
+    [ownership, setOwnership] = useState<OwnershipFilter>("all"),
+    [filterOpen, setFilterOpen] = useState(false),
     [selected, setSelected] = useState<string | null>(null),
     [confirming, setConfirming] = useState(false),
     [origin, setOrigin] = useState<"grid" | "detail">("detail"),
@@ -61,8 +68,8 @@ export function Storefront() {
       ? 2
       : shopColumns(contentWidth + 40, fontScale, titleHeight);
   const visible = useMemo(
-    () => catalog.filter((i) => category === "all" || i.category === category),
-    [category],
+    () => shopProducts(category, ownership, state?.data ?? null),
+    [category, ownership, state?.data],
   );
   const tileWidth = Math.max(
     0,
@@ -220,52 +227,84 @@ export function Storefront() {
             />
           </View>
         )}
-        <ScrollView
-          testID="shop-categories"
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ flexGrow: 0, flexShrink: 0 }}
-          contentContainerStyle={{ gap: 8 }}
-        >
-          {(["all", ...categories] as const).map((c) => (
-            <Pressable
-              key={c}
-              accessibilityRole="button"
-              accessibilityLabel={tr(`shop.category.${c}`)}
-              accessibilityState={{ selected: category === c }}
-              aria-selected={category === c}
-              onPress={() => {
-                if (category !== c) {
-                  offset.current = 0;
-                  setCategory(c);
-                  list.current?.scrollToOffset({ offset: 0, animated: false });
-                }
-              }}
-              style={({ pressed }) => [
-                {
-                  paddingHorizontal: 12,
-                  paddingVertical: 10,
-                  minHeight: 44,
-                  justifyContent: "center",
-                  borderWidth: 1,
-                  borderColor: category === c ? colors.bronze : colors.border,
-                  borderRadius: 8,
-                },
-                pressed && s.pressed,
-              ]}
+        <View style={{ flexDirection: "row", gap: 8, alignItems: "stretch" }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={tr("shop.filter", {
+              filter: tr(`shop.filter.${ownership}`),
+            })}
+            accessibilityState={{ expanded: filterOpen }}
+            aria-expanded={filterOpen}
+            onPress={() => setFilterOpen(true)}
+            style={({ pressed }) => [
+              {
+                minHeight: 44,
+                maxWidth: "42%",
+                justifyContent: "center",
+                paddingHorizontal: 10,
+                borderWidth: 1,
+                borderColor: colors.bronze,
+                borderRadius: 8,
+              },
+              pressed && s.pressed,
+            ]}
+          >
+            <Text
+              style={{ color: colors.bronze, fontSize: 12, lineHeight: 18 }}
             >
-              <Text
-                style={{
-                  color: category === c ? colors.bronze : colors.muted,
-                  fontSize: 12,
-                  lineHeight: 18,
+              {tr(`shop.filter.${ownership}`)} ▾
+            </Text>
+          </Pressable>
+          <ScrollView
+            testID="shop-categories"
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ flex: 1, minWidth: 0 }}
+            contentContainerStyle={{ gap: 8 }}
+          >
+            {(["all", ...categories] as const).map((c) => (
+              <Pressable
+                key={c}
+                accessibilityRole="button"
+                accessibilityLabel={tr(`shop.category.${c}`)}
+                accessibilityState={{ selected: category === c }}
+                aria-selected={category === c}
+                onPress={() => {
+                  if (category !== c) {
+                    offset.current = 0;
+                    setCategory(c);
+                    list.current?.scrollToOffset({
+                      offset: 0,
+                      animated: false,
+                    });
+                  }
                 }}
+                style={({ pressed }) => [
+                  {
+                    paddingHorizontal: 12,
+                    paddingVertical: 10,
+                    minHeight: 44,
+                    justifyContent: "center",
+                    borderWidth: 1,
+                    borderColor: category === c ? colors.bronze : colors.border,
+                    borderRadius: 8,
+                  },
+                  pressed && s.pressed,
+                ]}
               >
-                {tr(`shop.category.${c}`)}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+                <Text
+                  style={{
+                    color: category === c ? colors.bronze : colors.muted,
+                    fontSize: 12,
+                    lineHeight: 18,
+                  }}
+                >
+                  {tr(`shop.category.${c}`)}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
         <Text
           accessibilityLiveRegion="polite"
           style={[s.fine, { minHeight: 18 }]}
@@ -314,7 +353,9 @@ export function Storefront() {
               });
             }}
             ListEmptyComponent={
-              <Text style={s.muted}>{tr("shop.emptyCategory")}</Text>
+              <Text style={s.muted}>
+                {commonReason ?? tr("shop.emptyFiltered")}
+              </Text>
             }
             renderItem={({ item: i }) => (
               <ProductTile
@@ -334,7 +375,34 @@ export function Storefront() {
           />
         </View>
       </View>
-      {item && (
+      {filterOpen && (
+        <Sheet
+          title={tr("shop.filterTitle")}
+          onClose={() => setFilterOpen(false)}
+        >
+          {ownershipFilters.map((filter) => (
+            <Action
+              key={filter}
+              label={
+                ownership === filter
+                  ? tr("shop.filterSelected", {
+                      filter: tr(`shop.filter.${filter}`),
+                    })
+                  : tr(`shop.filter.${filter}`)
+              }
+              onPress={() => {
+                if (ownership !== filter) {
+                  offset.current = 0;
+                  setOwnership(filter);
+                  list.current?.scrollToOffset({ offset: 0, animated: false });
+                }
+                setFilterOpen(false);
+              }}
+            />
+          ))}
+        </Sheet>
+      )}
+      {!filterOpen && item && (
         <Sheet
           title={
             confirming ? tr("shop.confirm") : tr(`shop.item.${item.id}.name`)

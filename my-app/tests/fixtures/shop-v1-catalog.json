@@ -1,0 +1,72 @@
+[
+  {
+    "id": "bg-midnight",
+    "category": "background",
+    "rarity": "bronze",
+    "price": 40,
+    "color": "#101c35"
+  },
+  {
+    "id": "bg-stadium",
+    "category": "background",
+    "rarity": "silver",
+    "price": 90,
+    "color": "#23413e"
+  },
+  {
+    "id": "bg-nebula",
+    "category": "background",
+    "rarity": "gold",
+    "price": 180,
+    "color": "#38264b"
+  },
+  {
+    "id": "border-steel",
+    "category": "border",
+    "rarity": "bronze",
+    "price": 35,
+    "color": "#93a4b3"
+  },
+  {
+    "id": "border-chrome",
+    "category": "border",
+    "rarity": "silver",
+    "price": 85,
+    "color": "#e3edf3"
+  },
+  {
+    "id": "border-gold",
+    "category": "border",
+    "rarity": "gold",
+    "price": 175,
+    "color": "#f6d273"
+  },
+  {
+    "id": "aura-blue",
+    "category": "aura",
+    "rarity": "silver",
+    "price": 100,
+    "color": "#84b9ff"
+  },
+  {
+    "id": "aura-purple",
+    "category": "aura",
+    "rarity": "purple",
+    "price": 260,
+    "color": "#c4a0ff"
+  },
+  {
+    "id": "title-rookie",
+    "category": "title",
+    "rarity": "bronze",
+    "price": 30,
+    "color": "#e6af7e"
+  },
+  {
+    "id": "title-rising-star",
+    "category": "title",
+    "rarity": "gold",
+    "price": 150,
+    "color": "#f6d273"
+  }
+]

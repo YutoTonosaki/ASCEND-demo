@@ -69,10 +69,14 @@ function fixture(days = 12) {
   return f;
 }
 test("catalog: exact stable IDs, order, prices, categories, rarity and EN/JA metadata", () => {
-  assert.equal(C.catalog.length, 10);
-  assert.equal(new Set(C.catalog.map((i) => i.id)).size, 10);
+  assert.equal(C.catalog.length, 20);
   assert.deepEqual(
-    C.catalog.map((i) => i.price),
+    C.catalog.slice(0, 10),
+    require("./fixtures/shop-v1-catalog.json"),
+  );
+  assert.equal(new Set(C.catalog.map((i) => i.id)).size, 20);
+  assert.deepEqual(
+    C.catalog.slice(0, 10).map((i) => i.price),
     [40, 90, 180, 35, 85, 175, 100, 260, 30, 150],
   );
   for (const i of C.catalog) {
@@ -181,8 +185,9 @@ test("post-commit read failure recovers by reload without another charge", async
   assert.equal(f.writes.length, 1);
 });
 test("all equipment categories equip, replace and restore defaults without spending", async () => {
-  const f = fixture(100),
+  const f = fixture(200),
     r = f.repo();
+  f.at = "2027-09-01T12:00:00.000Z"; // Expanded catalog needs more legitimately earned fixture funds.
   for (const i of C.catalog) await r.purchase("p", i.id);
   const spent = (await r.load("p")).wallet.spent;
   for (const i of C.catalog) {

@@ -12,13 +12,36 @@ export type CosmeticId =
   | "aura-blue"
   | "aura-purple"
   | "title-rookie"
-  | "title-rising-star";
+  | "title-rising-star"
+  | "bg-training-ground"
+  | "bg-night-arena"
+  | "bg-cyber-grid"
+  | "border-carbon"
+  | "border-platinum"
+  | "border-champion"
+  | "aura-electric"
+  | "aura-crimson"
+  | "title-challenger"
+  | "title-legend";
+export type CosmeticTreatment =
+  | "lanes"
+  | "arena"
+  | "grid"
+  | "carbon"
+  | "platinum"
+  | "champion"
+  | "electric"
+  | "crimson"
+  | "challenger"
+  | "legend";
 export interface CosmeticItem {
   id: CosmeticId;
   category: CosmeticCategory;
   rarity: CosmeticRarity;
   price: number;
   color: string;
+  /** Static renderer metadata only; never serialized into purchases or equipment. */
+  treatment?: CosmeticTreatment;
 }
 export const catalog: readonly CosmeticItem[] = Object.freeze(
   [
@@ -91,6 +114,86 @@ export const catalog: readonly CosmeticItem[] = Object.freeze(
       rarity: "gold",
       price: 150,
       color: "#f6d273",
+    },
+    {
+      id: "bg-training-ground",
+      category: "background",
+      rarity: "bronze",
+      price: 40,
+      color: "#183d32",
+      treatment: "lanes",
+    },
+    {
+      id: "bg-night-arena",
+      category: "background",
+      rarity: "silver",
+      price: 110,
+      color: "#172e54",
+      treatment: "arena",
+    },
+    {
+      id: "bg-cyber-grid",
+      category: "background",
+      rarity: "purple",
+      price: 200,
+      color: "#123d49",
+      treatment: "grid",
+    },
+    {
+      id: "border-carbon",
+      category: "border",
+      rarity: "bronze",
+      price: 50,
+      color: "#9aa6b3",
+      treatment: "carbon",
+    },
+    {
+      id: "border-platinum",
+      category: "border",
+      rarity: "silver",
+      price: 120,
+      color: "#d8f1ff",
+      treatment: "platinum",
+    },
+    {
+      id: "border-champion",
+      category: "border",
+      rarity: "gold",
+      price: 220,
+      color: "#f6d273",
+      treatment: "champion",
+    },
+    {
+      id: "aura-electric",
+      category: "aura",
+      rarity: "silver",
+      price: 130,
+      color: "#6ce2f5",
+      treatment: "electric",
+    },
+    {
+      id: "aura-crimson",
+      category: "aura",
+      rarity: "gold",
+      price: 190,
+      color: "#ff8798",
+      treatment: "crimson",
+    },
+    {
+      id: "title-challenger",
+      category: "title",
+      rarity: "bronze",
+      price: 45,
+      color: "#91dded",
+      treatment: "challenger",
+    },
+    {
+      id: "title-legend",
+      category: "title",
+      rarity: "purple",
+      price: 210,
+      color: "#d5b3ff",
+      treatment: "legend",
     },
   ].map((item) => Object.freeze(item)) as CosmeticItem[],
 );
