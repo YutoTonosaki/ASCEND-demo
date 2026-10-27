@@ -279,9 +279,14 @@ has no storage API. Restart never requires replay. See
 ## SHOP foundation (Phase 5A)
 
 SHOP offers ten local cosmetics across backgrounds, borders, auras and titles.
-Initialize a Player explicitly, inspect an item, confirm BUY, then EQUIP it.
+Initialize a Player explicitly, use BUY in the compact product grid, confirm, then
+EQUIP directly. Optional details provide a full real-Player Card preview.
 Unequip restores the earned card appearance. Cosmetics never change ratings or tiers.
 HOME/SHOP show confirmed earned Coins minus confirmed purchase spending through one
 wallet. Rewards v1/v2 stay unchanged; `ascend.shop.v1` atomically records each debit
 and permanent entitlement, plus owner-scoped equipment. Browsing/preview writes
 nothing. See [Phase 5A verification](docs/PHASE5A_SHOP_FOUNDATION_VERIFICATION.md).
+
+Phase 5A.2 keeps wallet/categories visible above a virtualized grid, with a one-column
+fallback for narrow windows or large text. Actions retain the safe-area Sheet footer
+and existing validated purchase/equipment APIs. See [SHOP UX verification](docs/PHASE5A_2_SHOP_UX_REDESIGN_VERIFICATION.md).

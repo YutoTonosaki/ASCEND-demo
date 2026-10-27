@@ -21,6 +21,14 @@ async function main(){
   const page=await browser.newPage({viewport:{width:320,height:844}}),errors=[];
   page.setDefaultTimeout(60000);
   page.on('pageerror',e=>errors.push(e.message));
+  // SDK 58 LogBox's known SVG warning toast covers the tab bar in development.
+  // Dismiss its real close button; unexpected errors and all storage assertions remain active.
+  let lastConsoleError='';
+  page.on('console',message=>{if(message.type()==='error')lastConsoleError=message.text();});
+  await page.addLocatorHandler(page.locator('#error-toast button'),async close=>{
+   assert.ok(/non-boolean/.test(lastConsoleError)&&/accessible/.test(lastConsoleError),'Only dismiss the pre-existing accessible SVG warning');
+   await close.click();
+  });
   const dev=process.env.ASCEND_QA_URL||'http://localhost:8107';
   const prod=process.env.ASCEND_QA_PROD_URL||'http://127.0.0.1:8108';
   const button=name=>page.getByRole('button',{name,exact:true});

@@ -1,4 +1,11 @@
 export const en = {
+  "shop.buyItem": "BUY {name}",
+  "shop.equipItem": "EQUIP {name}",
+  "shop.unequipItem": "UNEQUIP {name}",
+  "shop.walletSummary": "Wallet details, {balance}",
+  "shop.purchaseSaved": "Purchase saved.",
+  "shop.showCard": "PREVIEW ON MY CARD",
+  "shop.hideCard": "HIDE CARD PREVIEW",
   "shop.rarityLabel": "Rarity",
   "shop.emptyCategory": "No cosmetics in this category.",
   "shop.available": "AVAILABLE TRAINING COINS",

@@ -1,26 +1,49 @@
+import { colors } from "../../config/theme";
 import { useShop } from "../../shop/provider";
 import { useLocalization } from "@/localization";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { Panel, s } from "../ui/primitives";
 import { Action } from "../training/controls";
 import { useRewards } from "../../rewards/provider";
 import { sessionRewards, weeklyDays } from "../../rewards/domain";
 import { WEEKLY_TARGET_DAYS } from "../../config/rewards";
-export function CoinBalance() {
+export function CoinBalance({ compact = false }: { compact?: boolean }) {
   const l = useLocalization();
   const { tr } = useLocalization();
   const { snapshot, error, reload: retry } = useShop();
+  const amount = (
+    <Text
+      testID="coin-balance"
+      style={
+        compact
+          ? {
+              color: colors.text,
+              fontSize: 18,
+              lineHeight: 24,
+              fontWeight: "800",
+            }
+          : s.sectionTitle
+      }
+    >
+      {snapshot
+        ? tr("rewards.balance", {
+            amount: l.number(snapshot.wallet.available),
+          })
+        : error
+          ? tr("rewards.unavailable")
+          : tr("common.loading")}
+    </Text>
+  );
+  if (compact)
+    return (
+      <View style={{ gap: 2 }}>
+        <Text style={s.eyebrow}>{tr("shop.available")}</Text>
+        {amount}
+      </View>
+    );
   return (
     <Panel title={tr("shop.available")}>
-      <Text testID="coin-balance" style={s.sectionTitle}>
-        {snapshot
-          ? tr("rewards.balance", {
-              amount: l.number(snapshot.wallet.available),
-            })
-          : error
-            ? tr("rewards.unavailable")
-            : tr("common.loading")}
-      </Text>
+      {amount}
       {error && (
         <Action label={tr("rewards.retry")} onPress={() => void retry()} />
       )}

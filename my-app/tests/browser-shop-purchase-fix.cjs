@@ -122,6 +122,11 @@ function seed(days = 4) {
         await context.close();
         continue;
       }
+      // Full card is now optional; retain the independent-preview-scroll assertion.
+      const preview = button(
+        ja ? "自分のカードでプレビュー" : "PREVIEW ON MY CARD",
+      );
+      if (await preview.count()) await preview.tap();
       // Reuse the established modal-only safe-area probe simulation.
       if (mode === "en") {
         await page

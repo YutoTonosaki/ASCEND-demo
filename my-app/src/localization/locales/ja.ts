@@ -1,5 +1,12 @@
 import type { en } from "./en";
 export const ja = {
+  "shop.buyItem": "{name}を購入",
+  "shop.equipItem": "{name}を装備",
+  "shop.unequipItem": "{name}の装備を外す",
+  "shop.walletSummary": "残高の詳細、{balance}",
+  "shop.purchaseSaved": "購入しました。",
+  "shop.showCard": "自分のカードでプレビュー",
+  "shop.hideCard": "カードプレビューを閉じる",
   "shop.rarityLabel": "レアリティ",
   "shop.emptyCategory": "このカテゴリのアイテムはありません。",
   "shop.available": "使用可能なトレーニングコイン",
