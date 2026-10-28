@@ -150,25 +150,35 @@ const mode = process.env.ASCEND_QA_COMPARE || "after";
         },
         { mode, ja },
       );
-      const folder = path.join(__dirname, "../docs/images/phase5a2");
+      const folder =
+        process.env.ASCEND_QA_SCREENSHOT_DIR ||
+        path.join(require("node:os").tmpdir(), "ascend-shop-ux-comparison");
       fs.mkdirSync(folder, { recursive: true });
       await page.screenshot({
         path: path.join(folder, `${mode}-${locale}-${width}-${scale}.png`),
       });
-      for (let i = 0; i < 8; i++) {
-        await page.evaluate(() => {
-          if (window.uxMainScroll)
-            window.uxMainScroll.scrollTop = window.uxMainScroll.scrollHeight;
-        });
-        await page.waitForTimeout(100);
-      }
       const language = require(`../src/localization/locales/${locale}.ts`)[
         locale
       ];
       const lastName = language["shop.details"].replace(
         "{name}",
-        language["shop.item.title-rising-star.name"],
+        language[
+          `shop.item.${mode === "before" ? "title-rising-star" : require("../src/shop/catalog.ts").catalog.at(-1).id}.name`
+        ],
       );
+      for (let i = 0; i < 30; i++) {
+        await page.evaluate(() => {
+          if (window.uxMainScroll)
+            window.uxMainScroll.scrollTop = window.uxMainScroll.scrollHeight;
+        });
+        await page.waitForTimeout(120);
+        if (await button(lastName).count()) {
+          const r = await button(lastName)
+            .boundingBox({ timeout: 1000 })
+            .catch(() => null);
+          if (r && r.y >= 0 && r.y + r.height <= height) break;
+        }
+      }
       const lastBox = await button(lastName).boundingBox();
       assert.ok(
         lastBox && lastBox.y >= 0 && lastBox.y + lastBox.height <= height,

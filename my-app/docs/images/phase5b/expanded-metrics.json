@@ -1,0 +1,53 @@
+[
+  {
+    "locale": "en",
+    "width": 390,
+    "height": 844,
+    "scale": 1,
+    "fullProducts": 4,
+    "partialProducts": 6,
+    "walletVisible": true,
+    "filterVisible": true,
+    "initialBuyVisible": true,
+    "scrollPixels": 2003,
+    "scrollRange": 2003,
+    "walletAtEnd": true,
+    "filterAtEnd": true,
+    "purchaseTaps": 2,
+    "equipTaps": 1
+  },
+  {
+    "locale": "en",
+    "width": 320,
+    "height": 568,
+    "scale": 1,
+    "fullProducts": 2,
+    "partialProducts": 4,
+    "walletVisible": true,
+    "filterVisible": true,
+    "initialBuyVisible": true,
+    "scrollPixels": 2279,
+    "scrollRange": 2279,
+    "walletAtEnd": true,
+    "filterAtEnd": true,
+    "purchaseTaps": 2,
+    "equipTaps": 1
+  },
+  {
+    "locale": "ja",
+    "width": 320,
+    "height": 568,
+    "scale": 1.5,
+    "fullProducts": 0,
+    "partialProducts": 1,
+    "walletVisible": true,
+    "filterVisible": true,
+    "initialBuyVisible": false,
+    "scrollPixels": 5354,
+    "scrollRange": 5354,
+    "walletAtEnd": true,
+    "filterAtEnd": true,
+    "purchaseTaps": 2,
+    "equipTaps": 1
+  }
+]

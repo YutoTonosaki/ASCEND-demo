@@ -1,24 +1,35 @@
-import type {
+import type { en } from "./en";
+export const ja = {
   "shop.item.bg-training-ground.name": "トレーニンググラウンド",
-  "shop.item.bg-training-ground.description": "深いグリーンにフィールドのラインを重ねた背景。静止デザインです。",
+  "shop.item.bg-training-ground.description":
+    "深いグリーンにフィールドのラインを重ねた背景。静止デザインです。",
   "shop.item.bg-night-arena.name": "ナイトアリーナ",
-  "shop.item.bg-night-arena.description": "暗いブルーにアリーナの光を描いた背景。アニメーションはありません。",
+  "shop.item.bg-night-arena.description":
+    "暗いブルーにアリーナの光を描いた背景。アニメーションはありません。",
   "shop.item.bg-cyber-grid.name": "サイバーグリッド",
-  "shop.item.bg-cyber-grid.description": "シアンの遠近グリッドが広がる、スポーツテック調の背景。",
+  "shop.item.bg-cyber-grid.description":
+    "シアンの遠近グリッドが広がる、スポーツテック調の背景。",
   "shop.item.border-carbon.name": "カーボンフレーム",
-  "shop.item.border-carbon.description": "グラファイト色の分割フレーム。獲得したカードランクは変わりません。",
+  "shop.item.border-carbon.description":
+    "グラファイト色の分割フレーム。獲得したカードランクは変わりません。",
   "shop.item.border-platinum.name": "プラチナフレーム",
-  "shop.item.border-platinum.description": "澄んだメタリックカラーの二重フレーム。",
+  "shop.item.border-platinum.description":
+    "澄んだメタリックカラーの二重フレーム。",
   "shop.item.border-champion.name": "チャンピオンフレーム",
-  "shop.item.border-champion.description": "ゴールドのコーナーが際立つ、プレミアムなフレーム。",
+  "shop.item.border-champion.description":
+    "ゴールドのコーナーが際立つ、プレミアムなフレーム。",
   "shop.item.aura-electric.name": "エレクトリックパルス",
-  "shop.item.aura-electric.description": "シアンの稲妻ラインと控えめな光。静止デザインで、点滅しません。",
+  "shop.item.aura-electric.description":
+    "シアンの稲妻ラインと控えめな光。静止デザインで、点滅しません。",
   "shop.item.aura-crimson.name": "クリムゾンエナジー",
-  "shop.item.aura-crimson.description": "クリムゾンのひし形ラインと柔らかな光。静止デザインです。",
+  "shop.item.aura-crimson.description":
+    "クリムゾンのひし形ラインと柔らかな光。静止デザインです。",
   "shop.item.title-challenger.name": "チャレンジャー",
-  "shop.item.title-challenger.description": "シアンのアンダーライン付き称号。見た目だけが変わります。",
+  "shop.item.title-challenger.description":
+    "シアンのアンダーライン付き称号。見た目だけが変わります。",
   "shop.item.title-legend.name": "レジェンドへの道",
-  "shop.item.title-legend.description": "トレーニングの歩みを彩る、バイオレットの枠付き称号。",
+  "shop.item.title-legend.description":
+    "トレーニングの歩みを彩る、バイオレットの枠付き称号。",
   "shop.filter": "所持状況：{filter}",
   "shop.filterTitle": "商品の表示",
   "shop.filter.all": "すべての商品",
@@ -26,8 +37,7 @@ import type {
   "shop.filter.unowned": "未所持",
   "shop.filterSelected": "{filter}（選択中）",
   "shop.emptyFiltered": "この条件に合う商品はありません。",
- en } from "./en";
-export const ja = {
+
   "shop.buyItem": "{name}を購入",
   "shop.equipItem": "{name}を装備",
   "shop.unequipItem": "{name}の装備を外す",

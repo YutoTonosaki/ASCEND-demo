@@ -278,7 +278,7 @@ has no storage API. Restart never requires replay. See
 
 ## SHOP foundation (Phase 5A)
 
-SHOP offers ten local cosmetics across backgrounds, borders, auras and titles.
+SHOP offers twenty local cosmetics across backgrounds, borders, auras and titles.
 Initialize a Player explicitly, use BUY in the compact product grid, confirm, then
 EQUIP directly. Optional details provide a full real-Player Card preview.
 Unequip restores the earned card appearance. Cosmetics never change ratings or tiers.
@@ -290,3 +290,8 @@ nothing. See [Phase 5A verification](docs/PHASE5A_SHOP_FOUNDATION_VERIFICATION.m
 Phase 5A.2 keeps wallet/categories visible above a virtualized grid, with a one-column
 fallback for narrow windows or large text. Actions retain the safe-area Sheet footer
 and existing validated purchase/equipment APIs. See [SHOP UX verification](docs/PHASE5A_2_SHOP_UX_REDESIGN_VERIFICATION.md).
+
+Phase 5B adds ten static visual treatments while preserving the original ten IDs,
+prices and appearances. The compact ownership menu combines All/Owned/Unowned with
+existing category filters; preview/card artwork shares one renderer. Cosmetic rarity
+never gates or changes earned Card Tier. See [SHOP expansion verification](docs/PHASE5B_SHOP_EXPANSION_VERIFICATION.md).
