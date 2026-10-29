@@ -1,369 +1,301 @@
-# Phase 6A — AVS Prototype: Feasibility and Gated Foundation
+# Phase 6A — Isolated AVS Athlete Prototype
 
-Date: 2026-10-28. Baseline: `5ddfa4f`, initially clean working tree.
+Updated: 2026-10-29 (America/Vancouver). Baseline: `bd3f7c6`, initially clean.
+The prior read-only feasibility/headless-camera report is retained in that commit.
 
-## Decision and completion status
+## Status and scope
 
-**PARTIALLY COMPLETE — CONDITIONAL GO for an isolated native experiment; no GO
-for PLAYER integration yet. This is not a working 3D athlete viewer.**
+**Isolated prototype implemented; physical iPhone acceptance pending.** A genuine
+MakeHuman-derived 3D human GLB has been generated and displayed with WebGL in the
+separate `experiments/avs-6a` Expo app. This is not a static image or a primitive
+mannequin. Native rendering has **not** been tested. PLAYER integration and Phase
+6B remain blocked on the user's successful isolated iPhone test.
 
-The repository and renderer/asset research are complete. A small, headless camera
-experiment is implemented and tested. No renderer, athlete model, viewer UI or
-PLAYER entry is installed. No dependency, application configuration, route, storage
-key or gameplay file is changed. No 2D image or geometric mannequin substitutes for
-an athlete. Phase 6B has not started.
+The user explicitly approved the MakeHuman CC0 route and a separate Expo GL/Fiber
+experiment. Production ASCEND is unchanged: no PLAYER entry, route/provider,
+gameplay calculation, SHOP equipment, app configuration, dependency/lockfile or
+storage schema change. The only existing file edited is this requested report.
+No real saved user data was accessed. The prototype has no AsyncStorage dependency
+or import of ASCEND providers, repositories or progression state.
 
-The user's follow-up confirms that no athlete asset is available and authorizes
-research of free reusable models. It explicitly requires reporting blockers and
-approval before proceeding when rights or native compatibility cannot be verified.
-Publisher licenses can be established for the three candidates below; an accepted,
-prepared GLB and actual SDK 58 native rendering have **not** been established.
-Those are separate remaining gates, not evidence that all free human assets are
-unusable or that Expo GL cannot work.
+## Environment and compatibility
 
-## Repository audit
+Read AGENTS.md, its exact SDK 57 reference, actual SDK 58 documentation, prior
+Phase 6A/5B reports, current project and working tree before editing. Production
+remains Expo 58.0.19 / RN 0.88.0 / React 19.3.0. The **isolated** app uses:
 
-Read `AGENTS.md` and its required SDK 57 reference, then the actual SDK 58 reference.
-Installed versions, rather than earlier reports, supply this baseline:
-
-| Component | Observed value |
+| Dependency | Exact version |
 | --- | --- |
-| Expo | 58.0.19 installed; package range ^58.0.19 |
-| React Native | 0.88.0 |
+| Expo | 58.0.21 |
+| React Native | 0.88.1 |
 | React / React DOM | 19.3.0 |
-| react-native-web / SVG | 0.21.4 installed / 15.16.0 |
-| Node / TypeScript | 22.15.0 / 6.0.3 |
-| Hermes | `.hermesv1version`: hermes-v260318099.0.2; compiler dependency 260318099.0.4 |
-| Architecture | SDK 58 uses New Architecture; no app opt-out |
-| Local Xcode | 15.4; installed RN CocoaPods helper requires at least 16.1 |
-| Assets / native projects | No existing GLB/glTF/FBX/OBJ athlete; no ios/ or android/ project |
+| React Three Fiber | 9.8.2 |
+| Three.js / types | 0.186.1 / 0.186.0 |
+| Expo GL | 58.0.3 |
+| Expo Asset / FileSystem | 58.0.19 / 58.0.13 |
+| react-native-web | 0.21.4 |
+| Safe-area context | 5.10.1 |
+| TypeScript | 6.0.3 |
 
-Hermes is the default, with no `jsEngine` override. These are file/configuration
-observations, **not** a live `HermesInternal` check. No Blender or adb executable
-was found on PATH, and no Blender installation was found in /Applications. The
-local iOS build toolchain is insufficient even for the installed helper's minimum;
-newer official toolchain recommendations must also be checked before a build.
-[New Architecture policy](https://docs.expo.dev/guides/new-architecture/),
-[Hermes guidance](https://docs.expo.dev/guides/using-hermes/).
+The initial isolated install matched ASCEND's patch versions. Online
+`expo install --check` requested newer SDK 58 patches, so only the lab's Expo,
+Asset, FileSystem and RN were updated. No unrelated production upgrade occurred.
+`package-lock.json` belongs to the isolated app. Fiber's published peers include
+React >=19 <19.4 and RN >=0.78; these declared ranges include this stack.
 
-Relevant existing boundaries, all preserved:
-
-- `src/app/_layout.tsx`: Localization → Training → Session → Coach → Growth →
-  Career → Seasons → Rewards → Shop → Match → GrowthPresentation.
-- `src/app/(tabs)/player.tsx`: GrowthStatus, development-only Growth Debug, primary
-  PlayerCard, derived tier/finish, PR and body ratings. No viewer is mounted.
-- `src/growth/domain.ts`: authoritative `overall` and `displayRating`.
-  `src/growth/provider.tsx` exposes saved ratings; AVS must not reconcile them.
-- `src/components/player/player-card.tsx`: existing card, `useCosmetics`,
-  `cosmeticAppearance`, and `CosmeticArt`. SHOP equipment is 2D card treatment,
-  not clothing or an AVS asset contract.
-- `src/shop/catalog.ts`, `provider.tsx`, `domain.ts` and Shop/wallet repositories:
-  earned/owned/equipped state stays independent of AVS experiments.
-- `src/components/ui/safe-area-modal.tsx` and existing Sheet patterns can supply a
-  future controlled viewer surface. No sixth tab is needed.
-- `tests/register.cjs`: existing TypeScript transpilation and Node test runner;
-  optional external Playwright scripts provide browser QA.
-
-The Phase 5B report was read. App orientation remains portrait, web export static,
-React Compiler enabled. No Metro override or native 3D package exists currently.
-
-## Renderer comparison and compatibility evidence
-
-The following are researched candidates, **not installed dependencies**.
-
-| Approach | Architecture / dependencies | Expo Go and platforms | Assessment |
-| --- | --- | --- | --- |
-| Three.js + Expo GL directly | Imperative Three scene/camera/loader around native GLView; expo-gl plus asset/file adapters | Expo GL is documented for iOS, Android, Web and included in Expo Go | Viable lower-level spike; owns frame scheduling, canvas/texture shims, gesture handling and cleanup |
-| React Three Fiber native + Three + Expo GL | React scene graph, native loader/event adaptations; expo-gl, expo-asset, expo-file-system | Same Expo GL native module; web uses Fiber's web entry | Preferred **conditional** experiment; less custom bridge code, but exact asset loading and lifecycle must run on devices |
-| react-native-filament | Native Filament PBR renderer; worklets-core/native code | Custom Development Build; no Expo Go; separate web fallback | Potential longer-term native rendering choice, higher integration/toolchain cost; wildcard RN peers do not prove 0.88 support |
-| Babylon React Native | Native rendering/JSI; Babylon core, permissions/native modules | Custom native build; separate Babylon web backend | Not preferred here: publisher explicitly does not support/test Expo integration |
-
-[Expo GL SDK 58](https://docs.expo.dev/versions/v58.0.0/sdk/gl-view/),
+Expo GL is documented for iOS/Android/Web and included in SDK 58 Expo Go. Fiber
+provides a native GL/asset adapter and a separate web entry. SDK 58 always uses New
+Architecture; Hermes is the default. Successful Hermes bundle compilation proves
+syntax/bundling, **not** on-device GL, Hermes execution, driver stability or FPS.
+[SDK 58 GLView](https://docs.expo.dev/versions/v58.0.0/sdk/gl-view/),
 [Fiber native installation](https://r3f.docs.pmnd.rs/getting-started/installation),
-[Filament source](https://github.com/margelo/react-native-filament),
-[Babylon supported baselines/Expo policy](https://github.com/BabylonJS/BabylonReactNative).
+[New Architecture](https://docs.expo.dev/guides/new-architecture/).
 
-Read-only `npm view` metadata observed:
+Native Filament would add native/worklet integration and require a Development
+Build. Babylon RN does not officially test/support Expo. Direct Three + GL would
+require more adapter/lifecycle code. Fiber native was chosen for this scoped spike;
+its peer ranges and source inspection are compatibility evidence, not a substitute
+for testing the exact model on a physical iPhone. Web uses actual WebGL2.
 
-- `@react-three/fiber` **9.8.2** peers: React/React DOM >=19 <19.4, RN >=0.78,
-  Expo >=43, Three >=0.156; Expo GL/asset/file-system peers are declared.
-- Three **0.186.1** was the registry version observed.
-- Installed Expo's `bundledNativeModules.json` recommends expo-gl **~58.0.3**,
-  expo-asset **~58.0.18**, expo-file-system **~58.0.11**.
-- Filament **1.11.0** declares React/RN wildcard peers and worklets-core >=1.3.2;
-  its repository development manifest uses RN 0.83.1, not explicit 0.88 evidence.
-- Babylon RN **2.0.8** documents a 0.81.6 Playground baseline; broad peers are not
-  a newer-RN guarantee.
+The Mac has Xcode 15.4 and no Blender/adb on PATH. No native build, signing/EAS
+change, simulator or physical-device execution was performed. Expo Go avoids the
+local Xcode build requirement; use an Expo Go release compatible with SDK 58.
+The installed native build helper requires a newer Xcode if a custom build is
+later needed. No custom build is currently required by this chosen architecture.
 
-Fiber's declared range includes this checkout's React 19.3/RN 0.88. That is useful
-compatibility evidence, not a native render test. SDK 58 Expo Go can supply GL;
-a custom build is not inherently required for this first approach. Simulators are
-not a substitute for iPhone testing; Fiber's native guide warns about simulator GL
-stability. The current Xcode limitation does not prevent a compatible physical
-Expo Go experiment, but does block a local custom-build validation here.
+## Asset provenance — every included component
 
-Also downloaded the published Fiber 9.8.2 npm tarball into /tmp with scripts
-disabled and read its native adapter, without installing it. It explicitly imports
-Expo GL/Asset, prefers `expo-file-system/legacy`, and presents frames through
-`endFrameEXP`. Its native Canvas sets native PixelRatio itself: do not assume a web
-DPR cap works there. Native asset/polyfill code patches loader/Blob behavior and
-can use filesystem cache writes, so a later integration must audit these global
-effects and distinguish asset cache I/O from forbidden gameplay-storage writes.
-This inspection supports trying the adapter; it does not execute it on RN 0.88.
+Source repository: [MakeHuman official source and license](https://github.com/makehumancommunity/makehuman/blob/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/LICENSE.md).
+Fixed revision: `a8bc2d54ff0ac92e78ff71431b1023eda42bf482`.
+Every source URL and SHA-256 is retained in the lab's
+`asset-source/provenance.json`; original files and CC0 legal text are included.
 
-Use glTF 2.0/GLB as the eventual runtime format: one local self-contained file,
-ordinary PBR materials, skinning and optional morph targets. FBX/Blender files are
-authoring sources, not assumed runtime loaders. Start without Draco/KTX2/Meshopt,
-remote decoder URLs or complex shaders. Add a GLB extension by merging Expo's
-default Metro resolver configuration, not replacing its extension lists.
-[GLTFLoader](https://threejs.org/docs/pages/GLTFLoader.html).
+| Component | Actual input / rights evidence |
+| --- | --- |
+| Human anatomy, head, hands, feet | hm08 `base.obj`; explicit September 2020 CC0 header; Data Collection AB, Joel Palmius, Jonas Hauquier |
+| Fixed adult/muscle appearance | Three official `.target` files, each explicitly CC0; adult target plus a fixed 65% average / 35% maximum-muscle authoring blend |
+| Pose references and weights | `default.mhskel` / `default_weights.mhw`, each explicitly `license: CC0`; used only to bake the arms near the sides |
+| Top and shorts | Newly derived separate compression-garment meshes from the same CC0 body surface; original cut/offset definitions, dedicated CC0-1.0 for this prototype |
+| Skin / garment materials | Original constant colors and roughness; CC0-1.0 definitions; no external image, logo or photograph |
 
-## Three shortlisted asset routes
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) permits commercial
+use, modification and redistribution without mandatory attribution. Provenance is
+retained voluntarily. MakeHuman's **program code** has a separate AGPL license;
+none is copied/imported/installed here. The converter is newly written Python,
+using only standard-library math/JSON/binary output and the licensed asset data.
+No community apparel is assumed CC0: **none is included**. No hair, shoe, animation,
+private photograph or biometric source is included. See the lab's
+`ASSET-LICENSE.md` for component details and complete license locations.
 
-These are **source candidates**, not three ready-to-ship GLBs. No candidate binary
-has been bundled, converted or benchmarked. Only two Microsoft publisher preview
-PNGs and repository file metadata were downloaded to /tmp for investigation.
+### Generated runtime asset
 
-### 1. MakeHuman core human + verified CC0 apparel — preferred authoring route
+- File: `experiments/avs-6a/assets/athlete.glb` (glTF 2.0).
+- Bytes: **563,184**; triangles: **30,815**; meshes/materials: **3 / 3**.
+- Textures, animations and runtime skeleton: **0**. No decoder/remote asset URL.
+- SHA-256: `4b655504291c7389994b8d3e420744405a21fbb71fde2e20f318880aee849cfc`.
+- Y-up, faces +Z; nominal art height 1.8 model-space meters, feet at ground.
+  This is an art scale, never a user measurement or Player Rating input.
+- Source rig weights bake a symmetric standing pose with arms near the sides.
+- Top/shorts are actual separate fitted meshes. Exact interpolated cuts replace
+  the first pass's visibly serrated hems. This is simple prototype apparel.
 
-- Source: [MakeHuman license](https://github.com/makehumancommunity/makehuman/blob/master/LICENSE.md),
-  [official system asset inventory](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html).
-- Exact asset license: **CC0 1.0 Universal** for core mesh, modifiers, textures,
-  clothes and poses. Commercial use, modification and redistribution are allowed;
-  attribution is not required. Keep provenance anyway. Program code is AGPL and
-  must not be copied into ASCEND as if it had the asset license.
-- Full-body proportions can be authored without identifying a real person. This
-  is the strongest foundation for future body customization; it does not mean
-  runtime morphs or clothing fitting already exist.
-- Limitations: an athletic, clothed, relaxed standing character still must be
-  authored/exported, then inspected. Official files are not an accepted mobile GLB.
-  Community clothes have individual licenses; select only explicitly verified
-  pieces, such as `elvs_crude_t-shirt_male` in the
-  [CC0 shirt inventory](https://download.makehumancommunity.org/assets/assetpacks/shirts01.html).
-  Shorts, skin, hair and shoes must each be recorded before export.
+**A model was actually generated.** Blender was not needed: the stdlib converter
+triangulates the licensed body, applies fixed targets and pose, generates fitted
+apparel, computes normals, and writes a self-contained GLB. Run
+`python3 tools/prepare-asset.py` in the lab to rebuild offline. It checks all source
+hashes first. `npm run asset:verify` checks source/runtime hashes and binary bounds.
 
-### 2. Blender Studio Human Base Meshes v1.4.1 — realistic body foundation
+Khronos `gltf-validator` 2.0.0-dev.3.10, installed only under /tmp for QA, reported
+**0 errors, 0 warnings, 0 infos, 0 hints** on the final generated model. This checks
+format, not anatomy or native visual fidelity. A browser render was visually
+inspected before and after the garment-cut adjustment.
 
-- Source: [Blender's official Demo Files / Asset Bundles](https://www.blender.org/download/demo-files/),
-  [official download directory](https://download.blender.org/demo/asset-bundles/human-base-meshes/).
-- Candidate: the bundle's realistic full-body human, rather than its stylized or
-  isolated head/hand assets. The official listing identifies v1.4.1, 49 MB and
-  **CC0**; CC0 1.0 permits commercial modification/redistribution without attribution.
-- Limitations: this is an authoring base, not a dressed athlete or accepted rigged
-  GLB. Needs apparel, pose/rig preparation, texture/material work and export. The
-  listed 49 MB is a whole authoring bundle, not a measured final mobile payload.
-  Requires Blender 4.2 LTS or newer according to the listing. Do not confuse it
-  with other Blender Studio CC-BY rigs on the same site.
+Limitations: bald, barefoot, untextured skin and simple facial detail; fixed baked
+pose; no runtime rig, morphs, fabric simulation or exercise clips. Semi-realistic
+proportions come from MakeHuman; this is not final sports-game character art.
+Future customization/animation requires a separately validated asset contract.
 
-### 3. Microsoft Rocketbox Sports_Male_01 — closest existing sports character
+## Viewer architecture and behavior
 
-- Source: [specific model directory](https://github.com/microsoft/Microsoft-Rocketbox/tree/master/Assets/Avatars/Professions/Sports_Male_01),
-  [publisher README](https://github.com/microsoft/Microsoft-Rocketbox),
-  [exact MIT license](https://github.com/microsoft/Microsoft-Rocketbox/blob/master/LICENSE.md).
-- License: **MIT, Copyright (c) 2020 Microsoft**. Commercial use, modifications and
-  redistribution are permitted with the copyright and permission notice included
-  in copies/substantial portions. A shipped derivative must retain that notice.
-- Inspected official preview: full-body human in dark sports/swim shorts, athletic
-  proportions, arms held out in an A-like pose. This is visually closer than a
-  robot/soldier, but is not yet the required relaxed neutral stance.
-- Metadata at tree `0943055db6ec570bcef9f2c8b41c9e5467c808f9` lists a 509,504-byte
-  ordinary FBX, a separate larger facial FBX and six 12,582,956-byte TGA maps.
-  These are source sizes, not final GLB/GPU-memory measurements.
-- Needs FBX→GLB conversion, neutral posing, PBR/material conversion and texture
-  reduction. Do not ship every embedded LOD/facial asset. Future arbitrary body
-  morphs are not established. Inspect all garment markings (other sports variants
-  have prominent kit marks), removing/re-authoring them as necessary; do not assume
-  a copyright license clears third-party marks or likeness rights.
+The lab has its own `package.json`, lockfile, `app.json`, entry and Metro resolver.
+Slug `ascend-avs-6a-lab`, scheme `ascend-avs-lab`, native ID `com.ascend.avslab`.
+It never mounts within ASCEND. GLB is added to the lab's default Expo asset extension
+list without replacing other defaults. No main-app configuration is edited.
 
-[CC0 terms](https://creativecommons.org/publicdomain/zero/1.0/) do not certify
-third-party identity/trademark rights. Publisher provenance plus per-file checks
-remain necessary. No copyrighted game character was selected.
+- `App.jsx`: safe-area screen, fixed CLOSE, ephemeral EN/JA/open/camera state,
+  selected language text/state, scrollable controls, rendering error boundary,
+  loading timeout and lab-only non-destructive failure simulation. No persistence.
+- `Scene.native.jsx` imports `@react-three/fiber/native`; `Scene.web.jsx` imports the
+  web renderer. `create-scene.jsx` loads the locally required GLB through Expo
+  Asset/GLTFLoader and owns its model. No global `useLoader` cache is retained.
+- `camera.ts`: immutable yaw normalization, bounded zoom, presets/reset. Framing
+  measures the actual model box and fits full height/width across orbit azimuths.
+  Near/far planes and distance bounds keep the camera outside the model envelope.
+- `lifecycle.ts`: one visible/foreground/healthy renderer, cancellable publication
+  of asynchronous loads, late-model disposal and touch-count rebasing.
+- `resources.js`: releases owned geometries/materials/textures once, deduplicating
+  shared references. The Fiber-owned floor/renderer unmount with Canvas.
+- `strings.ts`: centralized EN/JA labels, errors/instructions and controls.
 
-Additional leads were rejected for this delivery: Three sample Soldier/Xbot do not
-meet the athlete direction; an Innerscene “sports” listing has unsuitable clothing
-and a heavy mesh; GameMog's athlete bundle mixes differently licensed motion data
-and cannot be treated wholesale as CC0. CharacterCreator's generated GLBs have an
-explicit CC0 carve-out but its runtime code is GPL, and it still needs independent
-asset/pose/mobile inspection; no runtime code or model was copied from it.
-[CharacterCreator license notes](https://github.com/kblood/CharacterCreator/blob/master/LICENSE-NOTES.md),
-[GameMog publisher library](https://gamemog.com/library).
+Horizontal drag rotates the camera; pinch scales distance within limits. Switching
+between one/two fingers rebases rather than jumping. FRONT/SIDE/BACK, rotation,
+zoom and RESET buttons provide non-gesture alternatives. The preview owns its touch
+surface; controls scroll separately. Web disables browser page-zoom on that surface.
+Android hardware back closes an open viewer; native behavior is not yet verified.
 
-## Implemented isolated experiment
+Demand rendering draws on camera/load changes, with no idle rotation, animation,
+shadows, postprocessing, sound or flashing. Reduce Motion receives the same static
+information. The native adapter chooses native PixelRatio; a web DPR cap must not
+be assumed to control native resolution. No measured FPS/thermal claim is made.
+[Fiber demand rendering](https://r3f.docs.pmnd.rs/advanced/scaling-performance).
 
-`experiments/avs/camera.ts` has no imports, React, renderer, storage or gameplay
-dependency. It is outside `src/app` and is not reachable from the production app.
-It provides immutable camera state, full-sphere framing using the narrower of
-horizontal/vertical fields of view, normalized yaw, clamped distance ratios,
-front/side/back presets and reset. Invalid viewport/bounds fail explicitly;
-invalid gesture values retain the previous valid state.
+CLOSE, background or error unmounts Canvas. Foreground reloads the visible model;
+there is no animation to resume. Late successes are disposed and stale failures do
+not publish. Failed loading has retry/close and a 30-second deadline. No invisible
+viewer context exists at the lab home screen. Tests observe DOM context presence,
+not native driver memory reclamation; OS/driver crashes cannot be caught reliably
+by a React error boundary.
 
-The adapter must eventually measure the actual asset bounds and orient it before
-framing. Zoom stays outside that sphere, but actual near/far clipping planes,
-touch rebasing, pinch/drag arbitration and native hit targets still require a
-renderer/UI implementation. Mathematical tests do not verify gestures or anatomy.
+## Isolation, offline behavior and gameplay integrity
 
-No open/close UI, context lifetime, loading/error component, EN/JA viewer controls,
-appearance controls, offline GLB loading or PLAYER entry is implemented. Existing
-PLAYER/card/debug remain intact. There is no screenshot of a working AVS viewer.
+No Growth, OVR, PR, Coin, Match, Season, Career, cosmetic ownership or equipment is
+passed into the lab. The original `my-app/experiments/avs/camera.ts` is unchanged;
+the lab has an independent camera module. Production schemas and source remain
+byte-identical to the baseline. No USER/PLAYER initialization or wallet operation
+is introduced. The lab's language selection is in memory only.
 
-## Proposed architecture and lifecycle acceptance criteria
+Native Expo Asset/FileSystem may use ordinary **asset cache files**. That differs
+from gameplay/settings repository writes; no AsyncStorage dependency exists here.
+Browser verification instruments Storage writes and preserves a sentinel exactly.
 
-These are the next isolated experiment's design, not implemented capabilities:
+The GLB is local and self-contained, included in iOS/Android/Web export outputs.
+There is no runtime model/CDN/decoder download. Expo Go still needs Metro to obtain
+its development JavaScript/initial assets; a cold offline native packaged launch
+has not been tested. Do not claim that airplane mode can cold-start a Metro session.
 
-1. **Asset manifest:** local require/module, source revision, SHA-256, license and
-   notices, scale, forward/up axes, bounds and supported material slots. No OVR.
-2. **Renderer adapter:** native Fiber Canvas and separate web entry; receives the
-   asset and camera only. Loading, unsupported and retryable failure states must
-   work before adding a PLAYER entry. No gameplay providers/repositories.
-3. **Camera adapter:** existing headless module; horizontal responder inside the
-   viewer, pinch distance rebased when touch count changes, accessible preset and
-   zoom buttons. No gesture capture on the PLAYER scrolling surface.
-4. **Viewer shell:** reuse safe-area full-screen modal, fixed reachable CLOSE,
-   wrapping EN/JA instructions/controls and RESET VIEW. Appearance remains local
-   in-memory state; only genuine garment material slots receive a color control.
-5. **Visibility ownership:** exactly one context while open and foreground; no
-   eagerly mounted renderer. Cancel obsolete loads with a generation token and
-   dispose late resources. Unmount on close/background; foreground mounts a fresh
-   visible scene only. Test repeated opens and interrupted loads.
-6. **Resource ownership:** dispose geometries, materials, textures and explicitly
-   owned caches; do not assume a removed scene or React error boundary frees GPU
-   resources or catches a native crash. Avoid double-disposing shared cached data.
+## Exact verification results
 
-Static inspection should use demand rendering, invalidating on camera/appearance
-changes. No idle spin, continuous animation or expensive postprocessing is needed.
-[Fiber on-demand rendering](https://r3f.docs.pmnd.rs/advanced/scaling-performance).
+- Lab Node tests: **21 passed, 0 failed**, exit 0.
+- Lab TypeScript (`checkJs` for UI plus typed camera/lifecycle/strings): passed.
+- Lab lint: passed. Three-specific intrinsic properties are whitelisted only in
+  its renderer file; no production lint rule is modified or globally disabled.
+- `npm ls --depth=0`: no invalid dependencies.
+- Final online `expo install --check`: **Dependencies are up to date**, exit 0.
+- `env -u NO_COLOR EXPO_OFFLINE=1 CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/avs-lab-final-export`:
+  **passed**, exit 0. Web JS ~1.5 MB; iOS/Android Hermes bundles ~3.3 MB each.
+  The exported GLB's SHA-256 matches the final source model exactly. This is
+  bundling, not native execution. Expo Go startup on port 8131 also succeeded.
+- Khronos validation: final GLB 0 errors/warnings/infos/hints.
+- Production ASCEND: `npm test` **541 passed, 0 failed**; typecheck/lint passed.
+  Production source/assets/manifest/lock/config comparisons have no changes.
+- `tests/browser-viewer.cjs`: **passed**, exit 0, on the final patched export.
+  Actual human rendering at 390/320px, different front/side/back pixels, mouse drag,
+  multi-step two-finger pinch, page scale remaining 1, zoom buttons and exact-pixel
+  reset verified. EN/JA, accurate 1.5× font/line-height approximation, reduced motion,
+  reachable reset/close, no horizontal overflow, background/foreground, repeated
+  opens and zero Storage writes passed. Real GLB request rejection → retry and
+  simulated unavailable WebGL2 → recoverable UI/CLOSE also passed. No browser page
+  exceptions occurred. GPU screenshots were visually inspected; native touch is
+  not established by synthetic browser events.
+- `git diff --check`: passed. Untracked source files additionally checked for
+  trailing whitespace; no unintended production changes or generated main assets.
 
-Initial proposed asset budgets: a single prepared GLB ≤10 MB, roughly ≤50k triangles,
-few material/draw batches, 1k textures where possible and no texture above 2k
-without a measured reason. These are starting budgets, **not** measured performance.
-A decoded 2048² RGBA texture alone occupies 16 MiB before mipmaps; compressed file
-size is not GPU memory. Measure first frame/load time, JS responsiveness, peak
-memory, repeated-open growth, frame timing during gestures and thermal behavior on
-the agreed older iPhone. OpenGL ES longevity, GL method coverage, textures and
-native context loss remain risks. Browser software graphics cannot certify them.
+The lab tests cover camera inputs/framing/limits/presets/reset, visibility gating,
+load failures/retry, late success/failure, exact-once disposal, touch transitions,
+translation parity, actual GLB structure/hash, per-component CC0 declarations and
+absence of gameplay/storage imports. No new test framework was introduced.
 
-Later skeletal animation/muscle masks/appearance must be separate asset contracts.
-Reusable animation needs a deliberate skeleton/retarget convention. Anatomical
-overlays need authored meshes; neither morph capability nor anatomical accuracy
-can be inferred from a generic skinned human. No such later work starts here.
+The previous Phase 6A baseline ran all 25 existing ASCEND browser scripts. Those
+are historical results, not repeated claims for this follow-up. This follow-up
+reruns all production unit tests and directly verifies the separate viewer; there
+is no new production UI integration to test. No existing assertion is weakened.
 
-## Verification
+The first direct PNG buffer assertion produced expensive Node diagnostics when
+the initial single-move synthetic pinch was ineffective. Comparisons now use
+Buffer.equals with the same exact-pixel requirements. The gesture test represents
+finger addition and continuous movement rather than a single jump. Web touch-action
+also prevents the browser's default page pinch. The final test requires actual
+camera change **and** unchanged page scale; it does not accept browser zoom as AVS
+zoom. Initial garment cuts were visually rough; exact interpolated cuts fixed the
+hems and the resulting model was revalidated. No production code was changed.
 
-- `npm test`: **541 passed, 0 failed** (532 existing + 9 camera experiments).
-- `node --require ./tests/register.cjs --test tests/avs-camera.test.cjs`:
-  **9 passed, 0 failed** after formatting.
-- `npm run typecheck`: passed. `npm run lint`: passed, no warnings/errors.
-- `env -u NO_COLOR EXPO_OFFLINE=1 CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/ascend-avs-baseline-export`:
-  passed; iOS/Android Hermes bundles and 13 static web routes. This export contains
-  **no AVS renderer or model** and does not validate 3D bundling/native graphics.
-- All **24 production browser scripts passed**, exit 0: audit, cards, Career,
-  Coach, Growth, input, localization polish, localization, Match cinematic (all 14
-  scenarios), Match history/integration/resolution/rewards, overlays, presentation,
-  records, workout rewards, Seasons, sessions, Shop purchase fix, Shop UX comparison,
-  Shop UX, Shop and Shop expansion. No assertions or existing test files changed.
-- Development `browser-growth-debug` passed, exit 0: exact decimal data,
-  open/refresh zero writes, missing/corrupt/retry states, 320/390px and production
-  entry absence. Total: **25 browser scripts**; this is existing-app regression,
-  not AVS graphics verification.
-- Browser checks used isolated storage and `/tmp/ascend-shop-ux-qa` external
-  Playwright/browser binaries. Scripts were copied unchanged to
-  `/tmp/ascend-avs-browser/tests` with source symlinks so scripts that write docs
-  screenshots write to /tmp instead of replacing tracked Phase 5B images.
-  `NODE_PATH` and `PLAYWRIGHT_BROWSERS_PATH` point to that QA installation;
-  `ASCEND_QA_URL` used port 8126's production export, or Metro port 8127 for Debug
-  with `ASCEND_QA_PROD_URL` set to 8126. Both are local test servers.
-- Browser scripts retain mobile widths, enlarged-text and reduced-motion checks;
-  visually inspected the existing Japanese SHOP screenshot at 320px. There is no
-  AVS screenshot or native Dynamic Type/gesture measurement. Successful scripts
-  reported no browser page exceptions.
-- `git diff --check`: passed. New files also checked for whitespace; tracked source,
-  asset, package/lockfile and app/TypeScript configuration comparisons against HEAD
-  have no difference. No test-generated image overwrote a tracked artifact.
+Remaining tool notices: the pinned ESLint 9 package emitted its upstream support
+deprecation notice during install; no unrelated linter upgrade was made. One startup
+emitted NO_COLOR/FORCE_COLOR notices. The first offline dependency check warned that
+offline validation is unreliable, so final validation was repeated online. Final
+typecheck/lint/export have no new application errors/warnings.
 
-Development Metro retained the existing SVG `accessible={false}` non-boolean DOM
-attribute warning and printed empty async `fetchThenEvalJs` stack entries. A
-separate console capture identified the SVG warning with no page exception; the
-unchanged Debug assertions passed. No unrelated rendering code was changed to
-suppress it. Final typecheck/lint/export reported no new warnings.
+### Browser screenshots (not native proof)
 
-The nine new tests cover immutable initial state, portrait/landscape sphere framing,
-invalid bounds/FOV/aspect, repeated rotation, invalid control input, zoom extremes,
-reciprocal zoom, presets and reset. No tests claim actual GPU, rendering recovery,
-open/close gestures or native context disposal. No AVS UI integration tests exist
-because the integration gate was deliberately not crossed.
+![Generated athlete, front](../../experiments/avs-6a/docs/images/athlete-front.png)
 
-## Native execution plan — not performed
+[Side view](../../experiments/avs-6a/docs/images/athlete-side.png),
+[Japanese 320px viewer](../../experiments/avs-6a/docs/images/viewer-ja-320.png),
+[Japanese 1.5× text](../../experiments/avs-6a/docs/images/viewer-ja-large.png).
+The captured [Khronos report](../../experiments/avs-6a/docs/gltf-validation.json)
+belongs to the final model, not the first garment draft.
 
-**This checkout has no 3D Athlete Preview button.** Do not follow a supposed viewer
-test by opening PLAYER now. Existing-app smoke checks can use `cd my-app` then
-`npx expo start --go --lan`, preserving real data; that verifies only existing UI.
+## Files
 
-After approval, prepare a separate Expo SDK 58 experiment with the candidate
-dependencies above and the accepted licensed GLB. Install Expo modules with
-`npx expo install expo-gl expo-asset expo-file-system`; pin the verified Fiber/Three
-versions and save a lockfile in that isolated project. Do not silently run these
-installation commands in ASCEND. Merge its own Metro asset configuration and
-verify airplane-mode bundling before production integration.
+Created only under `experiments/avs-6a/`:
 
-For a compatible physical SDK 58 Expo Go: run `npx expo start --go --lan` **inside
-that future isolated project**, same Wi-Fi. Verify on-device Hermes, not old remote
-Chrome JS execution (Expo GL requires synchronous native calls). A native debugger
-attached to on-device Hermes is different from running JS remotely.
+- Package/lockfile, app/Metro/TypeScript/ESLint configs, `.gitignore`, `index.js`.
+- `App.jsx`; `src/camera.ts`, `lifecycle.ts`, `strings.ts`, `resources.js`,
+  `create-scene.jsx`, platform Scene entries and GLB type declaration.
+- `assets/athlete.glb`, `manifest.json`; eight original source/license files and
+  `asset-source/provenance.json`.
+- `tools/prepare-asset.py`, `verify-asset.cjs`.
+- Existing-convention Node tests, test registration and `tests/browser-viewer.cjs`.
+- `README.md`, `ASSET-LICENSE.md` and selected verified screenshots.
 
-If Expo Go proves insufficient, the future isolated project can use
-`npx expo install expo-dev-client`, then `npx expo run:ios --device` or
-`npx expo run:android --device`, and `npx expo start --dev-client --lan`.
-Prerequisites: compatible Xcode/macOS, CocoaPods and provisioned iPhone for local
-iOS; Android SDK/JDK/device tooling for Android. Recheck actual generated native
-requirements. These commands generate/build native projects and are **not executed**
-here. No signing credentials, EAS configuration or production build setting changed.
+Updated: `my-app/docs/PHASE6A_AVS_PROTOTYPE_VERIFICATION.md` (this report).
+No other tracked production file is changed.
 
-### iPhone acceptance checklist, after the gates are met
+## Exact iPhone Expo Go procedure — user acceptance pending
 
-1. Test the isolated project first: actual full-body model, correct materials,
-   neutral stance, lighting and offline load; record iPhone/iOS/Expo Go versions.
-2. Rotate in both directions, pinch within limits, use presets/zoom buttons and
-   RESET; verify small-screen full-body framing and no clipping.
-3. Repeat open/close, leave during loading, background/foreground and retry after
-   a controlled renderer failure. Observe memory/context count, heat and gestures.
-4. Check EN/JA, Dynamic Type, VoiceOver controls, Reduce Motion and safe areas.
-5. Only after these pass, add the approved PLAYER entry. Confirm existing card,
-   ratings, tier, Growth Debug and scroll position remain usable.
-6. Return to SHOP/TRAIN/HOME/CAREER; compare real values and persisted bytes.
-   Never fabricate real training or reset data for this test.
+1. Preserve your normal ASCEND installation/data. Install/use Expo Go compatible
+   with **SDK 58**. Connect iPhone/Mac to the same Wi-Fi.
+2. Run in a separate Terminal:
 
-### Android acceptance checklist
+   ```sh
+   cd /Users/tonosaki/Desktop/PF/ASCEND/experiments/avs-6a
+   npm ci --ignore-scripts
+   npm start -- --port 8131
+   ```
 
-Use compatible Expo Go with `npx expo start --go --lan` in the future isolated
-project, or the development-build path above if needed. Test on a physical Android
-device: same model/materials, gestures/accessibility alternatives, back action,
-foreground/background/context recreation, offline assets and repeated openings.
-Record OS/GPU/runtime and memory/frame measurements independently of iPhone/Web.
+3. Scan **this lab's QR code** with iPhone Camera. Expect **ASCEND AVS Lab** and
+   OPEN ATHLETE VIEWER, not the normal five-tab ASCEND app. No PLAYER entry exists.
+4. Open the viewer. Check a full head-to-feet 3D human, teal top/dark shorts, intact
+   hands/feet and reasonable stance/materials. Rotate, pinch, FRONT/SIDE/BACK,
+   zoom buttons and RESET. Report clipping, distortion or touch issues.
+5. Switch English/日本語. Check selected state, loading/error text, controls,
+   safe areas, small screen, large Dynamic Type, VoiceOver and Reduce Motion.
+6. CLOSE/reopen several times; background/foreground both while loading and after
+   display. Verify recovery and no freeze, crash or abnormal heating.
+7. Use the lab-only SIMULATE LOAD ERROR, RETRY, then CLOSE. This changes no saved
+   files. Do not corrupt/reset real phone storage.
+8. Exit the lab and open ordinary ASCEND separately. Verify existing PLAYER/card,
+   SHOP ownership/equipment/balance, TRAIN, HOME and CAREER are unchanged.
+9. Record iPhone/iOS/Expo Go versions and actual results. This acceptance is the
+   gate for PLAYER integration; no integration or Phase 6B begins automatically.
 
-No physical iPhone, Android, simulator, Hermes execution or GPU benchmark was
-performed in this phase. A JS exception fallback cannot guarantee recovery from
-native driver/process failure.
+On physical Android use the same isolated project and compatible Expo Go. Verify
+hardware back, model/controls, large text, background/foreground and memory/thermal
+behavior independently. No Android native success is claimed.
 
-## Files and next decision
+No custom Development Build was produced. If Expo Go fails, first report the exact
+error; do not upgrade production dependencies. A later lab-only build would need
+compatible Xcode/macOS/CocoaPods/provisioning or Android SDK/JDK tooling, with
+`expo-dev-client` and `npx expo run:ios --device` / `run:android --device` followed
+by `npx expo start --dev-client --lan`. No signing or EAS setup was altered here.
 
-Added only:
+## Remaining gate
 
-- `experiments/avs/camera.ts`.
-- `tests/avs-camera.test.cjs`.
-- `docs/PHASE6A_AVS_PROTOTYPE_VERIFICATION.md` (this report).
+**Implemented and browser-tested:** generated/licensed local model and isolated
+viewer foundation. **Not natively verified:** GL loading/materials, Hermes/driver
+execution, physical gestures, native context cleanup, VoiceOver/Dynamic Type,
+performance/thermal behavior and cold offline packaging.
 
-All tracked production code, assets, package manifests/lockfile and configuration
-remain byte-identical to baseline; no saved user data was accessed. Existing
-schemas, wallet, PR/Growth/OVR, Match, Season, Career, card and Shop rules are intact.
-
-Recommended next approval: **prepare one MakeHuman CC0 athlete with individually
-verified neutral apparel and run a separately scoped Expo GL/Fiber physical-device
-spike before PLAYER integration**. Rocketbox Sports_Male_01 is a possible faster
-conversion alternative if its appearance is accepted. Neither approval waives
-license provenance or native safety gates. No model download/integration or native
-dependency installation is queued automatically after this report.
-
-Do not begin Phase 6B until the actual 6A athlete viewer and native gates pass.
-Possible later 6B planning is limited to choosing a rig/appearance contract after
-that evidence; no morphing, progression binding, SHOP clothing or Career cinematic
-implementation is authorized by this delivery.
+Do not integrate into PLAYER or begin Phase 6B until the isolated iPhone test
+succeeds. No body-growth morphing, SHOP 3D cosmetics or Career cinematic work is
+included. The model/renderer can be replaced without changing physical progression.
