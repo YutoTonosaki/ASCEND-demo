@@ -1,6 +1,7 @@
 # Phase 6A — Isolated AVS Athlete Prototype
 
-Updated: 2026-10-29 (America/Vancouver). Baseline: `bd3f7c6`, initially clean.
+Updated: 2026-11-02 (America/Vancouver). Work began 2026-10-29 from `bd3f7c6`.
+Final continuation baseline: `349dd85`; the existing untracked experiment was preserved.
 The prior read-only feasibility/headless-camera report is retained in that commit.
 
 ## Status and scope
@@ -175,20 +176,25 @@ has not been tested. Do not claim that airplane mode can cold-start a Metro sess
 
 ## Exact verification results
 
-- Lab Node tests: **21 passed, 0 failed**, exit 0.
+- Lab Node tests: **22 passed, 0 failed**, exit 0. Includes null/undefined native
+  AppState bootstrap and blocking known background/inactive states.
 - Lab TypeScript (`checkJs` for UI plus typed camera/lifecycle/strings): passed.
 - Lab lint: passed. Three-specific intrinsic properties are whitelisted only in
   its renderer file; no production lint rule is modified or globally disabled.
 - `npm ls --depth=0`: no invalid dependencies.
-- Final online `expo install --check`: **Dependencies are up to date**, exit 0.
-- `env -u NO_COLOR EXPO_OFFLINE=1 CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/avs-lab-final-export`:
+- Online `expo install --check` during October 29 implementation:
+  **Dependencies are up to date**, exit 0. Dependency versions are unchanged in
+  the November 2 continuation; this is not a claim about newer registry releases.
+- `env -u NO_COLOR EXPO_OFFLINE=1 CI=1 npx expo export --platform all --max-workers 1 --output-dir /tmp/avs-finish-export`:
   **passed**, exit 0. Web JS ~1.5 MB; iOS/Android Hermes bundles ~3.3 MB each.
   The exported GLB's SHA-256 matches the final source model exactly. This is
   bundling, not native execution. Expo Go startup on port 8131 also succeeded.
 - Khronos validation: final GLB 0 errors/warnings/infos/hints.
 - Production ASCEND: `npm test` **541 passed, 0 failed**; typecheck/lint passed.
   Production source/assets/manifest/lock/config comparisons have no changes.
-- `tests/browser-viewer.cjs`: **passed**, exit 0, on the final patched export.
+  These production suite runs were performed during the October 29 implementation;
+  November 2 completion reruns the isolated lab checks with production unchanged.
+- October 29 `tests/browser-viewer.cjs`: **passed**, exit 0, on that day's patched export.
   Actual human rendering at 390/320px, different front/side/back pixels, mouse drag,
   multi-step two-finger pinch, page scale remaining 1, zoom buttons and exact-pixel
   reset verified. EN/JA, accurate 1.5× font/line-height approximation, reduced motion,
@@ -197,8 +203,9 @@ has not been tested. Do not claim that airplane mode can cold-start a Metro sess
   simulated unavailable WebGL2 → recoverable UI/CLOSE also passed. No browser page
   exceptions occurred. GPU screenshots were visually inspected; native touch is
   not established by synthetic browser events.
-- `git diff --check`: passed. Untracked source files additionally checked for
-  trailing whitespace; no unintended production changes or generated main assets.
+- `git diff --check`: passed. Newly authored code/docs additionally checked for
+  trailing whitespace; original upstream asset data remains byte-for-byte intact.
+  No unintended production changes or generated main assets.
 
 The lab tests cover camera inputs/framing/limits/presets/reset, visibility gating,
 load failures/retry, late success/failure, exact-once disposal, touch transitions,
@@ -224,6 +231,31 @@ deprecation notice during install; no unrelated linter upgrade was made. One sta
 emitted NO_COLOR/FORCE_COLOR notices. The first offline dependency check warned that
 offline validation is unreliable, so final validation was repeated online. Final
 typecheck/lint/export have no new application errors/warnings.
+
+November 2 completion also corrects the native bootstrap type to accept undefined
+AppState, without enabling rendering for known background/inactive states. Its
+22-test run, typecheck and lint passed. An initial browser run encountered Intel
+WebGL context creation failure (`BindToCurrentSequence failed`); recoverable UI
+remained available. The QA browser now explicitly selects ANGLE/SwiftShader rather
+than relying on host GPU selection. This changes only the external browser harness,
+not the app renderer, and gives no native GPU/performance evidence. External
+Playwright was restored under `/tmp/avs-finish-qa`; fresh browser binaries were
+also downloaded to `/tmp/avs-finish-qa/browsers`. The November 2 full rendering
+rerun with the old browser **did not pass**: model-ready timed out because WebGL2 context creation was
+unavailable, including a software-backend probe. A fresh-browser probe completed
+with WebGL2 available. The real error UI during the earlier failure remained readable,
+with RETRY/CLOSE available. The earlier successful rendering screenshots and
+scenario results are retained as October 29 evidence, not claimed as a successful
+November 2 rendering rerun on the old binaries. With freshly downloaded Chromium,
+the complete November 2 `browser-viewer.cjs` rerun **passed, exit 0** on
+`/tmp/avs-finish-export`: 390/320px real GLB rendering, rotation/pinch/zoom/reset,
+EN/JA and enlarged text, close/reopen/background/foreground, real asset failure
+and retry, unavailable WebGL2 fallback/CLOSE, no page exceptions and zero
+Storage set/remove/clear operations. The fresh browser uses
+`PLAYWRIGHT_BROWSERS_PATH=/tmp/avs-finish-qa/browsers`. A dependency
+`THREE.Clock` deprecation warning was observed during the diagnostic probe;
+no renderer dependency was upgraded to hide it. Physical iPhone testing remains
+required before integration; software WebGL gives no native performance evidence.
 
 ### Browser screenshots (not native proof)
 

@@ -1,0 +1,37 @@
+{
+  "name": "ascend-avs-6a-isolated",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start --go --lan",
+    "web": "expo start --web",
+    "test": "node --require ./tests/register.cjs --test tests/*.test.cjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "expo lint",
+    "export": "expo export --platform all",
+    "asset:build": "python3 tools/prepare-asset.py",
+    "asset:verify": "node tools/verify-asset.cjs"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.8.2",
+    "expo": "58.0.21",
+    "expo-asset": "58.0.19",
+    "expo-file-system": "58.0.13",
+    "expo-gl": "58.0.3",
+    "expo-status-bar": "58.0.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "5.10.1",
+    "react-native-web": "0.21.4",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/three": "0.186.0",
+    "eslint": "9.39.5",
+    "eslint-config-expo": "58.0.4",
+    "typescript": "6.0.3"
+  }
+}

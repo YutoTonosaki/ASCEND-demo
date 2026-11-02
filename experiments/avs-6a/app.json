@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "ASCEND AVS Lab",
+    "slug": "ascend-avs-6a-lab",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "ascend-avs-lab",
+    "ios": { "supportsTablet": false, "bundleIdentifier": "com.ascend.avslab" },
+    "android": { "package": "com.ascend.avslab" },
+    "web": { "bundler": "metro", "output": "single" }
+  }
+}
