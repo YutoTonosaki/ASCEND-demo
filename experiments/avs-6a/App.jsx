@@ -7,13 +7,15 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import Scene from "./src/Scene";
+import {loadRenderer} from "./src/load-renderer";
+import {mark,recordError,snapshot} from "./src/diagnostics";
 import {
   frameBox,
   presetCamera,
@@ -37,7 +39,8 @@ class RenderBoundary extends React.Component {
   static getDerivedStateFromError() {
     return { failed: true };
   }
-  componentDidCatch() {
+  componentDidCatch(error) {
+    recordError("renderer/boundary",error);
     this.props.onError();
   }
   render() {
@@ -62,6 +65,8 @@ function Button({ label, onPress, disabled = false, selected = false }) {
   );
 }
 function Lab() {
+  const [Renderer,setRenderer]=useState(()=>/** @type {React.ComponentType<any>|null} */(null));
+  const [diagnosticOpen,setDiagnosticOpen]=useState(false);
   const [locale, setLocale] = useState(
     /** @type {import('./src/strings').Locale} */ ("en"),
   );
@@ -85,6 +90,7 @@ function Lab() {
   const rigRef = useRef(rig);
   const t = (key) => translate(locale, key);
   useEffect(() => {
+    mark("shell/mounted");
     const sub = AppState.addEventListener("change", (state) => {
       const active = state === "active";
       setForeground(active);
@@ -181,6 +187,10 @@ function Lab() {
     touches.current = [];
     setEpoch((v) => v + 1);
     setOpen(true);
+    try { const component=loadRenderer();
+      if(!component)throw new Error("Scene default export is missing");
+      setRenderer(()=>component);mark("viewer/mount-requested");
+    }catch(error){recordError("viewer/import",error);setRenderer(null);fail();setDiagnosticOpen(true);}
   }
   const edit = (fn) => setCamera((value) => (value ? fn(value) : value));
   return (
@@ -204,6 +214,11 @@ function Lab() {
           onPress={() => setLocale("ja")}
         />
       </View>
+      <View style={s.row}>
+        <Button label={t("diagnostics")} onPress={()=>setDiagnosticOpen(v=>!v)}/>
+        {diagnosticOpen && <Button label={t("shareDiagnostics")} onPress={()=>Share.share({message:snapshot()}).catch(error=>recordError("diagnostics/share",error))}/>}
+      </View>
+      {diagnosticOpen && <ScrollView style={{maxHeight:180}}><Text selectable style={s.note}>{snapshot()}</Text></ScrollView>}
       {!open ? (
         <View style={s.intro}>
           <Text style={s.text}>{t("intro")}</Text>
@@ -232,9 +247,9 @@ function Lab() {
               }
             }}
           >
-            {mount && (
+            {mount && Renderer && (
               <RenderBoundary key={epoch} onError={fail}>
-                <Scene cameraState={camera} onReady={ready} onError={fail} />
+                <Renderer cameraState={camera} onReady={ready} onError={fail} />
               </RenderBoundary>
             )}
             {mount && (

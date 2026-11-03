@@ -21,7 +21,8 @@ fs.mkdirSync(folder, { recursive: true });
         reducedMotion: "reduce",
       });
       const page = await context.newPage(),
-        errors = [];
+        errors = [], stages = [];
+      page.on("console",message=>{if(message.text().includes("[AVS-DIAG]"))stages.push(message.text());});
       page.setDefaultTimeout(60000);
       page.on("pageerror", (e) => errors.push(e.message));
       await page.addInitScript(() => {
@@ -38,12 +39,14 @@ fs.mkdirSync(folder, { recursive: true });
       await page.goto(process.env.AVS_QA_URL || "http://127.0.0.1:8130");
       const button = (name) => page.getByRole("button", { name, exact: true });
       assert.equal(await page.locator("canvas").count(), 0);
+      assert.ok(!stages.some(s=>s.includes("import/Scene")),"Renderer must not import before OPEN");
       await button("OPEN ATHLETE VIEWER").tap();
       await page
         .getByTestId("viewer-status")
         .filter({ hasText: "Athlete ready" })
         .waitFor();
       await page.waitForTimeout(500);
+      assert.ok(stages.some(s=>s.includes("asset/parse:ok")),"Diagnostic asset completion is recorded");
       assert.equal(await page.locator("canvas").count(), 1);
       const canvas = page.locator("canvas");
       const front = await canvas.screenshot({

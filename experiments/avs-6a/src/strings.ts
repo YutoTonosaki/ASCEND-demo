@@ -1,4 +1,6 @@
 export const en = {
+  diagnostics: "DIAGNOSTICS",
+  shareDiagnostics: "SHARE DIAGNOSTICS",
   title: "3D Athlete Lab",
   intro:
     "Isolated MakeHuman CC0 prototype. Appearance is independent of ASCEND Ratings and equipment.",
@@ -27,6 +29,8 @@ export const en = {
 export type Locale = "en" | "ja";
 export type Key = keyof typeof en;
 export const ja: Record<Key, string> = {
+  diagnostics: "診断ログ",
+  shareDiagnostics: "診断ログを共有",
   title: "3Dアスリートラボ",
   intro:
     "MakeHumanのCC0素材を使った独立プロトタイプです。外見はASCENDの能力値・装備と連動しません。",

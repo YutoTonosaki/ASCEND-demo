@@ -1,3 +1,4 @@
+import {mark,recordError} from "./diagnostics";
 import React, { useEffect, useState } from "react";
 import { Asset } from "expo-asset";
 import { Box3, Vector3 } from "three";
@@ -18,10 +19,14 @@ export function createScene(Canvas, useThree) {
       () =>
         ownedLoad(
           async () => {
+            mark("asset/resolve:before");
             const asset = await Asset.fromModule(modelAsset).downloadAsync();
+            mark("asset/resolve:ok");
+            mark("asset/parse:before");
             const gltf = await new GLTFLoader().loadAsync(
               asset.localUri || asset.uri,
             );
+            mark("asset/parse:ok");
             return gltf.scene;
           },
           (root) => {
@@ -35,7 +40,7 @@ export function createScene(Canvas, useThree) {
             onReady({ width: size.x, height: size.y, depth: size.z });
             invalidate();
           },
-          onError,
+          error=>{recordError("asset/load",error);onError(error);},
           disposeModel,
         ),
       [onReady, onError, invalidate],
@@ -73,6 +78,7 @@ export function createScene(Canvas, useThree) {
   return function Scene(props) {
     return (
       <Canvas
+        onCreated={()=>mark("canvas/created")}
         frameloop="demand"
         camera={{ fov: 45, near: 0.01, far: 30, position: [0, 0.9, 4] }}
         gl={{ antialias: true, alpha: false }}

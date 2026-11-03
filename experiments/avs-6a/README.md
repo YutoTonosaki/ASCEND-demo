@@ -95,3 +95,10 @@ touch, native memory cleanup or performance. No FPS guarantee is made.
   JavaScript/initial assets; a cold offline packaged launch has not been verified.
 - Production ASCEND is untouched. Physical iPhone acceptance is the gate for any
   later PLAYER integration. No Phase 6B, SHOP 3D clothing or progression binding.
+
+## Native startup crash retest
+
+For the investigated import-time blocker and the exact diagnostic procedure, see
+[PHASE6A_NATIVE_RUNTIME_FIX.md](docs/PHASE6A_NATIVE_RUNTIME_FIX.md). Start this lab
+with `AVS_DIAGNOSTICS=1 npx expo start --go --lan --clear --port 8131`.
+Do not reset Expo Go/ASCEND data. Native success remains pending your device test.
