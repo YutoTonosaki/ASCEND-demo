@@ -1,6 +1,8 @@
+import { mark } from "@/avs/diagnostics";
+import { AthleteViewer } from "@/avs/viewer";
 import { useLocalization } from "@/localization";
 import { useCareer } from "@/career/provider";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Screen, Panel, Placeholder, s } from "@/components/ui/primitives";
 import { PlayerCard } from "@/components/player/player-card";
@@ -18,6 +20,8 @@ export default function PlayerScreen() {
   const l = useLocalization();
   const { tr } = useLocalization();
   const { club: currentClub } = useCareer();
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const closeViewer = useCallback(() => setViewerOpen(false), []);
   const [debugOpen, setDebugOpen] = useState(false);
   const { data } = useGrowth();
   const player = data?.player;
@@ -25,6 +29,7 @@ export default function PlayerScreen() {
   return (
     <Screen kicker={tr("player.kicker")} title={tr("player.title")}>
       <GrowthStatus />
+      {viewerOpen && <AthleteViewer onClose={closeViewer} />}
       {__DEV__ && (
         <Action label="GROWTH DEBUG" onPress={() => setDebugOpen(true)} />
       )}
@@ -40,6 +45,13 @@ export default function PlayerScreen() {
               ovr: overall(player.ratings),
               bodyRatings: player.ratings,
               archetype: tr("coach.profile"),
+            }}
+          />
+          <Action
+            label={tr("avs.open")}
+            onPress={() => {
+              mark("player/open-pressed");
+              setViewerOpen(true);
             }}
           />
           {appearance && (

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "file": "athlete.glb",
+  "sha256": "4b655504291c7389994b8d3e420744405a21fbb71fde2e20f318880aee849cfc",
+  "license": "CC0-1.0",
+  "sourceRevision": "a8bc2d54ff0ac92e78ff71431b1023eda42bf482",
+  "bytes": 563184,
+  "triangles": 30815,
+  "meshes": 3,
+  "textures": 0,
+  "animations": 0,
+  "runtimeSkeleton": false,
+  "height": 1.8,
+  "up": "+Y",
+  "forward": "+Z",
+  "pose": "baked arms near sides",
+  "apparel": [
+    "original derived compression top",
+    "original derived compression shorts"
+  ]
+}

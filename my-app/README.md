@@ -295,3 +295,11 @@ Phase 5B adds ten static visual treatments while preserving the original ten IDs
 prices and appearances. The compact ownership menu combines All/Owned/Unowned with
 existing category filters; preview/card artwork shares one renderer. Cosmetic rarity
 never gates or changes earned Card Tier. See [SHOP expansion verification](docs/PHASE5B_SHOP_EXPANSION_VERIFICATION.md).
+
+## Optional 3D athlete preview
+
+PLAYER → VIEW 3D ATHLETE opens the fixed-pose MakeHuman CC0 prototype. It is
+independent of Ratings and SHOP equipment. The original Player Card remains primary.
+See [Phase 6A.5 verification](docs/PHASE6A_5_PLAYER_INTEGRATION_VERIFICATION.md) for
+compatibility, asset provenance, local checks and the pending integrated iPhone
+acceptance checklist. Phase 6B is not implemented.

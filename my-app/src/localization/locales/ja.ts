@@ -1,5 +1,24 @@
 import type { en } from "./en";
 export const ja = {
+  "avs.title": "3Dアスリート",
+  "avs.open": "3Dアスリートを見る",
+  "avs.close": "閉じる",
+  "avs.loading": "アスリートを読み込み中…",
+  "avs.ready": "アスリートを表示中",
+  "avs.error": "3Dを表示できません。再試行するか、ビューアを閉じてください。",
+  "avs.retry": "再試行",
+  "avs.reset": "視点をリセット",
+  "avs.instructions": "ドラッグで回転、ピンチでズーム。ボタンでも操作できます。",
+  "avs.front": "正面",
+  "avs.side": "側面",
+  "avs.back": "背面",
+  "avs.left": "左に回転",
+  "avs.right": "右に回転",
+  "avs.zoomIn": "拡大",
+  "avs.zoomOut": "縮小",
+  "avs.paused": "バックグラウンドで表示を一時停止しています。",
+  "avs.source": "固定ポーズのCC0モデル・試作トレーニングウェア",
+
   "shop.item.bg-training-ground.name": "トレーニンググラウンド",
   "shop.item.bg-training-ground.description":
     "深いグリーンにフィールドのラインを重ねた背景。静止デザインです。",

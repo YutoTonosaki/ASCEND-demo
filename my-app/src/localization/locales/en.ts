@@ -1,4 +1,23 @@
 export const en = {
+  "avs.title": "3D ATHLETE",
+  "avs.open": "VIEW 3D ATHLETE",
+  "avs.close": "CLOSE",
+  "avs.loading": "Loading athlete…",
+  "avs.ready": "Athlete ready",
+  "avs.error": "3D is unavailable. You can retry or close the viewer.",
+  "avs.retry": "RETRY",
+  "avs.reset": "RESET VIEW",
+  "avs.instructions": "Drag to rotate. Pinch to zoom. Buttons provide the same controls.",
+  "avs.front": "FRONT",
+  "avs.side": "SIDE",
+  "avs.back": "BACK",
+  "avs.left": "ROTATE LEFT",
+  "avs.right": "ROTATE RIGHT",
+  "avs.zoomIn": "ZOOM IN",
+  "avs.zoomOut": "ZOOM OUT",
+  "avs.paused": "Viewer paused in background.",
+  "avs.source": "Fixed-pose CC0 athlete • prototype apparel",
+
   "shop.item.bg-training-ground.name": "Training Ground",
   "shop.item.bg-training-ground.description":
     "Deep green training lanes. A static field pattern for your card.",
