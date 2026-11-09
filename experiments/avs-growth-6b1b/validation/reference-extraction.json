@@ -1,0 +1,32 @@
+{
+  "baselineSha256": "4b655504291c7389994b8d3e420744405a21fbb71fde2e20f318880aee849cfc",
+  "meshes": [
+    {
+      "name": "athlete-body",
+      "vertices": 13380,
+      "hashes": {
+        "position": "152c55be89d4add4c18b59833148e1ed440d3708370281e58e326e4389ba9767",
+        "normal": "910016d6d2a18ce3dc6dd645b8d286fe06c4e6c3d4ee84651087b2b5301ea5a9",
+        "indices": "389ebfacdbd0cb563555d37e099f3f04f2d0ee5a35227fb063ba0d0235095ac2"
+      }
+    },
+    {
+      "name": "training-top",
+      "vertices": 1503,
+      "hashes": {
+        "position": "1b9d9a414ecb6b236abe4b9d2b4e8b28f1d258aef7eec0ab890db30b71264401",
+        "normal": "b291536f4f7270a237100c129a1e1a4f130933ce0adc453f834849361682a343",
+        "indices": "da9c56857c1042475bfe751e2874887d5ad3d0878b331a672b05bc993ba5c5a8"
+      }
+    },
+    {
+      "name": "training-shorts",
+      "vertices": 748,
+      "hashes": {
+        "position": "52d52c8a625c0ac56a51b602313254f311d504a0167d774e196223f4bc5b81ca",
+        "normal": "bb9a8cfc5d4224bffde4a8b56eb70e8d4fbff6bff3ff3a8a048dd7653455c052",
+        "indices": "42b0f0de27908c46cbc871153b61b21e6424b5e524d1c6a4fdee4d1c7d5a0c38"
+      }
+    }
+  ]
+}

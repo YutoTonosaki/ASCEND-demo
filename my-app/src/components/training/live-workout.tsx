@@ -14,6 +14,7 @@ import { colors } from "@/config/theme";
 import { useGrowthPresentation } from "@/presentation/provider";
 import { useRewards } from "@/rewards/provider";
 import { WorkoutRewards } from "@/components/rewards/rewards";
+import { SessionProgressionSection } from "@/components/player/session-progression";
 export const durationLabel = (seconds: number) =>
   `${Math.floor(seconds / 60)
     .toString()
@@ -323,6 +324,7 @@ export function SessionSummary({
         </Text>
       </Panel>
       <WorkoutRewards sessionId={session.id} />
+      <SessionProgressionSection key={session.id} sessionId={session.id} />
       {session.exercises.map((entry) => (
         <Panel key={entry.id} title={l.exercise(entry.exercise)}>
           {entry.sets.map((set, i) => (

@@ -1,0 +1,2 @@
+experiments/avs-growth-6b1b/.tools/Blender.app: accepted
+source=Notarized Developer ID

@@ -1,0 +1,4 @@
+--prepared:/Users/tonosaki/Desktop/PF/ASCEND/experiments/avs-growth-6b1b/.tools/Blender.app/Contents/PlugIns/blender-thumbnailer.appex
+--validated:/Users/tonosaki/Desktop/PF/ASCEND/experiments/avs-growth-6b1b/.tools/Blender.app/Contents/PlugIns/blender-thumbnailer.appex
+experiments/avs-growth-6b1b/.tools/Blender.app: valid on disk
+experiments/avs-growth-6b1b/.tools/Blender.app: satisfies its Designated Requirement

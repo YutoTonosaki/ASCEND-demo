@@ -1,0 +1,13 @@
+test_actual_blender_build_and_reopen (test_reference.HandoffTests.test_actual_blender_build_and_reopen) ... ok
+test_baseline_and_production_bytes (test_reference.HandoffTests.test_baseline_and_production_bytes) ... ok
+test_buffer_hashes_and_indices (test_reference.HandoffTests.test_buffer_hashes_and_indices) ... ok
+test_coordinate_conversion_roundtrip (test_reference.HandoffTests.test_coordinate_conversion_roundtrip) ... ok
+test_deterministic_reference_extraction (test_reference.HandoffTests.test_deterministic_reference_extraction) ... ok
+test_no_exported_athlete_morph_claim (test_reference.HandoffTests.test_no_exported_athlete_morph_claim) ... ok
+test_real_api_smoke_and_named_test_fixture (test_reference.HandoffTests.test_real_api_smoke_and_named_test_fixture) ... ok
+test_unique_body_correspondence (test_reference.HandoffTests.test_unique_body_correspondence) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.996s
+
+OK

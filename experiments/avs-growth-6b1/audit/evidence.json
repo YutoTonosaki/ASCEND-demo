@@ -1,0 +1,169 @@
+{
+  "sha256": "4b655504291c7389994b8d3e420744405a21fbb71fde2e20f318880aee849cfc",
+  "bytes": 563184,
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "athlete-body"
+    },
+    {
+      "mesh": 1,
+      "name": "training-top"
+    },
+    {
+      "mesh": 2,
+      "name": "training-shorts"
+    }
+  ],
+  "sceneRoots": [
+    0,
+    1,
+    2
+  ],
+  "skinCount": 0,
+  "animationCount": 0,
+  "hasExternalBuffers": false,
+  "textureCount": 0,
+  "meshes": [
+    {
+      "name": "athlete-body",
+      "primitives": [
+        {
+          "attributes": [
+            "NORMAL",
+            "POSITION"
+          ],
+          "vertices": 13380,
+          "triangles": 26756,
+          "morphTargets": 0,
+          "material": "athlete-body",
+          "materialSettings": {
+            "doubleSided": false,
+            "name": "athlete-body",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.57,
+                0.34,
+                0.23,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.78
+            }
+          },
+          "bounds": {
+            "min": [
+              -0.33748558163642883,
+              0,
+              -0.24239501357078552
+            ],
+            "max": [
+              0.33748558163642883,
+              1.7999999523162842,
+              0.24239501357078552
+            ]
+          },
+          "boundaryEdges": 0,
+          "nonManifoldEdges": 0,
+          "exactlyDegenerateTriangles": 0
+        }
+      ]
+    },
+    {
+      "name": "training-top",
+      "primitives": [
+        {
+          "attributes": [
+            "NORMAL",
+            "POSITION"
+          ],
+          "vertices": 1503,
+          "triangles": 2736,
+          "morphTargets": 0,
+          "material": "training-top",
+          "materialSettings": {
+            "doubleSided": true,
+            "name": "training-top",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.025,
+                0.2,
+                0.23,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.78
+            }
+          },
+          "bounds": {
+            "min": [
+              -0.1762395054101944,
+              0.9428178071975708,
+              -0.24833035469055176
+            ],
+            "max": [
+              0.1762395054101944,
+              1.5125701427459717,
+              0.012585676275193691
+            ]
+          },
+          "boundaryEdges": 270,
+          "nonManifoldEdges": 0,
+          "exactlyDegenerateTriangles": 0
+        }
+      ]
+    },
+    {
+      "name": "training-shorts",
+      "primitives": [
+        {
+          "attributes": [
+            "NORMAL",
+            "POSITION"
+          ],
+          "vertices": 748,
+          "triangles": 1323,
+          "morphTargets": 0,
+          "material": "training-shorts",
+          "materialSettings": {
+            "doubleSided": true,
+            "name": "training-shorts",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.012,
+                0.027,
+                0.045,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.78
+            }
+          },
+          "bounds": {
+            "min": [
+              -0.21412311494350433,
+              0.6901995539665222,
+              -0.25139471888542175
+            ],
+            "max": [
+              0.21412311494350433,
+              0.9924930930137634,
+              -0.0014402554370462894
+            ]
+          },
+          "boundaryEdges": 175,
+          "nonManifoldEdges": 0,
+          "exactlyDegenerateTriangles": 0
+        }
+      ]
+    }
+  ],
+  "source": {
+    "boneCount": 163,
+    "weightGroupCount": 139,
+    "targets": {
+      "universal-male-young-averagemuscle-averageweight.target": 0,
+      "universal-male-young-maxmuscle-averageweight.target": 6825
+    }
+  }
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "mesh": "athlete-body",
+    "vertices": 13380,
+    "triangles": 26756,
+    "positionRoundtrip": true,
+    "indexOrder": true,
+    "basisExact": true,
+    "baselineNormalAttributeExact": true,
+    "regionApproved": false
+  },
+  {
+    "mesh": "training-top",
+    "vertices": 1503,
+    "triangles": 2736,
+    "positionRoundtrip": true,
+    "indexOrder": true,
+    "basisExact": true,
+    "baselineNormalAttributeExact": true,
+    "regionApproved": false
+  },
+  {
+    "mesh": "training-shorts",
+    "vertices": 748,
+    "triangles": 1323,
+    "positionRoundtrip": true,
+    "indexOrder": true,
+    "basisExact": true,
+    "baselineNormalAttributeExact": true,
+    "regionApproved": false
+  }
+]

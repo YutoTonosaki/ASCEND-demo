@@ -1,0 +1,16 @@
+{
+  "version": "4.5.15 LTS",
+  "buildHash": "5afeabba6097",
+  "architecture": "x86_64",
+  "officialDmgUrl": "https://download.blender.org/release/Blender4.5/blender-4.5.15-macos-x64.dmg",
+  "officialChecksumUrl": "https://download.blender.org/release/Blender4.5/blender-4.5.15.sha256",
+  "dmgBytes": 340111721,
+  "verifiedSha256": "3801a97619292a012ede0e855ee705ae872a680474845297b777254f7f21ed78",
+  "destination": "/Users/tonosaki/Desktop/PF/ASCEND/experiments/avs-growth-6b1b/.tools/Blender.app",
+  "codesign": "valid on disk; satisfies Designated Requirement",
+  "gatekeeper": "accepted; Notarized Developer ID",
+  "securityBypass": false,
+  "systemInstall": false,
+  "runtime": "factory startup, project-local user config; default sandbox startup crashed at Metal capability detection; normal macOS process succeeded",
+  "assetAuthoringStatus": "neutral handoff only; regional selection and sculpt NOT approved"
+}
