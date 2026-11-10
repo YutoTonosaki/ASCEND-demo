@@ -38,4 +38,25 @@ function fixture() {
   const player = reconcilePlayer(before, sessions, at(40));
   return { initial, first, before, target, sessions, player };
 }
-module.exports = { at, data, workout, fixture };
+function squatPRFixture() {
+  const profile = defaultProfile(at(0));
+  // Existing baseline APIs assess Legs and Core before the improved workout.
+  profile.baselineAssessments = [
+    { exercise: standardExercises.find(e => e.id === "squat"),
+      actual: { type: "reps", reps: 30 }, source: "known", recordedAt: at(0) },
+    { exercise: standardExercises.find(e => e.id === "plank"),
+      actual: { type: "time", seconds: 30 }, source: "known", recordedAt: at(0) },
+  ];
+  const initial = initializePlayer("squat-pr-player", at(10), profile, data());
+  const previous = workout([["squat", [{ type: "reps", reps: 30 }]]], 20).completed;
+  const before = reconcilePlayer(initial, data(previous), at(25));
+  const entry = newEntry(standardExercises.find(e => e.id === "squat"));
+  const plan = { ...newWorkout(), name: "Squat PR 30 to 35",
+    exercises: [{ ...entry, restSeconds: 0,
+      sets: [{ ...entry.sets[0], reps: 35 }] }] };
+  const active = startSession(plan, standardExercises, at(30));
+  const completed = confirmSet(active, position(active).set.id,
+    { type: "reps", reps: 35 }, at(40));
+  return { profile, initial, previous, before, plan, active, completed };
+}
+module.exports = { at, data, workout, fixture, squatPRFixture };

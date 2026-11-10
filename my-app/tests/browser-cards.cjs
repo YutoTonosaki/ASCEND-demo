@@ -174,6 +174,13 @@ function fixture(target) {
         0,
       );
       assert.equal(await page.getByTestId("card-evolution").count(), 0);
+      if (ovr === 99) {
+        await page.getByRole("button", { name: "VIEW FRACTIONAL DETAILS", exact: true }).click();
+        const details = page.getByTestId("player-rating-details");
+        await details.getByText("OVR 99 · Maximum reached", { exact: true }).waitFor();
+        assert.equal(await details.getByText(/Next OVR/).count(), 0);
+        await page.getByRole("button", { name: "HIDE FRACTIONAL DETAILS", exact: true }).click();
+      }
       await card.scrollIntoViewIfNeeded();
       await page.screenshot({ path: `/tmp/ascend-card-${ovr}.png` });
       assert.ok(

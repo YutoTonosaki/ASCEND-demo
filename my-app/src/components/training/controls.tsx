@@ -17,17 +17,20 @@ export function Action({
   onPress,
   disabled = false,
   displayLabel,
+  expanded,
 }: {
   label: string;
   onPress: () => void;
   disabled?: boolean;
   displayLabel?: string;
+  expanded?: boolean;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ disabled }}
+      accessibilityState={expanded === undefined ? { disabled } : { disabled, expanded }}
+      aria-expanded={expanded}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [

@@ -1,5 +1,17 @@
 import type { en } from "./en";
 export const ja = {
+  "ratingDetails.show": "小数の詳細を見る",
+  "ratingDetails.hide": "小数の詳細を閉じる",
+  "ratingDetails.region": "{area} · {value} · {status}",
+  "ratingDetails.precision": "能力値と平均は、小数第3位以下を切り捨てて表示しています。",
+  "ratingDetails.mean": "6部位の平均 · {value}",
+  "ratingDetails.next": "次のOVR · {ovr}",
+  "ratingDetails.remaining": "必要な平均の上昇 · あと約{value}",
+  "ratingDetails.tinyRemaining": "必要な平均の上昇 · あと0.01未満",
+  "ratingDetails.maximum": "OVR 99 · 最大値に到達",
+  "ratingDetails.explanation": "OVRは保存済みの6部位の平均から計算します。表示では小数の桁を省略しています。",
+  "ratingDetails.provisional": "暫定の能力値を{count}部位含みます。初回評価により、これらの値と平均が上下することがあります。",
+  "ratingDetails.unavailable": "能力値の詳細を表示できません。上の保存状況をご確認ください。",
   "progression.title": "今回の成長",
   "progression.loading": "保存済みの成長情報を読み込み中…",
   "progression.pending": "ワークアウトの成長を保存中…",

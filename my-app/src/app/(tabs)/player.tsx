@@ -10,6 +10,7 @@ import { PersonalRecordsSection } from "@/components/player/personal-records";
 import { Action } from "@/components/training/controls";
 import { GrowthDebugPanel } from "@/components/player/growth-debug-panel";
 import { GrowthStatus } from "@/components/player/growth-status";
+import { RatingDetails } from "@/components/player/rating-details";
 import { cardTiers } from "@/config/visuals";
 import { bodyParts } from "@/config/training";
 import { colors } from "@/config/theme";
@@ -23,7 +24,7 @@ export default function PlayerScreen() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const closeViewer = useCallback(() => setViewerOpen(false), []);
   const [debugOpen, setDebugOpen] = useState(false);
-  const { data } = useGrowth();
+  const { data, error } = useGrowth();
   const player = data?.player;
   const appearance = player ? cardAppearance(overall(player.ratings)) : null;
   return (
@@ -117,6 +118,7 @@ export default function PlayerScreen() {
           ))}
           <Text style={s.fine}>{tr("player.assessments")}</Text>
           <Text style={s.fine}>{tr("player.assessmentNote")}</Text>
+          <RatingDetails key={player.id} player={player} available={!error} />
         </Panel>
       )}
       <Panel title={tr("player.development")} kicker={tr("common.comingSoon")}>
