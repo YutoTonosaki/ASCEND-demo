@@ -9,6 +9,8 @@ import {
   isSessionData,
   startSession,
 } from "../sessions/domain";
+import { withStorageQueue } from "./queue";
+import { captureCompletionContext, deviceTimeZone } from "../sessions/calendar";
 export const SESSION_KEY = "ascend.sessions.v1";
 export const emptySessionData = (): SessionData => ({
   version: 1,
@@ -21,32 +23,23 @@ export type SessionCommand =
   | { type: "rest"; sessionId: string; deadline: string; skip: boolean };
 export class SessionRepository {
   private data: SessionData | null = null;
-  private queue: Promise<unknown> = Promise.resolve();
+  // Retain an unacknowledged final confirmation during same-process retries.
+  private completionAttempt: { base: string; command: string; data: SessionData } | null = null;
   constructor(
     private adapter: StorageAdapter<string>,
     private clock = () => new Date().toISOString(),
+    private timeZone = deviceTimeZone,
   ) {}
   private enqueue<T>(work: () => Promise<T>): Promise<T> {
-    const operation = this.queue.then(work);
-    this.queue = operation.catch(() => undefined);
-    return operation;
+    return withStorageQueue(this.adapter, work);
+  }
+  private async read(): Promise<SessionData> {
+    return readSessionData(this.adapter);
   }
   load(): Promise<SessionData> {
     return this.enqueue(async () => {
       this.data = null;
-      const raw = await this.adapter.read(SESSION_KEY);
-      let parsed: unknown;
-      try {
-        parsed = raw === null ? emptySessionData() : JSON.parse(raw);
-      } catch {
-        throw new Error(
-          "Workout sessions could not be read. Your data has been kept unchanged.",
-        );
-      }
-      if (!isSessionData(parsed))
-        throw new Error(
-          "Workout sessions are incompatible or damaged. Your data has been kept unchanged.",
-        );
+      const parsed = await this.read();
       this.data = parsed;
       return copySessionData(parsed);
     });
@@ -65,7 +58,18 @@ export class SessionRepository {
     return this.enqueue(async () => {
       if (!this.data)
         throw new Error("Workout sessions have not loaded. Please retry.");
-      const next = copySessionData(this.data);
+      const durable = await this.read();
+      const base = JSON.stringify(durable);
+      const commandKey = JSON.stringify(submitted);
+      const attempt = this.completionAttempt;
+      if (attempt?.base === base && attempt.command === commandKey) {
+        await this.adapter.write(SESSION_KEY, JSON.stringify(attempt.data));
+        this.data = attempt.data;
+        this.completionAttempt = null;
+        return copySessionData(this.data);
+      }
+      this.completionAttempt = null;
+      const next = copySessionData(durable);
       if (submitted.type === "start") {
         if (next.active)
           throw new Error(
@@ -92,6 +96,10 @@ export class SessionRepository {
                 this.clock(),
               );
         if (next.active.status === "completed") {
+          next.active.completionContext = captureCompletionContext(
+            new Date(next.active.completedAt),
+            this.timeZone(),
+          );
           next.completed.unshift(next.active);
           next.active = null;
         }
@@ -100,7 +108,14 @@ export class SessionRepository {
         throw new Error(
           "Invalid workout session. Your saved data has been kept.",
         );
-      await this.adapter.write(SESSION_KEY, JSON.stringify(next));
+      const serialized = JSON.stringify(next);
+      if (serialized !== base) {
+        if (submitted.type === "confirm" && durable.active && !next.active) {
+          this.completionAttempt = { base, command: commandKey, data: next };
+        }
+        await this.adapter.write(SESSION_KEY, serialized);
+      }
+      this.completionAttempt = null;
       this.data = next;
       return copySessionData(next);
     });
@@ -119,4 +134,18 @@ export class SessionRepository {
       return copySessionData(next);
     });
   }
+}
+
+/** Raw read for callers already holding the shared adapter lock. No writes. */
+export async function readSessionData(adapter: StorageAdapter<string>): Promise<SessionData> {
+  const raw = await adapter.read(SESSION_KEY);
+  let parsed: unknown;
+  try {
+    parsed = raw === null ? emptySessionData() : JSON.parse(raw);
+  } catch {
+    throw new Error("Workout sessions could not be read. Your data has been kept unchanged.");
+  }
+  if (!isSessionData(parsed))
+    throw new Error("Workout sessions are incompatible or damaged. Your data has been kept unchanged.");
+  return parsed;
 }

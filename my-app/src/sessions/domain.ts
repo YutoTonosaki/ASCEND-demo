@@ -1,3 +1,4 @@
+import { isCompletionContext } from "./calendar";
 import { copyExercise, newId } from "../training/plans";
 import { isExercise, isTarget, isWorkout } from "../training/validation";
 import { trainingConfig as c } from "../config/training";
@@ -56,6 +57,9 @@ export function prefill(target: SetTarget): ActualResult {
 export function copySession(session: WorkoutSession): WorkoutSession {
   return {
     ...session,
+    ...(session.completionContext
+      ? { completionContext: { ...session.completionContext } }
+      : {}),
     exercises: session.exercises.map((entry) => ({
       ...entry,
       exercise: copyExercise(entry.exercise),
@@ -152,9 +156,10 @@ export function isSession(v: unknown): v is WorkoutSession {
       !pending &&
       date(v.completedAt) &&
       Date.parse(v.completedAt) === lastTime &&
-      v.restUntil === null
+      v.restUntil === null &&
+      (!("completionContext" in v) || isCompletionContext(v.completionContext, v.completedAt))
     );
-  if (v.status !== "active" || !pending || v.completedAt !== null) return false;
+  if (v.status !== "active" || !pending || v.completedAt !== null || "completionContext" in v) return false;
   return (
     v.restUntil === null ||
     (confirmed > 0 &&

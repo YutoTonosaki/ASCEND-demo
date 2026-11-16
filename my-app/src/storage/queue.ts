@@ -1,6 +1,6 @@
 import type { StorageAdapter } from "./index";
 
-// One lock for Match and Rewards operations on a shared adapter. Callers inside
+// One lock for Session, XP activation, Match and Rewards operations on a shared adapter. Callers inside
 // an operation use raw adapter reads/writes and pure validators, never re-enter it.
 const queues = new WeakMap<StorageAdapter<string>, Promise<unknown>>();
 export function withStorageQueue<T>(
